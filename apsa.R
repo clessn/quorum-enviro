@@ -90,6 +90,8 @@ ggplot(Graph, aes(x = value2, y = name)) +
     
     ggsave("_SharedFolder_quorum-enviro/test.png",
            width = 8, height = 10)  
-    
-  
-  
+
+
+        
+source("functions.R", encoding = "UTF-8")
+topdown_fa(Graph)    
