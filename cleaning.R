@@ -1,6 +1,6 @@
 # Packages ####
 library(tidyverse)
-source("functions.R", encoding = "UTF-8")
+#source("functions.R", encoding = "UTF-8")
 
 # Note: cleaning of some variables have been done in other files in this repo
 ####### apsa.R
@@ -8,16 +8,20 @@ source("functions.R", encoding = "UTF-8")
 ####### violence_pol.R
 
 
-# Data ####
+# Load Data ####
 Data <- haven::read_sav("_SharedFolder_quorum-enviro/data/ULA011-données.Sav") %>%  
   mutate(id = 1:nrow(.))
 
-
+### Create clean dataframe
 CleanData <- data.frame(id = Data$id,
                         ses_postal_code = Data$CP,
                         ses_age = 2022-Data$Q7)
 
-# Province ####
+###******************************************###
+# SES ####
+###******************************************###
+
+## Province ####
 table(Data$PROV)
 CleanData$ses_prov_alberta <- NA
 CleanData$ses_prov_alberta[Data$PROV==1] <- 1
@@ -86,7 +90,7 @@ CleanData$ses_prov <- CleanData %>%
   filter(value==1) %>% 
   pull(., ses_prov)
 
-# Gender ####
+## Gender ####
 table(Data$SEXE)
 CleanData$ses_gender_male <- NA
 CleanData$ses_gender_male[Data$SEXE==1] <- 1
@@ -105,7 +109,7 @@ CleanData$ses_gender_other[Data$SEXE==3] <- 1
 CleanData$ses_gender_other[Data$SEXE!=3] <- 0
 table(CleanData$ses_gender_other)
 
-# Region (only in quebec) ####
+## Region (only in quebec) ####
 table(Data$REGION)
 CleanData$ses_region_mtlIsl <- NA
 CleanData$ses_region_mtlIsl[Data$REGION==1] <- 1
@@ -130,7 +134,7 @@ CleanData$ses_region_outsideQcMtl[Data$REGION==4] <- 1
 CleanData$ses_region_outsideQcMtl[Data$REGION%in%c(1,2,3)] <- 0
 table(CleanData$ses_region_outsideQcMtl)
 
-# Age group ####
+## Age group ####
 table(Data$AGE)
 CleanData$ses_age_24m <- NA
 CleanData$ses_age_24m[Data$AGE==2] <- 1
@@ -173,7 +177,7 @@ CleanData$ses_age_75p[Data$AGE==8] <- 1
 CleanData$ses_age_75p[Data$AGE!=8] <- 0
 table(CleanData$ses_age_75p)
 
-# Language ####
+## Language ####
 table(Data$Q2)
 CleanData$ses_langFr <- NA
 CleanData$ses_langFr[Data$Q2==1] <- 1
@@ -192,7 +196,7 @@ CleanData$ses_langOther[Data$Q2==3] <- 1
 CleanData$ses_langOther[Data$Q2!=3] <- 0
 table(CleanData$ses_langOther)
 
-# Civil status ####
+## Civil status ####
 table(Data$Q3)
 CleanData$ses_married <- NA
 CleanData$ses_married[Data$Q3==1] <- 1
@@ -223,17 +227,17 @@ CleanData$ses_neverMarried[Data$Q3==7] <- 1
 CleanData$ses_neverMarried[Data$Q3!=7] <- 0
 table(CleanData$ses_neverMarried)
 
-# born in canada ####
+## Born in canada ####
 table(Data$Q4)
 CleanData$ses_bornCanada <- NA
 CleanData$ses_bornCanada[Data$Q4==1] <- 1
 CleanData$ses_bornCanada[Data$Q4!=1] <- 0
 table(CleanData$ses_bornCanada)
 
-# year in canada ####
+## year in canada ####
 CleanData$ses_yearCanada <- Data$Q5
 
-# ethnicity ####
+## ethnicity ####
 table(Data$Q6)
 CleanData$ses_ethn_white <- NA
 CleanData$ses_ethn_white[Data$Q6==1] <- 1
@@ -277,7 +281,7 @@ CleanData$ses_ethn_other[Data$Q6!=7] <- 0
 table(CleanData$ses_ethn_other)
 
 
-# Educ ####
+## Educ ####
 table(Data$Q8)
 CleanData$ses_educBHS <- NA
 CleanData$ses_educBHS[Data$Q8 <= 3] <- 1
@@ -290,44 +294,66 @@ CleanData$ses_educCollege[Data$Q8 %in% c(4,6)] <- 1
 CleanData$ses_educCollege[!(Data$Q8 %in% c(4,6))] <- 0
 table(CleanData$ses_educCollege)
 
-# Income ####
+table(Data$Q8)
+CleanData$ses_educUniv <- NA
+CleanData$ses_educUniv[Data$Q8 %in% c(5,7,8)] <- 1
+CleanData$ses_educUniv[!(Data$Q8 %in% c(5,7,8))] <- 0
+table(CleanData$ses_educUniv)
+
+## Income ####
 table(Data$Q10)
-CleanData$incomeLow <- NA
-CleanData$incomeLow[Data$Q10 <= 2] <- 1
-CleanData$incomeLow[Data$Q10 > 2] <- 0
-table(CleanData$incomeLow)
+CleanData$ses_incomeLow <- NA
+CleanData$ses_incomeLow[Data$Q10 <= 2] <- 1
+CleanData$ses_incomeLow[Data$Q10 > 2] <- 0
+table(CleanData$ses_incomeLow)
 
 table(Data$Q10)
-CleanData$incomeMid <- NA
-CleanData$incomeMid[Data$Q10 %in% 3:5] <- 1
-CleanData$incomeMid[!(Data$Q10 %in% 3:5)] <- 0
-table(CleanData$incomeMid)
+CleanData$ses_incomeMid <- NA
+CleanData$ses_incomeMid[Data$Q10 %in% 3:5] <- 1
+CleanData$ses_incomeMid[!(Data$Q10 %in% 3:5)] <- 0
+table(CleanData$ses_incomeMid)
 
 table(Data$Q10)
-CleanData$incomeHigh <- NA
-CleanData$incomeHigh[Data$Q10 >= 6] <- 1
-CleanData$incomeHigh[Data$Q10 < 6] <- 0
-table(CleanData$incomeHigh)
+CleanData$ses_incomeHigh <- NA
+CleanData$ses_incomeHigh[Data$Q10 >= 6] <- 1
+CleanData$ses_incomeHigh[Data$Q10 < 6] <- 0
+table(CleanData$ses_incomeHigh)
 
-# Langue ####
-table(Data$Q2)
-CleanData$langFr <- NA
-CleanData$langFr[Data$Q2 == 1] <- 1
-CleanData$langFr[Data$Q2 != 1] <- 0
-table(CleanData$langFr)
-
-# Immigrant ####
-table(Data$Q4)
-CleanData$immigrant <- NA
-CleanData$immigrant[Data$Q4 == 1] <- 1
-CleanData$immigrant[Data$Q4 != 1] <- 0
-table(CleanData$immigrant)
-
-# Propriétaire ####
+## Propriétaire ####
 table(Data$Q14)
-CleanData$proprio <- NA
-CleanData$proprio[Data$Q14 == 2] <- 1
-CleanData$proprio[Data$Q14 != 2] <- 0
-table(CleanData$proprio)
+CleanData$ses_proprio <- NA
+CleanData$ses_proprio[Data$Q14 == 2] <- 1
+CleanData$ses_proprio[Data$Q14 != 2] <- 0
+table(CleanData$ses_proprio)
+
+
+###******************************************###
+# Perceptions ####
+###******************************************###
+
+
+###******************************************###
+# State intervention ####
+###******************************************###
+
+
+###******************************************###
+# Responsability ####
+###******************************************###
+
+###******************************************###
+# International ####
+###******************************************###
+
+
+###******************************************###
+# Radicalisation ####
+###******************************************###
+
+
+###******************************************###
+# Politics ####
+###******************************************###
+
 
 saveRDS(CleanData, "_SharedFolder_quorum-enviro/data/cleanData/data.rds")
