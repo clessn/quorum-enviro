@@ -120,6 +120,8 @@ CleanData$ses_gender_female[Data$SEXE==2] <- 1
 CleanData$ses_gender_female[Data$SEXE!=2] <- 0
 table(CleanData$ses_gender_female)
 
+
+# Gender ####
 table(Data$SEXE)
 CleanData$ses_gender_other <- NA
 CleanData$ses_gender_other[Data$SEXE==3] <- 1
@@ -528,6 +530,8 @@ table(CleanData$radicalisation_tolerate_violatingPowerful) # 0 = aucune toléran
 ###******************************************###
 # Politics ####
 ###******************************************###
+
+
 
 
 saveRDS(CleanData, "_SharedFolder_quorum-enviro/data/cleanData/data.rds")
