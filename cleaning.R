@@ -6,20 +6,6 @@ library(tidyverse)
 Data <- haven::read_sav("_SharedFolder_quorum-enviro/data/ULA011-données.Sav") %>%  
   mutate(id = 1:nrow(.))
 
-# Functions ####
-
-<<<<<<< HEAD
-# Data ####
-Data <- haven::read_sav("_SharedFolder_transition/data/ULA011-données.Sav") %>% 
-  filter(PROV == 11) %>% 
-  mutate(id = 1:nrow(.))
-=======
-# Function to transform scales on 0-1
-minmaxNormalization <- function(x) {
-  return((x-min(x))/(max(x)-min(x)))
-}
-
-
 ### Create clean dataframe
 CleanData <- data.frame(id = Data$id,
                         ses_postal_code = Data$CP,
@@ -59,7 +45,6 @@ CleanData$ses_prov_tnl <- NA
 CleanData$ses_prov_tnl[Data$PROV==5] <- 1
 CleanData$ses_prov_tnl[Data$PROV!=5] <- 0
 table(CleanData$ses_prov_tnl)
->>>>>>> dabfdea3423aa2ad2c54a914c190492ffb8b9c48
 
 table(Data$PROV)
 CleanData$ses_prov_ns <- NA
@@ -114,7 +99,6 @@ table(CleanData$ses_gender_female)
 
 
 # Gender ####
-
 table(Data$SEXE)
 CleanData$ses_gender_other <- NA
 CleanData$ses_gender_other[Data$SEXE==3] <- 1
@@ -431,46 +415,7 @@ table(CleanData$stateInterv_supportRaiseGESPriceIfRedistributed) # 0 = Fortement
 ###******************************************###
 
 
-<<<<<<< HEAD
-saveRDS(ForNadj, "_SharedFolder_quorum-enviro/data/cleanData/data.rds")
 
 
-# Question 76 ####
-
-#  Il y a beaucoup d’informations qui circulent à propos de l’origine du coronavirus, le 
-#virus qui provoque la COVID-19. À votre avis, le coronavirus est:
-
-table(Data$Q76A)
-CleanData$covidOriginByChinaA[Data$Q76A == 1 | Data$Q76A == 3] <- 0 # N'est pas établie ou ne sait pas
-CleanData$covidOriginByChinaA[Data$Q76A == 2] <- 1 # Chine
-table(CleanData$covidOriginByChinaA)
-
-table(Data$Q76A)
-CleanData$covidOriginNotKnownA[Data$Q76A == 2 | Data$Q76A == 3] <- 0 #Chine ou ne sait pas
-CleanData$covidOriginNotKnownA[Data$Q76A == 1] <- 1 # n'est pas établie
-table(CleanData$covidOriginNotKnownA)
-
-
-table(Data$Q76B)
-CleanData$covidOriginByChinaB[Data$Q76B == 1] <- 0 # N'est pas établie
-CleanData$covidOriginByChinaB[Data$Q76B == 2] <- 1 # Chine
-table(CleanData$covidOriginByChinaB)
-
-table(Data$Q76C)
-CleanData$covidOriginByChinaC[Data$Q76C == 1] <- 1 # Très certainement vrai
-CleanData$covidOriginByChinaC[Data$Q76C == 2] <- 0.67 # Probablement vrai
-CleanData$covidOriginByChinaC[Data$Q76C == 3] <- 0.33 # Probablement faux
-CleanData$covidOriginByChinaC[Data$Q76C == 4] <- 0 # Très certainement faux
-table(CleanData$covidOriginByChinaC)
-
-table(Data$Q76D)
-CleanData$covidOriginByChinaD[Data$Q76D == 1] <- 1 # Très certainement vrai
-CleanData$covidOriginByChinaD[Data$Q76D == 2] <- 0.75 # Probablement vrai
-CleanData$covidOriginByChinaD[Data$Q76D == 5] <- 0.50 # Ne sait pas
-CleanData$covidOriginByChinaD[Data$Q76D == 3] <- 0.25 # Probablement faux
-CleanData$covidOriginByChinaD[Data$Q76D == 4] <- 0 # Très certainement faux
-table(CleanData$covidOriginByChinaD)
-
-=======
 saveRDS(CleanData, "_SharedFolder_quorum-enviro/data/cleanData/data.rds")
->>>>>>> dabfdea3423aa2ad2c54a914c190492ffb8b9c48
+
