@@ -13,6 +13,21 @@ minmaxNormalization <- function(x) {
   return((x-min(x))/(max(x)-min(x)))
 }
 
+finverser <- function(vec_col){
+  #vec_col <- df[[col]]
+  unique_col <- unique(vec_col)
+  unique_col <- unique_col[!is.na(unique_col)]
+  n <- length(unique_col)
+  max <- max(vec_col, na.rm = T)
+  ord <- sort(as.vector(unique_col))
+  rev <- rev(ord)
+  for (i in 1:n){
+    vec_col[vec_col == ord[i]] <- max + rev[i] 
+  }
+  vec_col <- vec_col - max
+  return(vec_col)
+}
+
 
 ### Create clean dataframe
 CleanData <- data.frame(id = Data$id,
@@ -415,6 +430,100 @@ table(CleanData$stateInterv_supportRaiseGESPriceIfRedistributed) # 0 = Fortement
 # Radicalisation ####
 ###******************************************###
 
+# Q62 Êtes-vous en accord ou en désaccord avec les énoncés suivants :Les citoyens mécontents du gouvernement ne doivent jamais recourir<
+##    à la violence pour exprimer leurs sentiments?
+table(Data$Q62)
+CleanData$radicalisation_angryJustifiesViolence <- NA
+CleanData$radicalisation_angryJustifiesViolence <- finverser(Data$Q62)
+CleanData$radicalisation_angryJustifiesViolence <- minmaxNormalization(CleanData$radicalisation_angryJustifiesViolence)
+table(CleanData$radicalisation_angryJustifiesViolence) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q63 À quel point seriez-vous prêt à tolérer les actions politiques suivantes pour l’avancement de la cause climatique?
+
+## Signer une pétition
+table(Data$Q63_A1)
+CleanData$radicalisation_tolerate_signPetition <- NA
+CleanData$radicalisation_tolerate_signPetition <- minmaxNormalization(Data$Q63_A1)
+table(CleanData$radicalisation_tolerate_signPetition) # 0 = aucune tolérance... 1 = Tolérance élevée
+
+## Boycotter des produits et compagnies
+table(Data$Q63_A2)
+CleanData$radicalisation_tolerate_boycott <- NA
+CleanData$radicalisation_tolerate_boycott <- minmaxNormalization(Data$Q63_A2)
+table(CleanData$radicalisation_tolerate_boycott) # 0 = aucune tolérance... 1 = Tolérance élevée
+
+## Désinvestir des placements
+table(Data$Q63_A3)
+CleanData$radicalisation_tolerate_divest <- NA
+CleanData$radicalisation_tolerate_divest <- minmaxNormalization(Data$Q63_A3)
+table(CleanData$radicalisation_tolerate_divest) # 0 = aucune tolérance... 1 = Tolérance élevée
+
+## Participer à une manifestation
+table(Data$Q63_A4)
+CleanData$radicalisation_tolerate_manifestation <- NA
+CleanData$radicalisation_tolerate_manifestation <- minmaxNormalization(Data$Q63_A4)
+table(CleanData$radicalisation_tolerate_manifestation) # 0 = aucune tolérance... 1 = Tolérance élevée
+
+## Occuper temporairement un espace public
+table(Data$Q63_A5)
+CleanData$radicalisation_tolerate_occupyPublicSpace <- NA
+CleanData$radicalisation_tolerate_occupyPublicSpace <- minmaxNormalization(Data$Q63_A5)
+table(CleanData$radicalisation_tolerate_occupyPublicSpace) # 0 = aucune tolérance... 1 = Tolérance élevée
+
+## S'attacher arbre véhicule
+table(Data$Q63_A6)
+CleanData$radicalisation_tolerate_attachTreeVehicule <- NA
+CleanData$radicalisation_tolerate_attachTreeVehicule <- minmaxNormalization(Data$Q63_A6)
+table(CleanData$radicalisation_tolerate_attachTreeVehicule) # 0 = aucune tolérance... 1 = Tolérance élevée
+
+## Bloquer pont ou route
+table(Data$Q63_A7)
+CleanData$radicalisation_tolerate_blockBridgeRoad <- NA
+CleanData$radicalisation_tolerate_blockBridgeRoad <- minmaxNormalization(Data$Q63_A7)
+table(CleanData$radicalisation_tolerate_blockBridgeRoad) # 0 = aucune tolérance... 1 = Tolérance élevée
+
+## Bloquer pont ou route
+table(Data$Q63_A7)
+CleanData$radicalisation_tolerate_blockBridgeRoad <- NA
+CleanData$radicalisation_tolerate_blockBridgeRoad <- minmaxNormalization(Data$Q63_A7)
+table(CleanData$radicalisation_tolerate_blockBridgeRoad) # 0 = aucune tolérance... 1 = Tolérance élevée
+
+## Bloquer construction oléoduc
+table(Data$Q63_A8)
+CleanData$radicalisation_tolerate_blockPipelineConstruction <- NA
+CleanData$radicalisation_tolerate_blockPipelineConstruction <- minmaxNormalization(Data$Q63_A8)
+table(CleanData$radicalisation_tolerate_blockPipelineConstruction) # 0 = aucune tolérance... 1 = Tolérance élevée
+
+## Vandalisme sur objets
+table(Data$Q63_A9)
+CleanData$radicalisation_tolerate_vandalismObjects <- NA
+CleanData$radicalisation_tolerate_vandalismObjects <- minmaxNormalization(Data$Q63_A9)
+table(CleanData$radicalisation_tolerate_vandalismObjects) # 0 = aucune tolérance... 1 = Tolérance élevée
+
+## Saboter infrastructures, véhicules
+table(Data$Q63_A10)
+CleanData$radicalisation_tolerate_sabotagingInfrastructure <- NA
+CleanData$radicalisation_tolerate_sabotagingInfrastructure <- minmaxNormalization(Data$Q63_A10)
+table(CleanData$radicalisation_tolerate_sabotagingInfrastructure) # 0 = aucune tolérance... 1 = Tolérance élevée
+
+## Tirer objet sur infrastructures
+table(Data$Q63_A11)
+CleanData$radicalisation_tolerate_throwingObjectsInfrastructure <- NA
+CleanData$radicalisation_tolerate_throwingObjectsInfrastructure <- minmaxNormalization(Data$Q63_A11)
+table(CleanData$radicalisation_tolerate_throwingObjectsInfrastructure) # 0 = aucune tolérance... 1 = Tolérance élevée
+
+## Affronter policiers dans manifestation 
+table(Data$Q63_A12)
+CleanData$radicalisation_tolerate_fightPolice <- NA
+CleanData$radicalisation_tolerate_fightPolice <- minmaxNormalization(Data$Q63_A12)
+table(CleanData$radicalisation_tolerate_fightPolice) # 0 = aucune tolérance... 1 = Tolérance élevée
+
+## Violenter individus en position de pouvoir
+table(Data$Q63_A13)
+CleanData$radicalisation_tolerate_violatingPowerful <- NA
+CleanData$radicalisation_tolerate_violatingPowerful <- minmaxNormalization(Data$Q63_A13)
+table(CleanData$radicalisation_tolerate_violatingPowerful) # 0 = aucune tolérance... 1 = Tolérance élevée
+
 
 ###******************************************###
 # Politics ####
@@ -422,3 +531,4 @@ table(CleanData$stateInterv_supportRaiseGESPriceIfRedistributed) # 0 = Fortement
 
 
 saveRDS(CleanData, "_SharedFolder_quorum-enviro/data/cleanData/data.rds")
+
