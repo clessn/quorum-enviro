@@ -2,15 +2,17 @@
 library(tidyverse)
 #source("functions.R", encoding = "UTF-8")
 
-# Note: cleaning of some variables have been done in other files in this repo
-####### apsa.R
-####### popcorn_22-09-22.R
-####### violence_pol.R
-
-
 # Load Data ####
 Data <- haven::read_sav("_SharedFolder_quorum-enviro/data/ULA011-données.Sav") %>%  
   mutate(id = 1:nrow(.))
+
+# Functions ####
+
+# Function to transform scales on 0-1
+minmaxNormalization <- function(x) {
+  return((x-min(x))/(max(x)-min(x)))
+}
+
 
 ### Create clean dataframe
 CleanData <- data.frame(id = Data$id,
@@ -335,6 +337,69 @@ table(CleanData$ses_proprio)
 ###******************************************###
 # State intervention ####
 ###******************************************###
+
+# Q21 - Seriez-vous en faveur d'une transition vers une économie canadienne excluant les énergies fossiles 
+# (tels que le pétrole, le gaz naturel et le charbon)?
+table(Data$Q21)
+CleanData$stateInterv_EconomyCANoFossil <- NA
+CleanData$stateInterv_EconomyCANoFossil <- minmaxNormalization(Data$Q21)
+table(CleanData$stateInterv_EconomyCANoFossil) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q22_A3 - Nous devrions développer les pistes cyclables et les transports publics, 
+# même si cela implique de réduire l'espace pour les voitures
+table(Data$Q22_A3)
+CleanData$stateInterv_moreBikePathPubTransport <- NA
+CleanData$stateInterv_moreBikePathPubTransport <- minmaxNormalization(Data$Q22_A3)
+table(CleanData$stateInterv_moreBikePathPubTransport) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q22_A5 - Nous devrions rendre l'essence et le diesel plus chers pour nous inciter à moins utiliser la voiture
+table(Data$Q22_A5)
+CleanData$stateInterv_makeGasMoreExpensive <- NA
+CleanData$stateInterv_makeGasMoreExpensive <- minmaxNormalization(Data$Q22_A5)
+table(CleanData$stateInterv_makeGasMoreExpensive) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q25 - À quel point le gouvernement pourrait-il en faire plus pour lutter contre les changements climatiques?
+table(Data$Q25)
+CleanData$stateInterv_govtDoMoreClimateChange <- NA
+CleanData$stateInterv_govtDoMoreClimateChange <- minmaxNormalization(Data$Q25)
+table(CleanData$stateInterv_govtDoMoreClimateChange) # 0 = Rien de plus; 0.5 = Un peu plus; 1 = Beaucoup plus
+
+# Q31_A1 - Accorder des remboursements d'impôts aux personnes qui achètent des véhicules électriques
+table(Data$Q31_A1)
+CleanData$stateInterv_electricCarTaxRefund <- NA
+CleanData$stateInterv_electricCarTaxRefund <- minmaxNormalization(Data$Q31_A1)
+table(CleanData$stateInterv_electricCarTaxRefund) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q31_A2 - Imposer davantage de réglementations et d'interdictions pour empêcher les gens de nuire à l'environnement
+table(Data$Q31_A2)
+CleanData$stateInterv_moreRegulationsEnviro <- NA
+CleanData$stateInterv_moreRegulationsEnviro <- minmaxNormalization(Data$Q31_A2)
+table(CleanData$stateInterv_moreRegulationsEnviro) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q50_A2 - L’intelligence artificielle est un bon outil pour lutter contre les changements climatiques
+table(Data$Q50_A2)
+CleanData$stateInterv_AIToolAgainstClimateChange <- NA
+CleanData$stateInterv_AIToolAgainstClimateChange <- minmaxNormalization(Data$Q50_A2)
+table(CleanData$stateInterv_AIToolAgainstClimateChange) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q55_A1 - Que l'on continue d'augmenter le prix des émissions de gaz à effet de serre (comme le fait le système actuellement en vigueur au Canada)
+table(Data$Q55_A1)
+CleanData$stateInterv_continueIncreaseGESPrice <- NA
+CleanData$stateInterv_continueIncreaseGESPrice <- minmaxNormalization(Data$Q55_A1)
+table(CleanData$stateInterv_continueIncreaseGESPrice) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q55_A2 - D'une diminution progressive de la production de combustibles fossiles au Canada
+table(Data$Q55_A2)
+CleanData$stateInterv_decreaseFossilProd <- NA
+CleanData$stateInterv_decreaseFossilProd <- minmaxNormalization(Data$Q55_A2)
+table(CleanData$stateInterv_decreaseFossilProd) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q57_A1 - Seriez-vous en faveur de poursuivre la hausse du prix des émissions de dioxyde de carbone (comme c'est le cas avec l'actuel système au Canada) si les fonds étaient...
+# Redistribués à la population, afin que les ménages aient plus d'argent dans leurs poches
+table(Data$Q57_A1)
+CleanData$stateInterv_supportRaiseGESPriceIfRedistributed <- NA
+CleanData$stateInterv_supportRaiseGESPriceIfRedistributed <- minmaxNormalization(Data$Q57_A1)
+table(CleanData$stateInterv_supportRaiseGESPriceIfRedistributed) # 0 = Fortement en désaccord... 1 = Fortement en accord
 
 
 ###******************************************###
