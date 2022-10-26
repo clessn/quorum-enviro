@@ -3,7 +3,7 @@ library(tidyverse)
 #source("functions.R", encoding = "UTF-8")
 
 # Load Data ####
-Data <- haven::read_sav("_SharedFolder_quorum-enviro/data/ULA011-données.Sav") %>%  
+Data <- haven::read_sav("_SharedFolder_transition/data/ULA011-données.Sav") %>%  
   mutate(id = 1:nrow(.))
 
 # Functions ####
@@ -319,6 +319,13 @@ CleanData$ses_educUniv[Data$Q8 %in% c(5,7,8)] <- 1
 CleanData$ses_educUniv[!(Data$Q8 %in% c(5,7,8))] <- 0
 table(CleanData$ses_educUniv)
 
+## Student ####
+table(Data$Q9)
+CleanData$ses_student <- NA
+CleanData$ses_student[Data$Q9 == 1] <- 1
+CleanData$ses_student[Data$Q9 == 2] <- 0
+table(CleanData$ses_student)
+
 ## Income ####
 table(Data$Q10)
 CleanData$ses_incomeLow <- NA
@@ -338,12 +345,137 @@ CleanData$ses_incomeHigh[Data$Q10 >= 6] <- 1
 CleanData$ses_incomeHigh[Data$Q10 < 6] <- 0
 table(CleanData$ses_incomeHigh)
 
+## Occupation ####
+table(Data$Q11)
+CleanData$ses_isUnemployed <- NA
+CleanData$ses_isUnemployed[Data$Q11 == 7] <- 1
+CleanData$ses_isUnemployed[Data$Q11 != 7] <- 0
+table(CleanData$ses_isUnemployed)
+
+CleanData$ses_isRetired <- NA
+CleanData$ses_isRetired[Data$Q11 == 8] <- 1
+CleanData$ses_isRetired[Data$Q11 != 8] <- 0
+table(CleanData$ses_isRetired)
+
+CleanData$ses_isStudent <- NA
+CleanData$ses_isStudent[Data$Q11 == 9] <- 1
+CleanData$ses_isStudent[Data$Q11 != 9] <- 0
+table(CleanData$ses_isStudent)
+
+CleanData$ses_isEducation_Research_Government <- NA
+CleanData$ses_isEducation_Research_Government[Data$Q11 == 1] <- 1
+CleanData$ses_isEducation_Research_Government[Data$Q11 != 1] <- 0
+table(CleanData$ses_isEducation_Research_Government)
+
+CleanData$ses_isConstruction <- NA
+CleanData$ses_isConstruction[Data$Q11 == 2] <- 1
+CleanData$ses_isConstruction[Data$Q11 != 2] <- 0
+table(CleanData$ses_isConstruction)
+
+CleanData$ses_isTransformation <- NA
+CleanData$ses_isTransformation[Data$Q11 == 3] <- 1
+CleanData$ses_isTransformation[Data$Q11 != 3] <- 0
+table(CleanData$ses_isTransformation)
+
+CleanData$ses_isFabrication <- NA
+CleanData$ses_isFabrication[Data$Q11 == 4] <- 1
+CleanData$ses_isFabrication[Data$Q11 != 4] <- 0
+table(CleanData$ses_isFabrication)
+
+CleanData$ses_isNatSciences <- NA
+CleanData$ses_isNatSciences[Data$Q11 == 5] <- 1
+CleanData$ses_isNatSciences[Data$Q11 != 5] <- 0
+table(CleanData$ses_isNatSciences)
+
+CleanData$ses_isPrimaryIndustries <- NA
+CleanData$ses_isPrimaryIndustries[Data$Q11 == 6] <- 1
+CleanData$ses_isPrimaryIndustries[Data$Q11 != 6] <- 0
+table(CleanData$ses_isPrimaryIndustries)
+
+## Kids ####
+table(Data$Q13)
+CleanData$ses_hasNoKids <- NA
+CleanData$ses_hasNoKids[Data$Q13 == 0] <- 1
+CleanData$ses_hasNoKids[Data$Q13 != 0] <- 0
+table(CleanData$ses_hasNoKids)
+
+CleanData$ses_hasFewKids <- NA
+CleanData$ses_hasFewKids[Data$Q13 == 1 | Data$Q13 == 2 ] <- 1
+CleanData$ses_hasFewKids[Data$Q13 != 1 & Data$Q13 != 2] <- 0
+table(CleanData$ses_hasFewKids)
+
+CleanData$ses_hasManyKids <- NA
+CleanData$ses_hasManyKids[Data$Q13 >= 3] <- 1
+CleanData$ses_hasManyKids[Data$Q13 <= 2] <- 0
+table(CleanData$ses_hasManyKids)
+
+
 ## Propriétaire ####
 table(Data$Q14)
 CleanData$ses_proprio <- NA
 CleanData$ses_proprio[Data$Q14 == 2] <- 1
 CleanData$ses_proprio[Data$Q14 != 2] <- 0
 table(CleanData$ses_proprio)
+
+## nHousehold ####
+table(Data$Q15)
+CleanData$ses_householdFewerThan4 <- NA
+CleanData$ses_householdFewerThan4[Data$Q15 <= 4] <- 1
+CleanData$ses_householdFewerThan4[Data$Q15 >= 5] <- 0
+table(CleanData$ses_householdFewerThan4)
+
+table(Data$Q15)
+CleanData$ses_householdMoreThan4 <- NA
+CleanData$ses_householdMoreThan4[Data$Q15 >= 5] <- 1
+CleanData$ses_householdMoreThan4[Data$Q15 <= 4] <- 0
+table(CleanData$ses_householdMoreThan4)
+
+## Religion ####
+table(Data$Q16)
+CleanData$ses_relProtest <- NA
+CleanData$ses_relProtest[Data$Q16 == 1] <- 1
+CleanData$ses_relProtest[Data$Q16 != 1] <- 0
+table(CleanData$ses_relProtest)
+
+CleanData$ses_relCatho <- NA
+CleanData$ses_relCatho[Data$Q16 == 2] <- 1
+CleanData$ses_relCatho[Data$Q16 != 2] <- 0
+table(CleanData$ses_relCatho)
+
+CleanData$ses_relOrtho <- NA
+CleanData$ses_relOrtho[Data$Q16 == 3] <- 1
+CleanData$ses_relOrtho[Data$Q16 != 3] <- 0
+table(CleanData$ses_relOrtho)
+
+CleanData$ses_relIslam <- NA
+CleanData$ses_relIslam[Data$Q16 == 4] <- 1
+CleanData$ses_relIslam[Data$Q16 != 4] <- 0
+table(CleanData$ses_relIslam)
+
+CleanData$ses_relJewish <- NA
+CleanData$ses_relJewish[Data$Q16 == 5] <- 1
+CleanData$ses_relJewish[Data$Q16 != 5] <- 0
+table(CleanData$ses_relJewish)
+
+CleanData$ses_relBoud <- NA
+CleanData$ses_relBoud[Data$Q16 == 6] <- 1
+CleanData$ses_relBoud[Data$Q16 != 6] <- 0
+table(CleanData$ses_relBoud)
+
+CleanData$ses_relHindu <- NA
+CleanData$ses_relHindu[Data$Q16 == 7] <- 1
+CleanData$ses_relHindu[Data$Q16 != 7] <- 0
+table(CleanData$ses_relHindu)
+
+CleanData$ses_relOther <- NA
+CleanData$ses_relOther[Data$Q16 == 8] <- 1
+CleanData$ses_relOther[Data$Q16 != 8] <- 0
+table(CleanData$ses_relOther)
+
+CleanData$ses_relNone <- NA
+CleanData$ses_relNone[Data$Q16 == 9] <- 1
+CleanData$ses_relNone[Data$Q16 != 9] <- 0
+table(CleanData$ses_relNone)
 
 
 ###******************************************###
