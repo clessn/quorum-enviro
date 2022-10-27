@@ -542,6 +542,30 @@ CleanData$science_consensusClimateChange <- NA
 CleanData$science_consensusClimateChange <- minmaxNormalization(Data$Q50_A1)
 table(CleanData$science_consensusClimateChange) # 0 = Fortement en désaccord... 1 = Fortement en accord
 
+# Q50_A2 - L’intelligence artificielle est un bon outil pour lutter contre les changements climatiques
+table(Data$Q50_A2)
+CleanData$science_AIToolAgainstClimateChange <- NA
+CleanData$science_AIToolAgainstClimateChange <- minmaxNormalization(Data$Q50_A2)
+table(CleanData$science_AIToolAgainstClimateChange) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q50_A3 - J'en connais suffisamment sur l'intelligence artificielle pour comprendre son impact potentiel sur ma vie privée
+table(Data$Q50_A3)
+CleanData$science_knowEnoughAI <- NA
+CleanData$science_knowEnoughAI <- minmaxNormalization(Data$Q50_A3)
+table(CleanData$science_knowEnoughAI) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q50_A4 - Je suis au courant des derniers développements technologiques dans mes champs d'intérêts
+table(Data$Q50_A4)
+CleanData$science_updatedTechDevsMyFields <- NA
+CleanData$science_updatedTechDevsMyFields <- minmaxNormalization(Data$Q50_A4)
+table(CleanData$science_updatedTechDevsMyFields) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q50_A5 - Le progrès technologique peut être une solution aux problèmes environnementaux
+table(Data$Q50_A5)
+CleanData$science_techClimateChangeSolution <- NA
+CleanData$science_techClimateChangeSolution <- minmaxNormalization(Data$Q50_A5)
+table(CleanData$science_techClimateChangeSolution) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
 # Q43_A3 Les émissions des voitures ne contribuent pas aux changements climatiques causés par l'être humain
 ### Codage inversé pour éviter double négation, l'énoncé devient donc:
 ####### Les émissions des voitures contribuent aux changements climatiques causés par l'être humain
@@ -574,18 +598,9 @@ table(CleanData$science_climateChangeMainCause_humanActivities)
 
 ## Nature et humains
 table(Data$Q48)
-CleanData$perception_climateChangeMainCause_natureAndHumans <- 0
-CleanData$perception_climateChangeMainCause_natureAndHumans[Data$Q48 == 3] <- 1
-table(CleanData$perception_climateChangeMainCause_natureAndHumans)
-
-
-
-
-# Q50_A2 - L’intelligence artificielle est un bon outil pour lutter contre les changements climatiques
-table(Data$Q50_A2)
-CleanData$science_AIToolAgainstClimateChange <- NA
-CleanData$science_AIToolAgainstClimateChange <- minmaxNormalization(Data$Q50_A2)
-table(CleanData$science_AIToolAgainstClimateChange) # 0 = Fortement en désaccord... 1 = Fortement en accord
+CleanData$science_climateChangeMainCause_natureAndHumans <- 0
+CleanData$science_climateChangeMainCause_natureAndHumans[Data$Q48 == 3] <- 1
+table(CleanData$science_climateChangeMainCause_natureAndHumans)
 
 ###******************************************###
 # State intervention ####
@@ -630,24 +645,43 @@ CleanData$stateInterv_moreRegulationsEnviro <- minmaxNormalization(Data$Q31_A2)
 table(CleanData$stateInterv_moreRegulationsEnviro) # 0 = Fortement en désaccord... 1 = Fortement en accord
 
 
+# Augmenter prix des GES
+## Êtes-vous en |nbsp;faveur ou en défaveur avec les énoncés suivants :-Que l'on continue d'augmenter le prix des émissions de gaz à effet de serre (comme le fait le système actuellement en vigueur au Canada)
 # Q55_A1 - Que l'on continue d'augmenter le prix des émissions de gaz à effet de serre (comme le fait le système actuellement en vigueur au Canada)
 table(Data$Q55_A1)
 CleanData$stateInterv_continueIncreaseGESPrice <- NA
 CleanData$stateInterv_continueIncreaseGESPrice <- minmaxNormalization(Data$Q55_A1)
 table(CleanData$stateInterv_continueIncreaseGESPrice) # 0 = Fortement en désaccord... 1 = Fortement en accord
 
+# Q57_A1 - Seriez-vous en faveur de poursuivre la hausse du prix des émissions de dioxyde de carbone (comme c'est le cas avec l'actuel système au Canada) si les fonds étaient...
+# Redistribués à la population, afin que les ménages aient plus d'argent dans leurs poches
+table(Data$Q57_A1)
+CleanData$stateInterv_continueIncreaseGESPrice_RedistributedPop <- NA
+CleanData$stateInterv_continueIncreaseGESPrice_RedistributedPop <- minmaxNormalization(Data$Q57_A1)
+table(CleanData$stateInterv_continueIncreaseGESPrice_RedistributedPop) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q57_A2 - Seriez-vous en faveur de poursuivre la hausse du prix des émissions de dioxyde de carbone (comme c'est le cas avec l'actuel système au Canada)
+## si|nbsp;les fonds étaient...-Utilisés pour créer des emplois dans les domaines de l'énergie verte, du transport e
+table(Data$Q57_A2)
+CleanData$stateInterv_continueIncreaseGESPrice_GreenJobs <- NA
+CleanData$stateInterv_continueIncreaseGESPrice_GreenJobs <- minmaxNormalization(Data$Q57_A2)
+table(CleanData$stateInterv_continueIncreaseGESPrice_GreenJobs) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q57_A3 - Seriez-vous en faveur de poursuivre la hausse du prix des émissions de dioxyde de carbone (comme c'est le cas avec l'actuel système au Canada)
+## si|nbsp;les fonds étaient...-Utilisés pour soutenir les travailleurs du secteur des combustibles fossiles, avec d
+table(Data$Q57_A3)
+CleanData$stateInterv_continueIncreaseGESPrice_FossilJobs <- NA
+CleanData$stateInterv_continueIncreaseGESPrice_FossilJobs <- minmaxNormalization(Data$Q57_A3)
+table(CleanData$stateInterv_continueIncreaseGESPrice_FossilJobs) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+
+# Diminution progressive de prod de combustibles
+## Êtes-vous en |nbsp;faveur ou en défaveur avec les énoncés suivants :-D'une diminution progressive de la production de combustibles fossiles au Canada
 # Q55_A2 - D'une diminution progressive de la production de combustibles fossiles au Canada
 table(Data$Q55_A2)
 CleanData$stateInterv_decreaseFossilProd <- NA
 CleanData$stateInterv_decreaseFossilProd <- minmaxNormalization(Data$Q55_A2)
 table(CleanData$stateInterv_decreaseFossilProd) # 0 = Fortement en désaccord... 1 = Fortement en accord
-
-# Q57_A1 - Seriez-vous en faveur de poursuivre la hausse du prix des émissions de dioxyde de carbone (comme c'est le cas avec l'actuel système au Canada) si les fonds étaient...
-# Redistribués à la population, afin que les ménages aient plus d'argent dans leurs poches
-table(Data$Q57_A1)
-CleanData$stateInterv_supportRaiseGESPriceIfRedistributed <- NA
-CleanData$stateInterv_supportRaiseGESPriceIfRedistributed <- minmaxNormalization(Data$Q57_A1)
-table(CleanData$stateInterv_supportRaiseGESPriceIfRedistributed) # 0 = Fortement en désaccord... 1 = Fortement en accord
 
 
 ###******************************************###
