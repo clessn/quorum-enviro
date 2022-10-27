@@ -10,7 +10,7 @@ Data <- haven::read_sav("_SharedFolder_quorum-enviro/data/ULA011-données.Sav") 
 
 # Function to transform scales on 0-1
 minmaxNormalization <- function(x) {
-  return((x-min(x))/(max(x)-min(x)))
+  return((x-min(x, na.rm = T))/(max(x, na.rm = T)-min(x, na.rm = T)))
 }
 
 finverser <- function(vec_col){
@@ -350,6 +350,110 @@ table(CleanData$ses_proprio)
 # Perceptions ####
 ###******************************************###
 
+# Q34_A3 Les humains sont destinés à dominer le reste de la nature
+table(Data$Q34_A3)
+CleanData$perception_humansDominateNature <- NA
+CleanData$perception_humansDominateNature <- minmaxNormalization(Data$Q34_A3)
+table(CleanData$perception_humansDominateNature) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+
+
+###******************************************###
+# Gravity of the issue ####
+###******************************************###
+
+# Q40 Les changements climatiques constituent une menace pour moi au cours de ma vie.
+table(Data$Q40)
+CleanData$gravity_climateChangePersonalMenace <- NA
+CleanData$gravity_climateChangePersonalMenace <- minmaxNormalization(Data$Q40)
+table(CleanData$gravity_climateChangePersonalMenace) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q41 À quel point êtes-vous préoccupé.e par le réchauffement climatique?
+table(Data$Q41)
+CleanData$gravity_worriedClimateChange <- NA
+CleanData$gravity_worriedClimateChange <- minmaxNormalization(Data$Q41)
+table(CleanData$gravity_worriedClimateChange) # 0 = Pas du tout... 1 = Énormément
+
+# Q42 Quand pensez-vous que les changements climatiques commenceront à nuire aux Canadiens
+table(Data$Q42)
+Data$Q42[Data$Q42==7] <- NA
+CleanData$gravity_whenWillHarmCanadians <- NA
+CleanData$gravity_whenWillHarmCanadians <- minmaxNormalization(Data$Q42)
+table(CleanData$gravity_whenWillHarmCanadians) # 0 = Jamais, 0.2 = Dans 100 ans, 0.4 = 50 ans, 0.6 = 25 ans, 0.8 = 10 ans, 1 = Maintenant
+
+# Q43_A1 Si les choses continuent ainsi, nous connaîtrons bientôt une catastrophe écologique majeure
+table(Data$Q43_A1)
+CleanData$gravity_majorCatastrophe <- NA
+CleanData$gravity_majorCatastrophe <- minmaxNormalization(Data$Q43_A1)
+table(CleanData$gravity_majorCatastrophe) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q43_A2 La soi-disante « crise écologique » à laquelle l'humanité fait face est grandement exagérée
+table(Data$Q43_A2)
+CleanData$gravity_crisisIsExaggerated <- NA
+CleanData$gravity_crisisIsExaggerated <- minmaxNormalization(Data$Q43_A2)
+table(CleanData$gravity_crisisIsExaggerated) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+###******************************************###
+# Science, technology, IA ####
+###******************************************###
+
+# Q49 - Faites-vous confiance aux scientifiques comme source d'information sur les enjeux environnementaux?
+table(Data$Q49)
+CleanData$science_trustScientists <- NA
+CleanData$science_trustScientists <- minmaxNormalization(Data$Q49)
+table(CleanData$science_trustScientists)
+
+
+# Q50_A1 - Il y a un consensus établi en science du climat que les changements climatiques sont en cours
+table(Data$Q50_A1)
+CleanData$science_consensusClimateChange <- NA
+CleanData$science_consensusClimateChange <- minmaxNormalization(Data$Q50_A1)
+table(CleanData$science_consensusClimateChange) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q43_A3 Les émissions des voitures ne contribuent pas aux changements climatiques causés par l'être humain
+### Codage inversé pour éviter double négation, l'énoncé devient donc:
+####### Les émissions des voitures contribuent aux changements climatiques causés par l'être humain
+table(Data$Q43_A3)
+CleanData$science_carContributeClimateChange <- NA
+CleanData$science_carContributeClimateChange <- finverser(Data$Q43_A3)
+CleanData$science_carContributeClimateChange <- minmaxNormalization(CleanData$science_carContributeClimateChange)
+table(CleanData$science_carContributeClimateChange) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q43_A4 Les scientifiques exagèrent les preuves des changements climatiques
+table(Data$Q43_A4)
+CleanData$science_scientistsExaggerateClimateChangeEvidence <- NA
+CleanData$science_scientistsExaggerateClimateChangeEvidence <- minmaxNormalization(Data$Q43_A4)
+table(CleanData$science_scientistsExaggerateClimateChangeEvidence) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q48 À votre avis, quelle est la principale cause des changements climatiques?
+table(Data$Q48)
+
+## Processus naturels
+table(Data$Q48)
+CleanData$science_climateChangeMainCause_naturalProcesses <- 0
+CleanData$science_climateChangeMainCause_naturalProcesses[Data$Q48 == 1] <- 1
+table(CleanData$science_climateChangeMainCause_naturalProcesses)
+
+## Activités humaines
+table(Data$Q48)
+CleanData$science_climateChangeMainCause_humanActivities <- 0
+CleanData$science_climateChangeMainCause_humanActivities[Data$Q48 == 2] <- 1
+table(CleanData$science_climateChangeMainCause_humanActivities)
+
+## Nature et humains
+table(Data$Q48)
+CleanData$perception_climateChangeMainCause_natureAndHumans <- 0
+CleanData$perception_climateChangeMainCause_natureAndHumans[Data$Q48 == 3] <- 1
+table(CleanData$perception_climateChangeMainCause_natureAndHumans)
+
+
+
+
+# Q50_A2 - L’intelligence artificielle est un bon outil pour lutter contre les changements climatiques
+table(Data$Q50_A2)
+CleanData$science_AIToolAgainstClimateChange <- NA
+CleanData$science_AIToolAgainstClimateChange <- minmaxNormalization(Data$Q50_A2)
+table(CleanData$science_AIToolAgainstClimateChange) # 0 = Fortement en désaccord... 1 = Fortement en accord
 
 ###******************************************###
 # State intervention ####
@@ -393,11 +497,6 @@ CleanData$stateInterv_moreRegulationsEnviro <- NA
 CleanData$stateInterv_moreRegulationsEnviro <- minmaxNormalization(Data$Q31_A2)
 table(CleanData$stateInterv_moreRegulationsEnviro) # 0 = Fortement en désaccord... 1 = Fortement en accord
 
-# Q50_A2 - L’intelligence artificielle est un bon outil pour lutter contre les changements climatiques
-table(Data$Q50_A2)
-CleanData$stateInterv_AIToolAgainstClimateChange <- NA
-CleanData$stateInterv_AIToolAgainstClimateChange <- minmaxNormalization(Data$Q50_A2)
-table(CleanData$stateInterv_AIToolAgainstClimateChange) # 0 = Fortement en désaccord... 1 = Fortement en accord
 
 # Q55_A1 - Que l'on continue d'augmenter le prix des émissions de gaz à effet de serre (comme le fait le système actuellement en vigueur au Canada)
 table(Data$Q55_A1)
@@ -426,6 +525,25 @@ table(CleanData$stateInterv_supportRaiseGESPriceIfRedistributed) # 0 = Fortement
 ###******************************************###
 # International ####
 ###******************************************###
+
+# Q34_A4 Les pays riches comme le Canada ont une obligation morale de faire preuve de
+##       leadership international en réduisant leurs émissions de gaz à effet de serre
+table(Data$Q34_A4)
+CleanData$international_richCountriesMustLead <- NA
+CleanData$international_richCountriesMustLead <- minmaxNormalization(Data$Q34_A4)
+table(CleanData$international_richCountriesMustLead) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q38 À quel point pensez-vous que le réchauffement climatique nuira aux Canadien.ne.s?
+table(Data$Q38)
+CleanData$international_climateChangeHarmCA <- NA
+CleanData$international_climateChangeHarmCA <- minmaxNormalization(Data$Q38)
+table(CleanData$international_climateChangeHarmCA) # 0 = Pas du tout... 1 = Énormément
+
+# Q39 À quel point pensez-vous que le réchauffement climatique nuira aux populations des pays en développement?
+table(Data$Q39)
+CleanData$international_climateChangeHarmDevelopment <- NA
+CleanData$international_climateChangeHarmDevelopment <- minmaxNormalization(Data$Q39)
+table(CleanData$international_climateChangeHarmDevelopment) # 0 = Pas du tout... 1 = Énormément
 
 
 ###******************************************###
@@ -535,4 +653,3 @@ table(CleanData$radicalisation_tolerate_violatingPowerful) # 0 = aucune toléran
 
 
 saveRDS(CleanData, "_SharedFolder_quorum-enviro/data/cleanData/data.rds")
-
