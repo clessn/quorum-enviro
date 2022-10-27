@@ -3,7 +3,7 @@ library(tidyverse)
 #source("functions.R", encoding = "UTF-8")
 
 # Load Data ####
-Data <- haven::read_sav("_SharedFolder_transition/data/ULA011-données.Sav") %>%  
+Data <- haven::read_sav("_SharedFolder_quorum-enviro/data/ULA011-données.Sav") %>%  
   mutate(id = 1:nrow(.))
 
 # Functions ####
@@ -525,6 +525,13 @@ CleanData$gravity_crisisIsExaggerated <- NA
 CleanData$gravity_crisisIsExaggerated <- minmaxNormalization(Data$Q43_A2)
 table(CleanData$gravity_crisisIsExaggerated) # 0 = Fortement en désaccord... 1 = Fortement en accord
 
+# Q72_A3 Les changements climatiques mèneront à la fin de l'humanité
+table(Data$Q72_A3)
+CleanData$gravity_climateChangeEndHumanity <- NA
+CleanData$gravity_climateChangeEndHumanity <- minmaxNormalization(Data$Q72_A3)
+table(CleanData$gravity_climateChangeEndHumanity) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+
 ###******************************************###
 # Science, technology, IA ####
 ###******************************************###
@@ -602,6 +609,12 @@ CleanData$science_climateChangeMainCause_natureAndHumans <- 0
 CleanData$science_climateChangeMainCause_natureAndHumans[Data$Q48 == 3] <- 1
 table(CleanData$science_climateChangeMainCause_natureAndHumans)
 
+# Q72_A2 Dans l'ensemble, la technologie a été une bonne chose pour l'humanité
+table(Data$Q72_A2)
+CleanData$science_techGoodForHumanity <- NA
+CleanData$science_techGoodForHumanity <- minmaxNormalization(Data$Q72_A2)
+table(CleanData$science_techGoodForHumanity) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
 ###******************************************###
 # State intervention ####
 ###******************************************###
@@ -651,28 +664,28 @@ table(CleanData$stateInterv_moreRegulationsEnviro) # 0 = Fortement en désaccord
 table(Data$Q55_A1)
 CleanData$stateInterv_continueIncreaseGESPrice <- NA
 CleanData$stateInterv_continueIncreaseGESPrice <- minmaxNormalization(Data$Q55_A1)
-table(CleanData$stateInterv_continueIncreaseGESPrice) # 0 = Fortement en désaccord... 1 = Fortement en accord
+table(CleanData$stateInterv_continueIncreaseGESPrice) # 0 = Fortement en défaveur... 1 = Fortement en faveur
 
 # Q57_A1 - Seriez-vous en faveur de poursuivre la hausse du prix des émissions de dioxyde de carbone (comme c'est le cas avec l'actuel système au Canada) si les fonds étaient...
 # Redistribués à la population, afin que les ménages aient plus d'argent dans leurs poches
 table(Data$Q57_A1)
 CleanData$stateInterv_continueIncreaseGESPrice_RedistributedPop <- NA
 CleanData$stateInterv_continueIncreaseGESPrice_RedistributedPop <- minmaxNormalization(Data$Q57_A1)
-table(CleanData$stateInterv_continueIncreaseGESPrice_RedistributedPop) # 0 = Fortement en désaccord... 1 = Fortement en accord
+table(CleanData$stateInterv_continueIncreaseGESPrice_RedistributedPop) # 0 = Fortement en défaveur... 1 = Fortement en faveur
 
 # Q57_A2 - Seriez-vous en faveur de poursuivre la hausse du prix des émissions de dioxyde de carbone (comme c'est le cas avec l'actuel système au Canada)
 ## si|nbsp;les fonds étaient...-Utilisés pour créer des emplois dans les domaines de l'énergie verte, du transport e
 table(Data$Q57_A2)
 CleanData$stateInterv_continueIncreaseGESPrice_GreenJobs <- NA
 CleanData$stateInterv_continueIncreaseGESPrice_GreenJobs <- minmaxNormalization(Data$Q57_A2)
-table(CleanData$stateInterv_continueIncreaseGESPrice_GreenJobs) # 0 = Fortement en désaccord... 1 = Fortement en accord
+table(CleanData$stateInterv_continueIncreaseGESPrice_GreenJobs) # 0 = Fortement en défaveur... 1 = Fortement en faveur
 
 # Q57_A3 - Seriez-vous en faveur de poursuivre la hausse du prix des émissions de dioxyde de carbone (comme c'est le cas avec l'actuel système au Canada)
 ## si|nbsp;les fonds étaient...-Utilisés pour soutenir les travailleurs du secteur des combustibles fossiles, avec d
 table(Data$Q57_A3)
 CleanData$stateInterv_continueIncreaseGESPrice_FossilJobs <- NA
 CleanData$stateInterv_continueIncreaseGESPrice_FossilJobs <- minmaxNormalization(Data$Q57_A3)
-table(CleanData$stateInterv_continueIncreaseGESPrice_FossilJobs) # 0 = Fortement en désaccord... 1 = Fortement en accord
+table(CleanData$stateInterv_continueIncreaseGESPrice_FossilJobs) # 0 = Fortement en défaveur... 1 = Fortement en faveur
 
 
 # Diminution progressive de prod de combustibles
@@ -681,7 +694,21 @@ table(CleanData$stateInterv_continueIncreaseGESPrice_FossilJobs) # 0 = Fortement
 table(Data$Q55_A2)
 CleanData$stateInterv_decreaseFossilProd <- NA
 CleanData$stateInterv_decreaseFossilProd <- minmaxNormalization(Data$Q55_A2)
-table(CleanData$stateInterv_decreaseFossilProd) # 0 = Fortement en désaccord... 1 = Fortement en accord
+table(CleanData$stateInterv_decreaseFossilProd) # 0 = Fortement en défaveur... 1 = Fortement en faveur
+
+# Q60 - Seriez-vous en faveur d'une diminution progressive de la production de combustibles fossiles au Canada
+## si davantage d'emplois (de qualité équivalente) étaient créés dans les domaines de l'énergie, du transport et des technologies vertes que perdus au cours
+table(Data$Q60)
+CleanData$stateInterv_decreaseFossilProd_GreenJobs <- NA
+CleanData$stateInterv_decreaseFossilProd_GreenJobs <- minmaxNormalization(Data$Q60)
+table(CleanData$stateInterv_decreaseFossilProd_GreenJobs) # 0 = Fortement en défaveur... 1 = Fortement en faveur
+
+# Q61 - Seriez-vous en faveur d'une diminution progressive de la production de combustibles fossiles au Canada
+## si les travailleurs du secteur des combustibles fossiles étaient assurés d'être soutenus dans la transition, par exemple à travers des formations rémunér
+table(Data$Q61)
+CleanData$stateInterv_decreaseFossilProd_FossilJobs <- NA
+CleanData$stateInterv_decreaseFossilProd_FossilJobs <- minmaxNormalization(Data$Q61)
+table(CleanData$stateInterv_decreaseFossilProd_FossilJobs) # 0 = Fortement en défaveur... 1 = Fortement en faveur
 
 
 ###******************************************###
@@ -710,6 +737,35 @@ table(Data$Q39)
 CleanData$international_climateChangeHarmDevelopment <- NA
 CleanData$international_climateChangeHarmDevelopment <- minmaxNormalization(Data$Q39)
 table(CleanData$international_climateChangeHarmDevelopment) # 0 = Pas du tout... 1 = Énormément
+
+# Q64_A1 Le Canada devrait accepter les réfugiés provenant de pays aux prises avec des catastrophes écologiques
+table(Data$Q64_A1)
+CleanData$international_CanadaShouldAcceptRefugees <- NA
+CleanData$international_CanadaShouldAcceptRefugees <- minmaxNormalization(Data$Q64_A1)
+table(CleanData$international_CanadaShouldAcceptRefugees) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Q64_A2 Les pays riches devraient aider les pays devant gérer des réfugiés climatiques
+table(Data$Q64_A2)
+CleanData$international_richCountriesHelpRefugees <- NA
+CleanData$international_richCountriesHelpRefugees <- minmaxNormalization(Data$Q64_A2)
+table(CleanData$international_richCountriesHelpRefugees) # 0 = Fortement en désaccord... 1 = Fortement en accord
+
+# Pensez-vous que le Canada devrait admettre:
+# Q68 Immigrants
+table(Data$Q68)
+CleanData$international_nbImmigrantsCanada <- NA
+CleanData$international_nbImmigrantsCanada[Data$Q68 == 1] <- 1 # Plus d'immigrants
+CleanData$international_nbImmigrantsCanada[Data$Q68 == 2] <- 0 # Moins d'immigrants
+CleanData$international_nbImmigrantsCanada[Data$Q68 == 3] <- 0.5 # A peu près le même nombre d'immigrants
+table(CleanData$international_nbImmigrantsCanada)
+
+# Q69 Réfugiés
+table(Data$Q69)
+CleanData$international_nbRefugeesCanada <- NA
+CleanData$international_nbRefugeesCanada[Data$Q69 == 1] <- 1 # Plus de réfugiés
+CleanData$international_nbRefugeesCanada[Data$Q69 == 2] <- 0 # Moins de réfugiés
+CleanData$international_nbRefugeesCanada[Data$Q69 == 3] <- 0.5 # A peu près le même nombre de réfugiés
+table(CleanData$international_nbRefugeesCanada)
 
 
 ###******************************************###
@@ -814,6 +870,100 @@ table(CleanData$radicalisation_tolerate_violatingPowerful) # 0 = aucune toléran
 ###******************************************###
 # Politics ####
 ###******************************************###
+
+# Q70 En politique fédérale, vous considérez-vous habituellement
+## comme un.e conservateur.trice, libéral.e, néo-démocrate, bloquiste, vert.e, un partisan du PPC, ou rien de cela?
+table(Data$Q70)
+
+#### Conservateur 
+table(Data$Q70)
+CleanData$politics_idFederal_PCC <- 0
+CleanData$politics_idFederal_PCC[Data$Q70==1] <- 1
+table(CleanData$politics_idFederal_PCC)
+
+#### Liberal
+table(Data$Q70)
+CleanData$politics_idFederal_PLC <- 0
+CleanData$politics_idFederal_PLC[Data$Q70==2] <- 1
+table(CleanData$politics_idFederal_PLC)
+
+#### NPD
+table(Data$Q70)
+CleanData$politics_idFederal_NPD <- 0
+CleanData$politics_idFederal_NPD[Data$Q70==3] <- 1
+table(CleanData$politics_idFederal_NPD)
+
+#### BQ
+table(Data$Q70)
+CleanData$politics_idFederal_BQ <- 0
+CleanData$politics_idFederal_BQ[Data$Q70==4] <- 1
+table(CleanData$politics_idFederal_BQ)
+
+#### PVC
+table(Data$Q70)
+CleanData$politics_idFederal_PVC <- 0
+CleanData$politics_idFederal_PVC[Data$Q70==5] <- 1
+table(CleanData$politics_idFederal_PVC)
+
+#### PPC 
+table(Data$Q70)
+CleanData$politics_idFederal_PPC <- 0
+CleanData$politics_idFederal_PPC[Data$Q70==6] <- 1
+table(CleanData$politics_idFederal_PPC)
+
+#### No id
+table(Data$Q70)
+CleanData$politics_idFederal_noId <- 0
+CleanData$politics_idFederal_noId[Data$Q70==7] <- 1
+table(CleanData$politics_idFederal_noId)
+
+
+
+# Q71 En politique provinciale, vous considérez-vous habituellement
+## comme un.e caquiste, libéral.e, solidaire, péquiste, conservateur.trice ou rien de cela?
+table(Data$Q71)
+
+#### CAQ 
+table(Data$Q71)
+CleanData$politics_idProvincial_CAQ <- 0
+CleanData$politics_idProvincial_CAQ[Data$Q71==1] <- 1
+table(CleanData$politics_idProvincial_CAQ)
+
+#### PLQ 
+table(Data$Q71)
+CleanData$politics_idProvincial_PLQ <- 0
+CleanData$politics_idProvincial_PLQ[Data$Q71==2] <- 1
+table(CleanData$politics_idProvincial_PLQ)
+
+#### QS
+table(Data$Q71)
+CleanData$politics_idProvincial_QS <- 0
+CleanData$politics_idProvincial_QS[Data$Q71==3] <- 1
+table(CleanData$politics_idProvincial_QS)
+
+#### PQ
+table(Data$Q71)
+CleanData$politics_idProvincial_PQ <- 0
+CleanData$politics_idProvincial_PQ[Data$Q71==4] <- 1
+table(CleanData$politics_idProvincial_PQ)
+
+#### PCQ
+table(Data$Q71)
+CleanData$politics_idProvincial_PCQ <- 0
+CleanData$politics_idProvincial_PCQ[Data$Q71==5] <- 1
+table(CleanData$politics_idProvincial_PCQ)
+
+#### No id
+table(Data$Q71)
+CleanData$politics_idProvincial_noId <- 0
+CleanData$politics_idProvincial_noId[Data$Q71==6] <- 1
+table(CleanData$politics_idProvincial_noId)
+
+
+
+
+
+
 
 
 
