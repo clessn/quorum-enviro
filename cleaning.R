@@ -417,7 +417,7 @@ CleanData$ses_proprio[Data$Q14 == 2] <- 1
 CleanData$ses_proprio[Data$Q14 != 2] <- 0
 table(CleanData$ses_proprio)
 
-## nHousehold ####
+## Household ####
 table(Data$Q15)
 CleanData$ses_householdFewerThan4 <- NA
 CleanData$ses_householdFewerThan4[Data$Q15 <= 4] <- 1
