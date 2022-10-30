@@ -394,20 +394,20 @@ table(CleanData$ses_isPrimaryIndustries)
 
 ## Kids ####
 table(Data$Q13)
-CleanData$ses_hasNoKids <- NA
-CleanData$ses_hasNoKids[Data$Q13 == 0] <- 1
-CleanData$ses_hasNoKids[Data$Q13 != 0] <- 0
-table(CleanData$ses_hasNoKids)
+CleanData$ses_noHouseholdKids <- NA
+CleanData$ses_noHouseholdKids[Data$Q13 == 0] <- 1
+CleanData$ses_noHouseholdKids[Data$Q13 != 0] <- 0
+table(CleanData$ses_noHouseholdKids)
 
-CleanData$ses_hasFewKids <- NA
-CleanData$ses_hasFewKids[Data$Q13 == 1 | Data$Q13 == 2 ] <- 1
-CleanData$ses_hasFewKids[Data$Q13 != 1 & Data$Q13 != 2] <- 0
-table(CleanData$ses_hasFewKids)
+CleanData$ses_fewHouseholdKids <- NA
+CleanData$ses_fewHouseholdKids[Data$Q13 == 1 | Data$Q13 == 2 ] <- 1
+CleanData$ses_fewHouseholdKids[Data$Q13 != 1 & Data$Q13 != 2] <- 0
+table(CleanData$ses_fewHouseholdKids)
 
-CleanData$ses_hasManyKids <- NA
-CleanData$ses_hasManyKids[Data$Q13 >= 3] <- 1
-CleanData$ses_hasManyKids[Data$Q13 <= 2] <- 0
-table(CleanData$ses_hasManyKids)
+CleanData$ses_manyHouseholdKids <- NA
+CleanData$ses_manyHouseholdKids[Data$Q13 >= 3] <- 1
+CleanData$ses_manyHouseholdKids[Data$Q13 <= 2] <- 0
+table(CleanData$ses_manyHouseholdKids)
 
 
 ## Propriétaire ####
@@ -477,10 +477,103 @@ CleanData$ses_relNone[Data$Q16 == 9] <- 1
 CleanData$ses_relNone[Data$Q16 != 9] <- 0
 table(CleanData$ses_relNone)
 
+## Life by religion ####
+
+table(Data$Q17)
+CleanData$ses_lifeReligion <- NA
+CleanData$ses_lifeReligion[Data$Q17 == 1] <- 1
+CleanData$ses_lifeReligion[Data$Q17 == 2] <- 2
+CleanData$ses_lifeReligion[Data$Q17 == 3] <- 3
+CleanData$ses_lifeReligion[Data$Q17 == 4] <- 4
+CleanData$ses_lifeReligion[Data$Q17 == 5] <- 5
+table(CleanData$ses_lifeReligion)
+
+## Religious events ####
+
+table(Data$Q18)
+CleanData$ses_attendsReligiousEvents <- NA
+CleanData$ses_attendsReligiousEvents[Data$Q18 == 1] <- 5
+CleanData$ses_attendsReligiousEvents[Data$Q18 == 2] <- 4
+CleanData$ses_attendsReligiousEvents[Data$Q18 == 3] <- 3
+CleanData$ses_attendsReligiousEvents[Data$Q18 == 4] <- 2
+CleanData$ses_attendsReligiousEvents[Data$Q18 == 5] <- 1
+table(CleanData$ses_attendsReligiousEvents)
+
+## God existence ####
+
+table(Data$Q19)
+
+CleanData$ses_existsUniqueGod <- NA
+CleanData$ses_existsUniqueGod[Data$Q19 == 1] <- 1
+CleanData$ses_existsUniqueGod[Data$Q19 != 1] <- 0
+table(CleanData$ses_existsUniqueGod)
+
+CleanData$ses_existsVitalForce <- NA
+CleanData$ses_existsVitalForce[Data$Q19 == 2] <- 1
+CleanData$ses_existsVitalForce[Data$Q19 != 2] <- 0
+table(CleanData$ses_existsVitalForce)
+
+CleanData$ses_existsDK <- NA
+CleanData$ses_existsDK[Data$Q19 == 3] <- 1
+CleanData$ses_existsDK[Data$Q19 != 3] <- 0
+table(CleanData$ses_existsDK)
+
+CleanData$ses_existsNoGod <- NA
+CleanData$ses_existsNoGod[Data$Q19 == 4] <- 1
+CleanData$ses_existsNoGod[Data$Q19 != 4] <- 0
+table(CleanData$ses_existsNoGod)
+
+## sexual orientation ####
+
+table(Data$Q20)
+
+CleanData$ses_hetero <- NA
+CleanData$ses_hetero[Data$Q20 == 1] <- 1
+CleanData$ses_hetero[Data$Q20 != 1] <- 0
+table(CleanData$ses_hetero)
+
+CleanData$ses_gai <- NA
+CleanData$ses_gai[Data$Q20 == 2] <- 1
+CleanData$ses_gai[Data$Q20 != 2] <- 0
+table(CleanData$ses_gai)
+
+CleanData$ses_bisex <- NA
+CleanData$ses_bisex[Data$Q20 == 3] <- 1
+CleanData$ses_bisex[Data$Q20 != 3] <- 0
+table(CleanData$ses_bisex)
+
+CleanData$ses_sexOri_other <- NA
+CleanData$ses_sexOri_other[Data$Q20 >= 4] <- 1
+CleanData$ses_sexOri_other[Data$Q20 <= 3] <- 0
+table(CleanData$ses_sexOri_other)
+
+## Electric vehicule ####
+
+table(Data$Q74)
+CleanData$electricVehicule <- NA
+CleanData$electricVehicule[Data$Q74 == 1] <- 1
+CleanData$electricVehicule[Data$Q74 == 2] <- 0
+table(CleanData$electricVehicule)
+
+## Dwelling ####
+
+table(Data$Q123)
+
 
 ###******************************************###
 # Perceptions ####
 ###******************************************###
+
+## J'ai personnellement été affecté.e par les effets du réchauffement climatique ####
+
+table(Data$Q22_A4)
+CleanData$preception_isAffectedByClimateChange <- NA
+CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 1] <- 1
+CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 2] <- 2
+CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 3] <- 3
+CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 4] <- 4
+CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 5] <- 5
+table(CleanData$perception_isAffectedByClimateChange)
 
 
 ###******************************************###
@@ -554,6 +647,18 @@ table(CleanData$stateInterv_supportRaiseGESPriceIfRedistributed) # 0 = Fortement
 ###******************************************###
 # Responsability ####
 ###******************************************###
+
+## Mon propre mode de vie a contribué aux problèmes environnementaux actuels ####
+
+table(Data$Q34_A1)
+CleanData$responsability_lifestyleContributedClimateChange <- NA
+CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 1] <- 1
+CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 2] <- 2
+CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 3] <- 3
+CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 4] <- 4
+CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 5] <- 5
+table(CleanData$responsability_lifestyleContributedClimateChange)
+
 
 ###******************************************###
 # International ####
@@ -664,7 +769,45 @@ table(CleanData$radicalisation_tolerate_violatingPowerful) # 0 = aucune toléran
 ###******************************************###
 
 
+###******************************************###
+# Economy ####
+###******************************************###
 
+## Nous nous inquiétons trop de l'avenir de l'environnement et pas assez des questions économiques d'aujourd'hui ####
+
+table(Data$Q22_A1)
+CleanData$economy_worryTooMuchAboutEnvironment <- NA
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 1] <- 1
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 2] <- 2
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 3] <- 3
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 4] <- 4
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 5] <- 5
+table(CleanData$economy_worryTooMuchAboutEnvironment)
+
+## Les actions du gouvernement pour réduire les émissions de gaz à effet de serre nuisent à l'économie ####
+
+table(Data$Q22_A2)
+CleanData$economy_governmentClimatePolicyHurtsEconomy <- NA
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 1] <- 1
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 2] <- 2
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 3] <- 3
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 4] <- 4
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 5] <- 5
+table(CleanData$economy_governmentClimatePolicyHurtsEconomy)
+
+###******************************************###
+# Science ####
+###******************************************###
+
+## À quel point êtes-vous certain.e que les changements climatiques sont en train de se produire? ##
+
+table(Data$Q27)
+CleanData$science_climateChangeIsHappening <- NA
+CleanData$science_climateChangeIsHappening[Data$Q27 == 1] <- 1
+CleanData$science_climateChangeIsHappening[Data$Q27 == 2] <- 2
+CleanData$science_climateChangeIsHappening[Data$Q27 == 3] <- 3
+CleanData$science_climateChangeIsHappening[Data$Q27 == 4] <- 4
+table(CleanData$science_climateChangeIsHappening)
 
 saveRDS(CleanData, "_SharedFolder_quorum-enviro/data/cleanData/data.rds")
 
