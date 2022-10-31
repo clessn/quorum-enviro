@@ -7,27 +7,7 @@ Data <- haven::read_sav("_SharedFolder_quorum-enviro/data/ULA011-données.Sav") 
   mutate(id = 1:nrow(.))
 
 # Functions ####
-
-# Function to transform scales on 0-1
-minmaxNormalization <- function(x) {
-  return((x-min(x, na.rm = T))/(max(x, na.rm = T)-min(x, na.rm = T)))
-}
-
-finverser <- function(vec_col){
-  #vec_col <- df[[col]]
-  unique_col <- unique(vec_col)
-  unique_col <- unique_col[!is.na(unique_col)]
-  n <- length(unique_col)
-  max <- max(vec_col, na.rm = T)
-  ord <- sort(as.vector(unique_col))
-  rev <- rev(ord)
-  for (i in 1:n){
-    vec_col[vec_col == ord[i]] <- max + rev[i] 
-  }
-  vec_col <- vec_col - max
-  return(vec_col)
-}
-
+source("functions.R", encoding = "UTF-8")
 
 ### Create clean dataframe
 CleanData <- data.frame(id = Data$id,
@@ -874,6 +854,14 @@ table(CleanData$radicalisation_tolerate_violatingPowerful) # 0 = aucune toléran
 # Q70 En politique fédérale, vous considérez-vous habituellement
 ## comme un.e conservateur.trice, libéral.e, néo-démocrate, bloquiste, vert.e, un partisan du PPC, ou rien de cela?
 table(Data$Q70)
+CleanData$politics_idFederal <- NA
+CleanData$politics_idFederal[Data$Q70==1] <- "PCC"
+CleanData$politics_idFederal[Data$Q70==2] <- "PLC"
+CleanData$politics_idFederal[Data$Q70==3] <- "NPD"
+CleanData$politics_idFederal[Data$Q70==4] <- "BQ"
+CleanData$politics_idFederal[Data$Q70==5] <- "PVC"
+CleanData$politics_idFederal[Data$Q70==6] <- "PPC"
+CleanData$politics_idFederal[Data$Q70==7] <- "noId"
 
 #### Conservateur 
 table(Data$Q70)
@@ -922,6 +910,13 @@ table(CleanData$politics_idFederal_noId)
 # Q71 En politique provinciale, vous considérez-vous habituellement
 ## comme un.e caquiste, libéral.e, solidaire, péquiste, conservateur.trice ou rien de cela?
 table(Data$Q71)
+CleanData$politics_idProvincial <- NA
+CleanData$politics_idProvincial[Data$Q71==1] <- "CAQ"
+CleanData$politics_idProvincial[Data$Q71==2] <- "PLQ"
+CleanData$politics_idProvincial[Data$Q71==3] <- "QS"
+CleanData$politics_idProvincial[Data$Q71==4] <- "PQ"
+CleanData$politics_idProvincial[Data$Q71==5] <- "PCQ"
+CleanData$politics_idProvincial[Data$Q71==6] <- "noId"
 
 #### CAQ 
 table(Data$Q71)
@@ -959,13 +954,106 @@ CleanData$politics_idProvincial_noId <- 0
 CleanData$politics_idProvincial_noId[Data$Q71==6] <- 1
 table(CleanData$politics_idProvincial_noId)
 
+###******************************************###
+# Scales ####
+###******************************************###
+
+###******************************************###
+## Scepticism ####
+###******************************************###
+
+### Prep variables ####
+
+## 0 = pas sceptique, 1 = scepticisme 
+### Reverse the variables that need to be reversed with finverser
+### Add them as a new variable with the scaleScep_ prefix
+
+table(CleanData$gravity_whenWillHarmCanadians)
+CleanData$scaleScep_whenWillHarmCanadians <- finverser(CleanData$gravity_whenWillHarmCanadians)
+table(CleanData$scaleScep_whenWillHarmCanadians)
+
+table(CleanData$gravity_crisisIsExaggerated)
+CleanData$scaleScep_crisisIsExaggerated <- CleanData$gravity_crisisIsExaggerated
+table(CleanData$scaleScep_crisisIsExaggerated)
+
+table(CleanData$science_trustScientists)
+CleanData$scaleScep_trustScientists <- finverser(CleanData$science_trustScientists)
+table(CleanData$scaleScep_trustScientists)
+
+table(CleanData$science_consensusClimateChange)
+CleanData$scaleScep_consensusClimateChange <- finverser(CleanData$science_consensusClimateChange)
+table(CleanData$scaleScep_consensusClimateChange)
+
+table(CleanData$science_carContributeClimateChange)
+CleanData$scaleScep_carContribute <- finverser(CleanData$science_carContributeClimateChange)
+table(CleanData$scaleScep_carContribute)
+
+table(CleanData$science_scientistsExaggerateClimateChangeEvidence)
+CleanData$scaleScep_scientistsExaggerate <- CleanData$science_scientistsExaggerateClimateChangeEvidence
+table(CleanData$scaleScep_scientistsExaggerate)
+
+# human causal effect
+table(CleanData$science_climateChangeMainCause_naturalProcesses)
+table(CleanData$science_climateChangeMainCause_natureAndHumans)
+table(CleanData$science_climateChangeMainCause_humanActivities)
+CleanData$scaleScep_natureCauseClimateChange <- NA
+CleanData$scaleScep_natureCauseClimateChange[CleanData$science_climateChangeMainCause_humanActivities == 1] <- 0
+CleanData$scaleScep_natureCauseClimateChange[CleanData$science_climateChangeMainCause_naturalProcesses == 1] <- 1
+CleanData$scaleScep_natureCauseClimateChange[CleanData$science_climateChangeMainCause_natureAndHumans == 1] <- 1
+table(CleanData$scaleScep_natureCauseClimateChange)
+
+# Make scale
+CleanData <- CleanData %>% 
+  mutate(scale_scepticism = (CleanData %>%
+                        select(starts_with("scaleScep_")) %>%
+                        rowSums())/length(names(CleanData %>% select(starts_with("scaleScep_")))))
 
 
+###******************************************###
+## Gravity ####
+###******************************************###
+
+### Prep variables ####
+
+## 0 = pas inquiet, situation pas grave, 1 = inquiet, situation grave 
+### Reverse the variables that need to be reversed with finverser
+### Add them as a new variable with the scaleScep_ prefix
+
+# climateChangePersonalMenace
+table(CleanData$gravity_climateChangePersonalMenace)
+CleanData$scaleGravity_climateChangePersonalMenace <- CleanData$gravity_climateChangePersonalMenace
+table(CleanData$scaleGravity_climateChangePersonalMenace)
+
+# worriedClimateChange
+table(CleanData$gravity_worriedClimateChange)
+CleanData$scaleGravity_worriedClimateChange <- CleanData$gravity_worriedClimateChange
+table(CleanData$scaleGravity_worriedClimateChange)
+
+# majorCatastrophe
+table(CleanData$gravity_majorCatastrophe)
+CleanData$scaleGravity_majorCatastrophe <- CleanData$gravity_majorCatastrophe
+table(CleanData$scaleGravity_majorCatastrophe)
+
+# climateChangeEndHumanity
+table(CleanData$gravity_climateChangeEndHumanity)
+CleanData$scaleGravity_climateChangeEndHumanity <- CleanData$gravity_climateChangeEndHumanity
+table(CleanData$scaleGravity_climateChangeEndHumanity)
+
+# Make scale
+CleanData <- CleanData %>% 
+  mutate(scale_gravity = (CleanData %>%
+                           select(starts_with("scaleGravity_")) %>%
+                           rowSums())/length(names(CleanData %>% select(starts_with("scaleGravity_")))))
 
 
-
-
-
+# Remove columns that make the scale
+CleanData <- CleanData %>% 
+  select(-starts_with(c("scaleScep_", "scaleGravity_")))
 
 
 saveRDS(CleanData, "_SharedFolder_quorum-enviro/data/cleanData/data.rds")
+
+ggplot(CleanData, aes(x = scale_scepticism,
+                      y = scale_gravity)) +
+  geom_jitter(width = 0.15, height = 0.15) +
+  geom_smooth()
