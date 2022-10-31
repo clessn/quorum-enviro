@@ -461,21 +461,21 @@ table(CleanData$ses_relNone)
 
 table(Data$Q17)
 CleanData$ses_lifeReligion <- NA
-CleanData$ses_lifeReligion[Data$Q17 == 1] <- 1
-CleanData$ses_lifeReligion[Data$Q17 == 2] <- 2
-CleanData$ses_lifeReligion[Data$Q17 == 3] <- 3
-CleanData$ses_lifeReligion[Data$Q17 == 4] <- 4
-CleanData$ses_lifeReligion[Data$Q17 == 5] <- 5
+CleanData$ses_lifeReligion[Data$Q17 == 1] <- 0
+CleanData$ses_lifeReligion[Data$Q17 == 2] <- 0.25
+CleanData$ses_lifeReligion[Data$Q17 == 3] <- 0.50
+CleanData$ses_lifeReligion[Data$Q17 == 4] <- 0.75
+CleanData$ses_lifeReligion[Data$Q17 == 5] <- 1
 table(CleanData$ses_lifeReligion)
 
 ## Religious events ####
 
 table(Data$Q18)
 CleanData$ses_attendsReligiousEvents <- NA
-CleanData$ses_attendsReligiousEvents[Data$Q18 == 1] <- 5
-CleanData$ses_attendsReligiousEvents[Data$Q18 == 2] <- 4
-CleanData$ses_attendsReligiousEvents[Data$Q18 == 3] <- 3
-CleanData$ses_attendsReligiousEvents[Data$Q18 == 4] <- 2
+CleanData$ses_attendsReligiousEvents[Data$Q18 == 1] <- 0
+CleanData$ses_attendsReligiousEvents[Data$Q18 == 2] <- 0.25
+CleanData$ses_attendsReligiousEvents[Data$Q18 == 3] <- 0.50
+CleanData$ses_attendsReligiousEvents[Data$Q18 == 4] <- 0.75
 CleanData$ses_attendsReligiousEvents[Data$Q18 == 5] <- 1
 table(CleanData$ses_attendsReligiousEvents)
 
@@ -546,11 +546,11 @@ table(Data$Q123)
 ## J'ai personnellement été affecté.e par les effets du réchauffement climatique ###
 table(Data$Q22_A4)
 CleanData$preception_isAffectedByClimateChange <- NA
-CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 1] <- 1
-CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 2] <- 2
-CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 3] <- 3
-CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 4] <- 4
-CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 5] <- 5
+CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 1] <- 0
+CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 2] <- 0.25
+CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 3] <- 0.50
+CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 4] <- 0.75
+CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 5] <- 1
 table(CleanData$perception_isAffectedByClimateChange)
 
 # Q34_A3 Les humains sont destinés à dominer le reste de la nature
@@ -815,6 +815,7 @@ table(Data$Q34_A1)
 CleanData$responsability_lifestyleContributedClimateChange <- NA
 CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 1] <- 0
 CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 2] <- 0.25
+CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 3] <- 0.50
 CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 3] <- 0.5
 CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 4] <- 0.75
 CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 5] <- 1
@@ -1312,7 +1313,17 @@ table(Data$Q76D)
 ## Scepticism ####
 ###******************************************###
 
+table(Data$Q22_A1)
+CleanData$economy_worryTooMuchAboutEnvironment <- NA
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 1] <- 0
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 2] <- 0.25
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 3] <- 0.50
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 4] <- 0.75
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 5] <- 1
+table(CleanData$economy_worryTooMuchAboutEnvironment)
+
 ### Prep variables ####
+
 
 ## 0 = pas sceptique, 1 = scepticisme 
 ### Reverse the variables that need to be reversed with finverser
@@ -1359,11 +1370,30 @@ CleanData <- CleanData %>%
                         rowSums())/length(names(CleanData %>% select(starts_with("scaleScep_")))))
 
 
+table(Data$Q22_A2)
+CleanData$economy_governmentClimatePolicyHurtsEconomy <- NA
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 1] <- 0
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 2] <- 0.25
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 3] <- 0.50
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 4] <- 0.75
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 5] <- 1
+table(CleanData$economy_governmentClimatePolicyHurtsEconomy)
+
+
 ###******************************************###
 ## Gravity ####
 ###******************************************###
 
 ### Prep variables ####
+
+
+table(Data$Q27)
+CleanData$science_climateChangeIsHappening <- NA
+CleanData$science_climateChangeIsHappening[Data$Q27 == 1] <- 0
+CleanData$science_climateChangeIsHappening[Data$Q27 == 2] <- 0.33
+CleanData$science_climateChangeIsHappening[Data$Q27 == 3] <- 0.66
+CleanData$science_climateChangeIsHappening[Data$Q27 == 4] <- 1
+table(CleanData$science_climateChangeIsHappening)
 
 ## 0 = pas inquiet, situation pas grave, 1 = inquiet, situation grave 
 ### Reverse the variables that need to be reversed with finverser
