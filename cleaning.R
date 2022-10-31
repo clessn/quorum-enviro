@@ -1106,4 +1106,146 @@ CleanData$science_climateChangeIsHappening[Data$Q27 == 4] <- 4
 table(CleanData$science_climateChangeIsHappening)
 
 
+#### SECTION RANCOURT ####
+
+#À quel point votre famille et vos amis font-ils des efforts pour lutter contre les changements climatiques?
+table(Data$Q29)
+CleanData$responsability_climateChangeFamily <- NA
+CleanData$responsability_climateChangeFamily[Data$Q29 == 1] <- 1
+CleanData$responsability_climateChangeFamily[Data$Q29 == 2] <- 2
+CleanData$responsability_climateChangeFamily[Data$Q29 == 3] <- 3
+CleanData$responsability_climateChangeFamily[Data$Q29 == 4] <- 4
+table(CleanData$responsability_climateChangeFamily)
+
+
+# À quelle fréquence discutez-vous du réchauffement climatique avec votre famille et vos amis?
+table(Data$Q30)
+CleanData$responsability_climateChangeDiscuss <- NA
+CleanData$responsability_climateChangeDiscuss[Data$Q30 == 1] <- 1
+CleanData$responsability_climateChangeDiscuss[Data$Q30 == 2] <- 2
+CleanData$responsability_climateChangeDiscuss[Data$Q30 == 3] <- 3
+CleanData$responsability_climateChangeDiscuss[Data$Q30 == 4] <- 4
+table(CleanData$responsability_climateChangeDiscuss)
+
+# À quel point ressentez-vous une responsabilité individuelle de protéger l'environnement?
+table(Data$Q32)
+CleanData$responsability_climateChangeProtectInd <- NA
+CleanData$responsability_climateChangeProtectInd[Data$Q32 == 1] <- 1
+CleanData$responsability_climateChangeProtectInd[Data$Q32 == 2] <- 2
+CleanData$responsability_climateChangeProtectInd[Data$Q32 == 3] <- 3
+table(CleanData$responsability_climateChangeProtectInd)
+
+# Êtes-vous en accord ou en désaccord avec les énoncés suivants :-Les citoyens ordinaires, 
+# et pas seulement les autorités et les décideurs, ont une grande part de responsabilité à l'égard de l'environnement
+
+table(Data$Q34_A2)
+CleanData$responsability_climateChangeProtectPpl <- NA
+CleanData$responsability_climateChangeProtectPpl[Data$Q34_A2 == 1] <- 1
+CleanData$responsability_climateChangeProtectPpl[Data$Q34_A2 == 2] <- 2
+CleanData$responsability_climateChangeProtectPpl[Data$Q34_A2 == 3] <- 3
+CleanData$responsability_climateChangeProtectPpl[Data$Q34_A2 == 4] <- 4
+CleanData$responsability_climateChangeProtectPpl[Data$Q34_A2 == 5] <- 5
+table(CleanData$responsability_climateChangeProtectPpl)
+
+#Quel est le degré de responsabilité des acteurs suivants en ce qui a trait à la
+#prise de mesures visant la protection de l'environnement|nbsp;»:-Gouvernement fédéral
+
+table(Data$Q45_A1)
+CleanData$responsability_climateChangeFedGovt <- NA
+CleanData$responsability_climateChangeFedGovt[Data$Q45_A1 == 1] <- 1
+CleanData$responsability_climateChangeFedGovt[Data$Q45_A1 == 2] <- 2
+CleanData$responsability_climateChangeFedGovt[Data$Q45_A1 == 3] <- 3
+CleanData$responsability_climateChangeFedGovt[Data$Q45_A1 == 4] <- 4
+table(CleanData$responsability_climateChangeFedGovt)
+
+# Quel est le degré de responsabilité des acteurs suivants en ce qui a trait à la 
+# « prise de mesures visant la protection de l'environnement|nbsp;»:-Gouvernements provinciaux
+
+table(Data$Q45_A2)
+CleanData$responsability_climateChangeProvGovt <- NA
+CleanData$responsability_climateChangeProvGovt[Data$Q45_A2 == 1] <- 1
+CleanData$responsability_climateChangeProvGovt[Data$Q45_A2 == 2] <- 2
+CleanData$responsability_climateChangeProvGovt[Data$Q45_A2 == 3] <- 3
+CleanData$responsability_climateChangeProvGovt[Data$Q45_A2 == 4] <- 4
+table(CleanData$responsability_climateChangeProvGovt)
+
+# Quel est le degré de responsabilité des acteurs suivants en ce qui a trait à la
+# « prise de mesures visant la protection de l'environnement|nbsp;»:-Administrations municipales
+
+table(Data$Q45_A3)
+CleanData$responsability_climateChangeMuniGovt <- NA
+CleanData$responsability_climateChangeMuniGovt[Data$Q45_A3 == 1] <- 1
+CleanData$responsability_climateChangeMuniGovt[Data$Q45_A3 == 2] <- 2
+CleanData$responsability_climateChangeMuniGovt[Data$Q45_A3 == 3] <- 3
+CleanData$responsability_climateChangeMuniGovt[Data$Q45_A3 == 4] <- 4
+table(CleanData$responsability_climateChangeMuniGovt)
+
+
+# Quel est le degré de responsabilité des acteurs suivants en ce qui a trait à la
+# « prise de mesures visant la protection de l'environnement|nbsp;»:-Organismes à but non lucratif
+
+table(Data$Q45_A4)
+CleanData$responsability_climateChangeOBNL <- NA
+CleanData$responsability_climateChangeOBNL[Data$Q45_A4 == 1] <- 1
+CleanData$responsability_climateChangeOBNL[Data$Q45_A4 == 2] <- 2
+CleanData$responsability_climateChangeOBNL[Data$Q45_A4 == 3] <- 3
+CleanData$responsability_climateChangeOBNL[Data$Q45_A4 == 4] <- 4
+table(CleanData$responsability_climateChangeOBNL)
+
+# Quel est le degré de responsabilité des acteurs suivants en ce qui a trait à la 
+# « prise de mesures visant la protection de l'environnement|nbsp;»:-Entreprises
+
+table(Data$Q45_A5)
+CleanData$responsability_climateChangeEnterprise <- NA
+CleanData$responsability_climateChangeEnterprise[Data$Q45_A5 == 1] <- 1
+CleanData$responsability_climateChangeEnterprise[Data$Q45_A5 == 2] <- 2
+CleanData$responsability_climateChangeEnterprise[Data$Q45_A5 == 3] <- 3
+CleanData$responsability_climateChangeEnterprise[Data$Q45_A5 == 4] <- 4
+table(CleanData$responsability_climateChangeEnterprise)
+
+# Quel est le degré de responsabilité des acteurs suivants en ce qui a trait à la
+# « prise de mesures visant la protection de l'environnement|nbsp;»:-Particuliers
+
+table(Data$Q45_A6)
+CleanData$responsability_climateChangeCitizens <- NA
+CleanData$responsability_climateChangeCitizens[Data$Q45_A6 == 1] <- 1
+CleanData$responsability_climateChangeCitizens[Data$Q45_A6 == 2] <- 2
+CleanData$responsability_climateChangeCitizens[Data$Q45_A6 == 3] <- 3
+CleanData$responsability_climateChangeCitizens[Data$Q45_A6 == 4] <- 4
+table(CleanData$responsability_climateChangeCitizens)
+
+# Êtes-vous en accord ou en désaccord avec les énoncés suivants 
+# :-Les avancées technologiques vont rendre inutiles nos efforts environnementaux individuels
+
+table(Data$Q63_A3)
+CleanData$science_climateChangeTechnoEffortsNull <- NA
+CleanData$science_climateChangeTechnoEffortsNull[Data$Q63_A3 == 1] <- 1
+CleanData$science_climateChangeTechnoEffortsNull[Data$Q63_A3 == 2] <- 2
+CleanData$science_climateChangeTechnoEffortsNull[Data$Q63_A3 == 3] <- 3
+CleanData$science_climateChangeTechnoEffortsNull[Data$Q63_A3 == 4] <- 4
+CleanData$science_climateChangeTechnoEffortsNull[Data$Q63_A3 == 5] <- 5
+table(CleanData$science_climateChangeTechnoEffortsNull)
+
+# Consommez-vous de la viande (ou des produits d'origine animale)?
+
+table(Data$Q67)
+CleanData$responsability_climateChangeMeat <- NA
+CleanData$responsability_climateChangeMeat[Data$Q67 == 1] <- 1
+CleanData$responsability_climateChangeMeat[Data$Q67 == 2] <- 2
+CleanData$responsability_climateChangeMeat[Data$Q67 == 3] <- 3
+CleanData$responsability_climateChangeMeat[Data$Q67 == 4] <- 4
+table(CleanData$responsability_climateChangeMeat)
+
+# Êtes-vous en |nbsp;faveur ou en défaveur avec les énoncés suivants :-Les autorités et les décideurs,
+# et pas seulement les citoyens ordinaires, ont une grande part de responsabilité à l'égard de l'environnement
+
+table(Data$Q72_A2)
+CleanData$responsability_climateChangePoliticians <- NA
+CleanData$responsability_climateChangePoliticians[Data$Q72_A2 == 1] <- 1
+CleanData$responsability_climateChangePoliticians[Data$Q72_A2 == 2] <- 2
+CleanData$responsability_climateChangePoliticians[Data$Q72_A2 == 3] <- 3
+CleanData$responsability_climateChangePoliticians[Data$Q72_A2 == 4] <- 4
+CleanData$responsability_climateChangePoliticians[Data$Q72_A2 == 5] <- 5
+table(CleanData$responsability_climateChangePoliticians)
+
 saveRDS(CleanData, "_SharedFolder_quorum-enviro/data/cleanData/data.rds")
