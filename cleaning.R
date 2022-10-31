@@ -7,27 +7,7 @@ Data <- haven::read_sav("_SharedFolder_quorum-enviro/data/ULA011-données.Sav") 
   mutate(id = 1:nrow(.))
 
 # Functions ####
-
-# Function to transform scales on 0-1
-minmaxNormalization <- function(x) {
-  return((x-min(x, na.rm = T))/(max(x, na.rm = T)-min(x, na.rm = T)))
-}
-
-finverser <- function(vec_col){
-  #vec_col <- df[[col]]
-  unique_col <- unique(vec_col)
-  unique_col <- unique_col[!is.na(unique_col)]
-  n <- length(unique_col)
-  max <- max(vec_col, na.rm = T)
-  ord <- sort(as.vector(unique_col))
-  rev <- rev(ord)
-  for (i in 1:n){
-    vec_col[vec_col == ord[i]] <- max + rev[i] 
-  }
-  vec_col <- vec_col - max
-  return(vec_col)
-}
-
+source("functions.R", encoding = "UTF-8")
 
 ### Create clean dataframe
 CleanData <- data.frame(id = Data$id,
@@ -556,7 +536,6 @@ CleanData$electricVehicule[Data$Q74 == 2] <- 0
 table(CleanData$electricVehicule)
 
 ## Dwelling ####
-
 table(Data$Q123)
 
 
@@ -564,8 +543,7 @@ table(Data$Q123)
 # Perceptions ####
 ###******************************************###
 
-## J'ai personnellement été affecté.e par les effets du réchauffement climatique ####
-
+## J'ai personnellement été affecté.e par les effets du réchauffement climatique ###
 table(Data$Q22_A4)
 CleanData$preception_isAffectedByClimateChange <- NA
 CleanData$perception_isAffectedByClimateChange[Data$Q22_A4 == 1] <- 0
@@ -580,7 +558,6 @@ table(Data$Q34_A3)
 CleanData$perception_humansDominateNature <- NA
 CleanData$perception_humansDominateNature <- minmaxNormalization(Data$Q34_A3)
 table(CleanData$perception_humansDominateNature) # 0 = Fortement en désaccord... 1 = Fortement en accord
-
 
 
 ###******************************************###
@@ -628,6 +605,17 @@ table(CleanData$gravity_climateChangeEndHumanity) # 0 = Fortement en désaccord.
 ###******************************************###
 # Science, technology, IA ####
 ###******************************************###
+
+## À quel point êtes-vous certain.e que les changements climatiques sont en train de se produire? ##
+
+table(Data$Q27)
+CleanData$science_climateChangeIsHappening <- NA
+CleanData$science_climateChangeIsHappening[Data$Q27 == 1] <- 0
+CleanData$science_climateChangeIsHappening[Data$Q27 == 2] <- 0.33
+CleanData$science_climateChangeIsHappening[Data$Q27 == 3] <- 0.67
+CleanData$science_climateChangeIsHappening[Data$Q27 == 4] <- 1
+table(CleanData$science_climateChangeIsHappening)
+
 
 # Q49 - Faites-vous confiance aux scientifiques comme source d'information sur les enjeux environnementaux?
 table(Data$Q49)
@@ -708,6 +696,18 @@ CleanData$science_techGoodForHumanity <- NA
 CleanData$science_techGoodForHumanity <- minmaxNormalization(Data$Q72_A2)
 table(CleanData$science_techGoodForHumanity) # 0 = Fortement en désaccord... 1 = Fortement en accord
 
+
+# Êtes-vous en accord ou en désaccord avec les énoncés suivants 
+# :-Les avancées technologiques vont rendre inutiles nos efforts environnementaux individuels
+
+table(Data$Q63_A3)
+CleanData$science_climateChangeTechnoEffortsNull <- NA
+CleanData$science_climateChangeTechnoEffortsNull[Data$Q63_A3 == 1] <- 0
+CleanData$science_climateChangeTechnoEffortsNull[Data$Q63_A3 == 2] <- 0.25
+CleanData$science_climateChangeTechnoEffortsNull[Data$Q63_A3 == 3] <- 0.5
+CleanData$science_climateChangeTechnoEffortsNull[Data$Q63_A3 == 4] <- 0.75
+CleanData$science_climateChangeTechnoEffortsNull[Data$Q63_A3 == 5] <- 1
+table(CleanData$science_climateChangeTechnoEffortsNull)
 
 ###******************************************###
 # State intervention ####
@@ -809,16 +809,158 @@ table(CleanData$stateInterv_decreaseFossilProd_FossilJobs) # 0 = Fortement en d�
 # Responsability ####
 ###******************************************###
 
-## Mon propre mode de vie a contribué aux problèmes environnementaux actuels ####
+## Mon propre mode de vie a contribué aux problèmes environnementaux actuels ###
 
 table(Data$Q34_A1)
 CleanData$responsability_lifestyleContributedClimateChange <- NA
 CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 1] <- 0
 CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 2] <- 0.25
 CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 3] <- 0.50
+CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 3] <- 0.5
 CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 4] <- 0.75
 CleanData$responsability_lifestyleContributedClimateChange[Data$Q34_A1 == 5] <- 1
 table(CleanData$responsability_lifestyleContributedClimateChange)
+
+
+#À quel point votre famille et vos amis font-ils des efforts pour lutter contre les changements climatiques?
+table(Data$Q29)
+CleanData$responsability_effortsClimateChangeFamily <- NA
+CleanData$responsability_effortsClimateChangeFamily[Data$Q29 == 1] <- 0
+CleanData$responsability_effortsClimateChangeFamily[Data$Q29 == 2] <- 0.33
+CleanData$responsability_effortsClimateChangeFamily[Data$Q29 == 3] <- 0.67
+CleanData$responsability_effortsClimateChangeFamily[Data$Q29 == 4] <- 1
+table(CleanData$responsability_effortsClimateChangeFamily)
+
+
+# À quelle fréquence discutez-vous du réchauffement climatique avec votre famille et vos amis?
+table(Data$Q30)
+CleanData$responsability_climateChangeDiscuss <- NA
+CleanData$responsability_climateChangeDiscuss[Data$Q30 == 1] <- 0
+CleanData$responsability_climateChangeDiscuss[Data$Q30 == 2] <- 0.33
+CleanData$responsability_climateChangeDiscuss[Data$Q30 == 3] <- 0.67
+CleanData$responsability_climateChangeDiscuss[Data$Q30 == 4] <- 1
+table(CleanData$responsability_climateChangeDiscuss)
+
+# À quel point ressentez-vous une responsabilité individuelle de protéger l'environnement?
+table(Data$Q32)
+CleanData$responsability_individualToProtect <- NA
+CleanData$responsability_individualToProtect[Data$Q32 == 1] <- 0
+CleanData$responsability_individualToProtect[Data$Q32 == 2] <- 0.5
+CleanData$responsability_individualToProtect[Data$Q32 == 3] <- 1
+table(CleanData$responsability_individualToProtect)
+
+# Êtes-vous en accord ou en désaccord avec les énoncés suivants :-Les citoyens ordinaires, 
+# et pas seulement les autorités et les décideurs, ont une grande part de responsabilité à l'égard de l'environnement
+
+table(Data$Q34_A2)
+CleanData$responsability_citizensVsGvnt <- NA
+CleanData$responsability_citizensVsGvnt[Data$Q34_A2 == 1] <- 0
+CleanData$responsability_citizensVsGvnt[Data$Q34_A2 == 2] <- 0.25
+CleanData$responsability_citizensVsGvnt[Data$Q34_A2 == 3] <- 0.5
+CleanData$responsability_citizensVsGvnt[Data$Q34_A2 == 4] <- 0.75
+CleanData$responsability_citizensVsGvnt[Data$Q34_A2 == 5] <- 1
+table(CleanData$responsability_citizensVsGvnt)
+
+#Quel est le degré de responsabilité des acteurs suivants en ce qui a trait à la
+#prise de mesures visant la protection de l'environnement|nbsp;»:-Gouvernement fédéral
+
+table(Data$Q45_A1)
+CleanData$responsability_climateChangeFedGovt <- NA
+CleanData$responsability_climateChangeFedGovt[Data$Q45_A1 == 1] <- 0
+CleanData$responsability_climateChangeFedGovt[Data$Q45_A1 == 2] <- 0.33
+CleanData$responsability_climateChangeFedGovt[Data$Q45_A1 == 3] <- 0.67
+CleanData$responsability_climateChangeFedGovt[Data$Q45_A1 == 4] <- 1
+table(CleanData$responsability_climateChangeFedGovt)
+
+# Quel est le degré de responsabilité des acteurs suivants en ce qui a trait à la 
+# « prise de mesures visant la protection de l'environnement|nbsp;»:-Gouvernements provinciaux
+
+table(Data$Q45_A2)
+CleanData$responsability_climateChangeProvGovt <- NA
+CleanData$responsability_climateChangeProvGovt[Data$Q45_A2 == 1] <- 0
+CleanData$responsability_climateChangeProvGovt[Data$Q45_A2 == 2] <- 0.33
+CleanData$responsability_climateChangeProvGovt[Data$Q45_A2 == 3] <- 0.67
+CleanData$responsability_climateChangeProvGovt[Data$Q45_A2 == 4] <- 1
+table(CleanData$responsability_climateChangeProvGovt)
+
+# Quel est le degré de responsabilité des acteurs suivants en ce qui a trait à la
+# « prise de mesures visant la protection de l'environnement|nbsp;»:-Administrations municipales
+
+table(Data$Q45_A3)
+CleanData$responsability_climateChangeMuniGovt <- NA
+CleanData$responsability_climateChangeMuniGovt[Data$Q45_A3 == 1] <- 0
+CleanData$responsability_climateChangeMuniGovt[Data$Q45_A3 == 2] <- 0.33
+CleanData$responsability_climateChangeMuniGovt[Data$Q45_A3 == 3] <- 0.67
+CleanData$responsability_climateChangeMuniGovt[Data$Q45_A3 == 4] <- 1
+table(CleanData$responsability_climateChangeMuniGovt)
+
+
+# Quel est le degré de responsabilité des acteurs suivants en ce qui a trait à la
+# « prise de mesures visant la protection de l'environnement|nbsp;»:-Organismes à but non lucratif
+
+table(Data$Q45_A4)
+CleanData$responsability_climateChangeOBNL <- NA
+CleanData$responsability_climateChangeOBNL[Data$Q45_A4 == 1] <- 0
+CleanData$responsability_climateChangeOBNL[Data$Q45_A4 == 2] <- 0.33
+CleanData$responsability_climateChangeOBNL[Data$Q45_A4 == 3] <- 0.67
+CleanData$responsability_climateChangeOBNL[Data$Q45_A4 == 4] <- 1
+table(CleanData$responsability_climateChangeOBNL)
+
+# Quel est le degré de responsabilité des acteurs suivants en ce qui a trait à la 
+# « prise de mesures visant la protection de l'environnement|nbsp;»:-Entreprises
+
+table(Data$Q45_A5)
+CleanData$responsability_climateChangeEnterprise <- NA
+CleanData$responsability_climateChangeEnterprise[Data$Q45_A5 == 1] <- 0
+CleanData$responsability_climateChangeEnterprise[Data$Q45_A5 == 2] <- 0.33
+CleanData$responsability_climateChangeEnterprise[Data$Q45_A5 == 3] <- 0.67
+CleanData$responsability_climateChangeEnterprise[Data$Q45_A5 == 4] <- 1
+table(CleanData$responsability_climateChangeEnterprise)
+
+# Quel est le degré de responsabilité des acteurs suivants en ce qui a trait à la
+# « prise de mesures visant la protection de l'environnement|nbsp;»:-Particuliers
+
+table(Data$Q45_A6)
+CleanData$responsability_climateChangeCitizens <- NA
+CleanData$responsability_climateChangeCitizens[Data$Q45_A6 == 1] <- 0
+CleanData$responsability_climateChangeCitizens[Data$Q45_A6 == 2] <- 0.33
+CleanData$responsability_climateChangeCitizens[Data$Q45_A6 == 3] <- 0.67
+CleanData$responsability_climateChangeCitizens[Data$Q45_A6 == 4] <- 1
+table(CleanData$responsability_climateChangeCitizens)
+
+
+# Consommez-vous de la viande (ou des produits d'origine animale)?
+table(Data$Q67)
+CleanData$responsability_MeatFrequency <- NA
+CleanData$responsability_MeatFrequency[Data$Q67 == 1] <- 1
+CleanData$responsability_MeatFrequency[Data$Q67 == 2] <- 0.5
+CleanData$responsability_MeatFrequency[Data$Q67 %in% c(3,4)] <- 0
+table(CleanData$responsability_MeatFrequency)
+
+table(Data$Q67)
+CleanData$responsability_vege <- NA
+CleanData$responsability_vege[Data$Q67 == 3] <- 1
+CleanData$responsability_vege[Data$Q67 %in% c(1,2,4)] <- 0
+table(CleanData$responsability_vege)
+
+table(Data$Q67)
+CleanData$responsability_vegan <- NA
+CleanData$responsability_vegan[Data$Q67 == 4] <- 1
+CleanData$responsability_vegan[Data$Q67 %in% c(1,2,3)] <- 0
+table(CleanData$responsability_vegan)
+
+
+# Êtes-vous en |nbsp;faveur ou en défaveur avec les énoncés suivants :-Les autorités et les décideurs,
+# et pas seulement les citoyens ordinaires, ont une grande part de responsabilité à l'égard de l'environnement
+
+table(Data$Q72_A2)
+CleanData$responsability_GvntVsCitizens <- NA
+CleanData$responsability_GvntVsCitizens[Data$Q72_A2 == 1] <- 0
+CleanData$responsability_GvntVsCitizens[Data$Q72_A2 == 2] <- 0.25
+CleanData$responsability_GvntVsCitizens[Data$Q72_A2 == 3] <- 0.5
+CleanData$responsability_GvntVsCitizens[Data$Q72_A2 == 4] <- 0.75
+CleanData$responsability_GvntVsCitizens[Data$Q72_A2 == 5] <- 1
+table(CleanData$responsability_GvntVsCitizens)
 
 
 ###******************************************###
@@ -974,12 +1116,47 @@ table(CleanData$radicalisation_tolerate_violatingPowerful) # 0 = aucune toléran
 
 
 ###******************************************###
+# Economy ####
+###******************************************###
+
+## Nous nous inquiétons trop de l'avenir de l'environnement et pas assez des questions économiques d'aujourd'hui ###
+
+table(Data$Q22_A1)
+CleanData$economy_worryTooMuchAboutEnvironment <- NA
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 1] <- 0
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 2] <- 0.25
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 3] <- 0.5
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 4] <- 0.75
+CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 5] <- 1
+table(CleanData$economy_worryTooMuchAboutEnvironment)
+
+## Les actions du gouvernement pour réduire les émissions de gaz à effet de serre nuisent à l'économie ###
+
+table(Data$Q22_A2)
+CleanData$economy_governmentClimatePolicyHurtsEconomy <- NA
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 1] <- 0
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 2] <- 0.25
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 3] <- 0.5
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 4] <- 0.75
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 5] <- 1
+table(CleanData$economy_governmentClimatePolicyHurtsEconomy)
+
+
+###******************************************###
 # Politics ####
 ###******************************************###
 
 # Q70 En politique fédérale, vous considérez-vous habituellement
 ## comme un.e conservateur.trice, libéral.e, néo-démocrate, bloquiste, vert.e, un partisan du PPC, ou rien de cela?
 table(Data$Q70)
+CleanData$politics_idFederal <- NA
+CleanData$politics_idFederal[Data$Q70==1] <- "PCC"
+CleanData$politics_idFederal[Data$Q70==2] <- "PLC"
+CleanData$politics_idFederal[Data$Q70==3] <- "NPD"
+CleanData$politics_idFederal[Data$Q70==4] <- "BQ"
+CleanData$politics_idFederal[Data$Q70==5] <- "PVC"
+CleanData$politics_idFederal[Data$Q70==6] <- "PPC"
+CleanData$politics_idFederal[Data$Q70==7] <- "noId"
 
 #### Conservateur 
 table(Data$Q70)
@@ -1028,6 +1205,13 @@ table(CleanData$politics_idFederal_noId)
 # Q71 En politique provinciale, vous considérez-vous habituellement
 ## comme un.e caquiste, libéral.e, solidaire, péquiste, conservateur.trice ou rien de cela?
 table(Data$Q71)
+CleanData$politics_idProvincial <- NA
+CleanData$politics_idProvincial[Data$Q71==1] <- "CAQ"
+CleanData$politics_idProvincial[Data$Q71==2] <- "PLQ"
+CleanData$politics_idProvincial[Data$Q71==3] <- "QS"
+CleanData$politics_idProvincial[Data$Q71==4] <- "PQ"
+CleanData$politics_idProvincial[Data$Q71==5] <- "PCQ"
+CleanData$politics_idProvincial[Data$Q71==6] <- "noId"
 
 #### CAQ 
 table(Data$Q71)
@@ -1066,10 +1250,12 @@ CleanData$politics_idProvincial_noId[Data$Q71==6] <- 1
 table(CleanData$politics_idProvincial_noId)
 
 ###******************************************###
-# Economy ####
+# Scales ####
 ###******************************************###
 
-## Nous nous inquiétons trop de l'avenir de l'environnement et pas assez des questions économiques d'aujourd'hui ####
+###******************************************###
+## Scepticism ####
+###******************************************###
 
 table(Data$Q22_A1)
 CleanData$economy_worryTooMuchAboutEnvironment <- NA
@@ -1080,7 +1266,53 @@ CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 4] <- 0.75
 CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 5] <- 1
 table(CleanData$economy_worryTooMuchAboutEnvironment)
 
-## Les actions du gouvernement pour réduire les émissions de gaz à effet de serre nuisent à l'économie ####
+### Prep variables ####
+
+
+## 0 = pas sceptique, 1 = scepticisme 
+### Reverse the variables that need to be reversed with finverser
+### Add them as a new variable with the scaleScep_ prefix
+
+table(CleanData$gravity_whenWillHarmCanadians)
+CleanData$scaleScep_whenWillHarmCanadians <- finverser(CleanData$gravity_whenWillHarmCanadians)
+table(CleanData$scaleScep_whenWillHarmCanadians)
+
+table(CleanData$gravity_crisisIsExaggerated)
+CleanData$scaleScep_crisisIsExaggerated <- CleanData$gravity_crisisIsExaggerated
+table(CleanData$scaleScep_crisisIsExaggerated)
+
+table(CleanData$science_trustScientists)
+CleanData$scaleScep_trustScientists <- finverser(CleanData$science_trustScientists)
+table(CleanData$scaleScep_trustScientists)
+
+table(CleanData$science_consensusClimateChange)
+CleanData$scaleScep_consensusClimateChange <- finverser(CleanData$science_consensusClimateChange)
+table(CleanData$scaleScep_consensusClimateChange)
+
+table(CleanData$science_carContributeClimateChange)
+CleanData$scaleScep_carContribute <- finverser(CleanData$science_carContributeClimateChange)
+table(CleanData$scaleScep_carContribute)
+
+table(CleanData$science_scientistsExaggerateClimateChangeEvidence)
+CleanData$scaleScep_scientistsExaggerate <- CleanData$science_scientistsExaggerateClimateChangeEvidence
+table(CleanData$scaleScep_scientistsExaggerate)
+
+# human causal effect
+table(CleanData$science_climateChangeMainCause_naturalProcesses)
+table(CleanData$science_climateChangeMainCause_natureAndHumans)
+table(CleanData$science_climateChangeMainCause_humanActivities)
+CleanData$scaleScep_natureCauseClimateChange <- NA
+CleanData$scaleScep_natureCauseClimateChange[CleanData$science_climateChangeMainCause_humanActivities == 1] <- 0
+CleanData$scaleScep_natureCauseClimateChange[CleanData$science_climateChangeMainCause_naturalProcesses == 1] <- 1
+CleanData$scaleScep_natureCauseClimateChange[CleanData$science_climateChangeMainCause_natureAndHumans == 1] <- 1
+table(CleanData$scaleScep_natureCauseClimateChange)
+
+# Make scale
+CleanData <- CleanData %>% 
+  mutate(scale_scepticism = (CleanData %>%
+                        select(starts_with("scaleScep_")) %>%
+                        rowSums())/length(names(CleanData %>% select(starts_with("scaleScep_")))))
+
 
 table(Data$Q22_A2)
 CleanData$economy_governmentClimatePolicyHurtsEconomy <- NA
@@ -1091,11 +1323,13 @@ CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 4] <- 0.75
 CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 5] <- 1
 table(CleanData$economy_governmentClimatePolicyHurtsEconomy)
 
+
 ###******************************************###
-# Science ####
+## Gravity ####
 ###******************************************###
 
-## À quel point êtes-vous certain.e que les changements climatiques sont en train de se produire? ##
+### Prep variables ####
+
 
 table(Data$Q27)
 CleanData$science_climateChangeIsHappening <- NA
@@ -1105,5 +1339,43 @@ CleanData$science_climateChangeIsHappening[Data$Q27 == 3] <- 0.66
 CleanData$science_climateChangeIsHappening[Data$Q27 == 4] <- 1
 table(CleanData$science_climateChangeIsHappening)
 
+## 0 = pas inquiet, situation pas grave, 1 = inquiet, situation grave 
+### Reverse the variables that need to be reversed with finverser
+### Add them as a new variable with the scaleScep_ prefix
 
+# climateChangePersonalMenace
+table(CleanData$gravity_climateChangePersonalMenace)
+CleanData$scaleGravity_climateChangePersonalMenace <- CleanData$gravity_climateChangePersonalMenace
+table(CleanData$scaleGravity_climateChangePersonalMenace)
+
+# worriedClimateChange
+table(CleanData$gravity_worriedClimateChange)
+CleanData$scaleGravity_worriedClimateChange <- CleanData$gravity_worriedClimateChange
+table(CleanData$scaleGravity_worriedClimateChange)
+
+# majorCatastrophe
+table(CleanData$gravity_majorCatastrophe)
+CleanData$scaleGravity_majorCatastrophe <- CleanData$gravity_majorCatastrophe
+table(CleanData$scaleGravity_majorCatastrophe)
+
+# climateChangeEndHumanity
+table(CleanData$gravity_climateChangeEndHumanity)
+CleanData$scaleGravity_climateChangeEndHumanity <- CleanData$gravity_climateChangeEndHumanity
+table(CleanData$scaleGravity_climateChangeEndHumanity)
+
+# Make scale
+CleanData <- CleanData %>% 
+  mutate(scale_gravity = (CleanData %>%
+                           select(starts_with("scaleGravity_")) %>%
+                           rowSums())/length(names(CleanData %>% select(starts_with("scaleGravity_")))))
+
+
+# Remove columns that make the scale
+CleanData <- CleanData %>% 
+  select(-starts_with(c("scaleScep_", "scaleGravity_")))
+
+
+###******************************************###
+# Save to RDS ####
+###******************************************###
 saveRDS(CleanData, "_SharedFolder_quorum-enviro/data/cleanData/data.rds")

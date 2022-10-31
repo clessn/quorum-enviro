@@ -63,3 +63,36 @@ finverser <- function(vec_col){
   vec_col <- vec_col - max
   return(vec_col)
 }
+
+ggpairs_jitter_with_smooth <- function(data, mapping, method="loess", ...){
+  p <- ggplot(data = data, mapping = mapping) + 
+    geom_jitter(alpha = 0.2) + 
+    geom_smooth(method=method, ...)
+  p
+}
+
+vector_prop_table <- function(vector){
+  table <- prop.table(table(vector))
+  return(table)
+}
+
+acp_plots <- function(data){
+  pr.out <- prcomp(data, scale = T)
+  pr.out$sdev
+  pr.var <- pr.out$sdev^2
+  pve <- pr.var / sum(pr.var) #pve : proportion of variation explained
+  par(mfrow = c(1, 3))
+  biplot(pr.out, col = c("white", "grey20"))
+  plot(pve, xlab = "Composante principale",
+       ylab = "Proportion de variance expliquée", ylim = c(0, 1),
+       type = "b", pch = 16, las = 1)
+  plot(cumsum(pve), xlab = "Composante principale",
+       ylab = "Proportion de variance expliquée",
+       ylim = c(0, 1), type = "b", pch = 16, las = 1)
+  par(mfrow = c(1,1))
+}
+
+# Function to transform scales on 0-1
+minmaxNormalization <- function(x) {
+  return((x-min(x, na.rm = T))/(max(x, na.rm = T)-min(x, na.rm = T)))
+}
