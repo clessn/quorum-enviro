@@ -1249,6 +1249,62 @@ CleanData$politics_idProvincial_noId[Data$Q71==6] <- 1
 table(CleanData$politics_idProvincial_noId)
 
 ###******************************************###
+# Complot COVID Mathieu Turgeon ####
+###******************************************###
+
+# Il y a beaucoup d’informations qui circulent à propos de l’origine du coronavirus,
+### le virus qui provoque la COVID-19.
+
+# À votre avis, le coronavirus est:
+table(Data$Q76A)
+
+# Un virus dont l’origine n’a pas encore été établie
+CleanData$covid_origin_notEstablished <- NA
+CleanData$covid_origin_notEstablished[Data$Q76A==1] <- 1
+CleanData$covid_origin_notEstablished[Data$Q76A%in%c(2,3)] <- 0
+table(CleanData$covid_origin_notEstablished)
+
+# Un virus qui a été créé volontairement dans un laboratoire chinois
+CleanData$covid_origin_chineseLabo <- NA
+CleanData$covid_origin_chineseLabo[Data$Q76A==2] <- 1
+CleanData$covid_origin_chineseLabo[Data$Q76A%in%c(1,3)] <- 0
+table(CleanData$covid_origin_chineseLabo)
+
+# ne sais pas
+CleanData$covid_origin_dontKnow <- NA
+CleanData$covid_origin_dontKnow[Data$Q76A==3] <- 1
+CleanData$covid_origin_dontKnow[Data$Q76A%in%c(1,2)] <- 0
+table(CleanData$covid_origin_dontKnow)
+
+
+
+table(Data$Q76B)
+
+# Un virus dont l’origine n’a pas encore été établie
+CleanData$covid_originForceResponse_notEstablished <- NA
+CleanData$covid_originForceResponse_notEstablished[Data$Q76B==1] <- 1
+CleanData$covid_originForceResponse_notEstablished[Data$Q76B==2] <- 0
+table(CleanData$covid_originForceResponse_notEstablished)
+
+# Un virus qui a été créé volontairement dans un laboratoire chinois
+CleanData$covid_originForceResponse_chineseLabo <- NA
+CleanData$covid_originForceResponse_chineseLabo[Data$Q76B==2] <- 1
+CleanData$covid_originForceResponse_chineseLabo[Data$Q76B==1] <- 0
+table(CleanData$covid_originForceResponse_chineseLabo)
+
+
+# Croyez-vous que le coronavirus est un virus qui a été créé volontairement
+## dans un laboratoire chinois dans le but d’augmenter le pouvoir é
+table(Data$Q76C)
+
+CleanData$covid_chineseLabo_forceResponse <- finverser(Data$Q76C)
+CleanData$covid_chineseLabo_forceResponse <- minmaxNormalization(CleanData$covid_chineseLabo_forceResponse)
+table(CleanData$covid_chineseLabo_forceResponse)
+
+table(Data$Q76D)
+
+
+###******************************************###
 # Scales ####
 ###******************************************###
 
