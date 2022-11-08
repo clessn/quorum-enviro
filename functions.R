@@ -96,3 +96,36 @@ acp_plots <- function(data){
 minmaxNormalization <- function(x) {
   return((x-min(x, na.rm = T))/(max(x, na.rm = T)-min(x, na.rm = T)))
 }
+
+
+bivariate_plot <- function(data,
+                             vd,
+                             vi,
+                             type_vd,
+                             type_vi,
+                             path){
+  data$col_vd <- data[[vd]]
+  mean_all <- mean(data$col_vd, na.rm = T)
+  data$group <- as.character(data[[vi]])
+  graphdata <- data %>% 
+    group_by(group) %>% 
+    summarise(n = n(),
+              mean_vd = mean(col_vd, na.rm = T))
+  ggplot(graphdata, aes(x = group, y = mean_vd)) +
+    geom_hline(yintercept = mean_all,
+               linetype = "dashed",
+               color = "red",
+               size = 1.5) +
+    geom_bar(stat = "identity",
+             width = 0.7,
+             fill = "#5B92FF",
+             color = "#5B92FF",
+             alpha = 0.6) +
+    geom_text(aes(y = mean_vd - 0.02, label = paste0("n = ", n)),
+              size = 6, fontface = "bold") +
+    ylab(vd) +
+    xlab(vi)
+    theme_bw()
+  ggsave(path)
+}
+

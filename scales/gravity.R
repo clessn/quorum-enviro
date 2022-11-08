@@ -65,14 +65,14 @@ Data2 <- Data %>%
                         rowSums())/length(names(Data %>% select(starts_with("scaleGravity_")))))
 
 hist(Data2$scaleGravity)
-plot(cumsum(vector_prop_table(Data2$scaleGravity)))
-cumsum(vector_prop_table(Data2$scaleGravity))
-plot(vector_prop_table(Data2$scaleGravity))
-plot(table(Data2$scaleGravity))
-plot(table(log(Data2$scaleGravity)))
+#plot(cumsum(vector_prop_table(Data2$scaleGravity)))
+#cumsum(vector_prop_table(Data2$scaleGravity))
+#plot(vector_prop_table(Data2$scaleGravity))
+#plot(table(Data2$scaleGravity))
+#plot(table(log(Data2$scaleGravity)))
 
-plot(vector_prop_table(log(Data2$scaleGravity)))
-hist(log(Data2$scaleGravity))
+#plot(vector_prop_table(log(Data2$scaleGravity)))
+#hist(log(Data2$scaleGravity))
 
 names(FaData) <- gsub("scaleGravity_", "", names(FaData))
 ggpairs(FaData,

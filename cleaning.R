@@ -1024,8 +1024,7 @@ table(CleanData$international_nbRefugeesCanada)
 ##    à la violence pour exprimer leurs sentiments?
 table(Data$Q62)
 CleanData$radicalisation_angryJustifiesViolence <- NA
-CleanData$radicalisation_angryJustifiesViolence <- finverser(Data$Q62)
-CleanData$radicalisation_angryJustifiesViolence <- minmaxNormalization(CleanData$radicalisation_angryJustifiesViolence)
+CleanData$radicalisation_angryJustifiesViolence <- minmaxNormalization(Data$Q62)
 table(CleanData$radicalisation_angryJustifiesViolence) # 0 = Fortement en désaccord... 1 = Fortement en accord
 
 # Q63 À quel point seriez-vous prêt à tolérer les actions politiques suivantes pour l’avancement de la cause climatique?
@@ -1253,56 +1252,10 @@ table(CleanData$politics_idProvincial_noId)
 # Complot COVID Mathieu Turgeon ####
 ###******************************************###
 
-# Il y a beaucoup d’informations qui circulent à propos de l’origine du coronavirus,
-### le virus qui provoque la COVID-19.
-
-# À votre avis, le coronavirus est:
-table(Data$Q76A)
-
-# Un virus dont l’origine n’a pas encore été établie
-CleanData$covid_origin_notEstablished <- NA
-CleanData$covid_origin_notEstablished[Data$Q76A==1] <- 1
-CleanData$covid_origin_notEstablished[Data$Q76A%in%c(2,3)] <- 0
-table(CleanData$covid_origin_notEstablished)
-
-# Un virus qui a été créé volontairement dans un laboratoire chinois
-CleanData$covid_origin_chineseLabo <- NA
-CleanData$covid_origin_chineseLabo[Data$Q76A==2] <- 1
-CleanData$covid_origin_chineseLabo[Data$Q76A%in%c(1,3)] <- 0
-table(CleanData$covid_origin_chineseLabo)
-
-# ne sais pas
-CleanData$covid_origin_dontKnow <- NA
-CleanData$covid_origin_dontKnow[Data$Q76A==3] <- 1
-CleanData$covid_origin_dontKnow[Data$Q76A%in%c(1,2)] <- 0
-table(CleanData$covid_origin_dontKnow)
-
-
-
-table(Data$Q76B)
-
-# Un virus dont l’origine n’a pas encore été établie
-CleanData$covid_originForceResponse_notEstablished <- NA
-CleanData$covid_originForceResponse_notEstablished[Data$Q76B==1] <- 1
-CleanData$covid_originForceResponse_notEstablished[Data$Q76B==2] <- 0
-table(CleanData$covid_originForceResponse_notEstablished)
-
-# Un virus qui a été créé volontairement dans un laboratoire chinois
-CleanData$covid_originForceResponse_chineseLabo <- NA
-CleanData$covid_originForceResponse_chineseLabo[Data$Q76B==2] <- 1
-CleanData$covid_originForceResponse_chineseLabo[Data$Q76B==1] <- 0
-table(CleanData$covid_originForceResponse_chineseLabo)
-
-
-# Croyez-vous que le coronavirus est un virus qui a été créé volontairement
-## dans un laboratoire chinois dans le but d’augmenter le pouvoir é
-table(Data$Q76C)
-
-CleanData$covid_chineseLabo_forceResponse <- finverser(Data$Q76C)
-CleanData$covid_chineseLabo_forceResponse <- minmaxNormalization(CleanData$covid_chineseLabo_forceResponse)
-table(CleanData$covid_chineseLabo_forceResponse)
-
-table(Data$Q76D)
+CleanData$covid_origin_A <- Data$Q76A
+CleanData$covid_origin_B <- Data$Q76B
+CleanData$covid_origin_C <- Data$Q76C
+CleanData$covid_origin_D <- Data$Q76D
 
 
 ###******************************************###
@@ -1313,17 +1266,7 @@ table(Data$Q76D)
 ## Scepticism ####
 ###******************************************###
 
-table(Data$Q22_A1)
-CleanData$economy_worryTooMuchAboutEnvironment <- NA
-CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 1] <- 0
-CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 2] <- 0.25
-CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 3] <- 0.50
-CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 4] <- 0.75
-CleanData$economy_worryTooMuchAboutEnvironment[Data$Q22_A1 == 5] <- 1
-table(CleanData$economy_worryTooMuchAboutEnvironment)
-
 ### Prep variables ####
-
 
 ## 0 = pas sceptique, 1 = scepticisme 
 ### Reverse the variables that need to be reversed with finverser
@@ -1386,18 +1329,9 @@ table(CleanData$economy_governmentClimatePolicyHurtsEconomy)
 
 ### Prep variables ####
 
-
-table(Data$Q27)
-CleanData$science_climateChangeIsHappening <- NA
-CleanData$science_climateChangeIsHappening[Data$Q27 == 1] <- 0
-CleanData$science_climateChangeIsHappening[Data$Q27 == 2] <- 0.33
-CleanData$science_climateChangeIsHappening[Data$Q27 == 3] <- 0.66
-CleanData$science_climateChangeIsHappening[Data$Q27 == 4] <- 1
-table(CleanData$science_climateChangeIsHappening)
-
 ## 0 = pas inquiet, situation pas grave, 1 = inquiet, situation grave 
 ### Reverse the variables that need to be reversed with finverser
-### Add them as a new variable with the scaleScep_ prefix
+### Add them as a new variable with the scaleGravity_ prefix
 
 # climateChangePersonalMenace
 table(CleanData$gravity_climateChangePersonalMenace)
@@ -1426,7 +1360,26 @@ CleanData <- CleanData %>%
                            rowSums())/length(names(CleanData %>% select(starts_with("scaleGravity_")))))
 
 
-# Remove columns that make the scale
+###******************************************###
+## Radicalisation ####
+###******************************************###
+
+### Prep variables ####
+
+## 0 = pas radical, 1 = radical 
+### Reverse the variables that need to be reversed with finverser
+
+# Make scale
+CleanData <- CleanData %>% 
+  mutate(scale_radicalisation = (CleanData %>%
+                            select(starts_with("radicalisation_")) %>%
+                            rowSums())/length(names(CleanData %>% select(starts_with("radicalisation_")))))
+
+
+###******************************************###
+# Remove duplicated columns that made the scales ####
+###******************************************###
+
 CleanData <- CleanData %>% 
   select(-starts_with(c("scaleScep_", "scaleGravity_")))
 
@@ -1435,3 +1388,5 @@ CleanData <- CleanData %>%
 # Save to RDS ####
 ###******************************************###
 saveRDS(CleanData, "_SharedFolder_quorum-enviro/data/cleanData/data.rds")
+write.csv(CleanData, "_SharedFolder_quorum-enviro/data/cleanData/data.csv",
+          row.names = F, fileEncoding = "UTF-8")
