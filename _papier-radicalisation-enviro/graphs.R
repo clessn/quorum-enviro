@@ -614,3 +614,119 @@ GraphData %>%
 
 ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/fig3_coefficients-tolLevel4.png",
        width = 10, height = 7)
+
+
+# Figures additionnelles: bivariate scale_gravity ####
+
+## Age
+Data %>% 
+  ggplot(aes(x = ses_age, y = scale_gravity)) +
+  geom_jitter(width = 0.2, height = 0.2,
+              alpha = 0.5, color = "#6CAAF5") +
+  geom_smooth(se = F, size = 2, color = "darkgrey") +
+  clessnverse::theme_clean_light(base_size = 35) +
+  #clessnverse::theme_clean_light() +
+  geom_vline(xintercept = 45) +
+  scale_x_continuous(breaks = c(25, 45, 50, 75)) +
+  theme(axis.title.x = element_text(hjust = 0.5,
+                                    lineheight = 0.2))
+  
+
+ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/scale-gravity_age.png",
+       width = 10, height = 7)
+
+Data %>% 
+  mutate(over45 = ifelse(ses_age > 45, "46 ans et +", "18-45 ans")) %>% 
+  ggplot(aes(x = scale_gravity, y = factor(over45))) +
+  geom_density_ridges(scale = 0.95, bandwidth = 0.05,
+                      color = "#6CAAF5", fill = "#6CAAF5",
+                      alpha = 0.7, quantile_lines=T,
+                      quantile_fun=function(x,...)mean(x)) +
+  ylab("") +
+  scale_x_continuous(breaks = c(0,1)) +
+  clessnverse::theme_clean_light(base_size = 35) +
+  #clessnverse::theme_clean_light() +
+  theme(axis.title.x = element_text(hjust = 0.5,
+                                    lineheight = 0.2))
+
+ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/scale-gravity_age2.png",
+       width = 10, height = 7)
+
+Data %>% 
+  mutate(over35 = ifelse(ses_age > 35, "36 ans et +", "18-35 ans")) %>% 
+  ggplot(aes(x = scale_gravity, y = factor(over35))) +
+  geom_density_ridges(scale = 0.95, bandwidth = 0.05,
+                      color = "#6CAAF5", fill = "#6CAAF5",
+                      alpha = 0.7, quantile_lines=T,
+                      quantile_fun=function(x,...)mean(x)) +
+  ylab("") +
+  scale_x_continuous(breaks = c(0,1)) +
+  clessnverse::theme_clean_light(base_size = 35) +
+  #clessnverse::theme_clean_light() +
+  theme(axis.title.x = element_text(hjust = 0.5,
+                                    lineheight = 0.2))
+
+ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/scale-gravity_age3.png",
+       width = 10, height = 7)
+
+
+## Genre
+Data %>% 
+  mutate(gender = ifelse(ses_gender_male == 1, "male", "female")) %>% 
+  ggplot(aes(x = scale_gravity, y = factor(gender))) +
+  geom_density_ridges(scale = 0.95, bandwidth = 0.05,
+                      color = "#6CAAF5", fill = "#6CAAF5",
+                      alpha = 0.7, quantile_lines=T,
+                      quantile_fun=function(x,...)mean(x)) +
+  ylab("") +
+  scale_x_continuous(breaks = c(0,1)) +
+  clessnverse::theme_clean_light(base_size = 35) +
+  #clessnverse::theme_clean_light() +
+  theme(axis.title.x = element_text(hjust = 0.5,
+                                    lineheight = 0.2))
+
+ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/scale-gravity_gender.png",
+       width = 10, height = 7)
+
+
+## Income
+Data %>% 
+  mutate(income = ifelse(ses_incomeLow == 1,   "low", NA),
+         income = ifelse(ses_incomeMid == 1,   "mid", income),
+         income = ifelse(ses_incomeHigh == 1, "high", income)) %>% 
+  ggplot(aes(x = scale_gravity, y = factor(income, levels = c("low", "mid", "high")))) +
+  geom_density_ridges(scale = 0.95, bandwidth = 0.05,
+                      color = "#6CAAF5", fill = "#6CAAF5",
+                      alpha = 0.7, quantile_lines=T,
+                      quantile_fun=function(x,...)mean(x)) +
+  ylab("income") +
+  scale_x_continuous(breaks = c(0,1)) +
+  clessnverse::theme_clean_light(base_size = 35) +
+  #clessnverse::theme_clean_light() +
+  theme(axis.title.x = element_text(hjust = 0.5,
+                                    lineheight = 0.2))
+
+ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/scale-gravity_income.png",
+       width = 10, height = 7)
+
+
+## Educ level
+
+Data %>% 
+  mutate(educ_level = ifelse(ses_educBHS == 1, "BHS", NA),
+         educ_level = ifelse(ses_educCollege == 1, "College", educ_level),
+         educ_level = ifelse(ses_educUniv == 1, "Université", educ_level)) %>% 
+  ggplot(aes(x = scale_gravity, y = factor(educ_level, levels = c("BHS", "College", "Université")))) +
+  geom_density_ridges(scale = 0.95, bandwidth = 0.05,
+                      color = "#6CAAF5", fill = "#6CAAF5",
+                      alpha = 0.7, quantile_lines=T,
+                      quantile_fun=function(x,...)mean(x)) +
+  ylab("") +
+  scale_x_continuous(breaks = c(0,1)) +
+  clessnverse::theme_clean_light(base_size = 35) +
+  #clessnverse::theme_clean_light() +
+  theme(axis.title.x = element_text(hjust = 0.5,
+                                    lineheight = 0.2))
+
+ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/scale-gravity_educ.png",
+       width = 10, height = 7)
