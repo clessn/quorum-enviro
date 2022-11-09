@@ -339,63 +339,278 @@ vds <- names(Data %>%
                select(starts_with("radicalisation_tolerate")))
 
 ## Prepare independent variables
-Data <- Data %>% 
+Data2 <- Data %>% 
   mutate(educ_level = ifelse(ses_educBHS == 1, 0, NA),
          educ_level = ifelse(ses_educCollege == 1, 0.5, educ_level),
-         educ_level = ifelse(ses_educUniv == 1, 1, educ_level))
+         educ_level = ifelse(ses_educUniv == 1, 1, educ_level),
+         responsability = responsability_citizensVsGvnt,
+         ses_age = minmaxNormalization(ses_age))
 
+vds <- names(Data2 %>% 
+               select(starts_with("radicalisation_tolerate")))
+names(Data2) <- gsub("radicalisation_tolerate_",
+                    "",
+                    names(Data2))
+vds <- gsub("radicalisation_tolerate_",
+            "",
+            vds)
+
+GraphData <- data.frame(
+  item = as.character(),
+  vi = as.character(),
+  coef = as.numeric(),
+  se = as.numeric(),
+  pval = as.numeric()
+)
 for (i in 1:length(vds)){
+  #i <- 1
   vd <- vds[i]
-  modeli <- lm(Data[[vd]] ~ scale_gravity + ses_gender_male +
-                            ses_age + educ_level + ses_incomeHigh +
-                            ses_incomeLow,
-               data = Data)
-  assign(vd, modeli)
+  modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity*ses_age + ses_gender_male +
+                             responsability + educ_level +
+                 ses_incomeHigh + ses_incomeLow,
+               data = Data2)")))
+  item <- rep(vd, 9)
+  vi <- names(modeli$coefficients)
+  coef <- modeli$coefficients
+  se <- summary(modeli)$coefficients[,2]
+  pval <- round(summary(modeli)$coefficients[,4], 3)
+  GraphDatai <- as.data.frame(cbind(item, vi, coef, se, pval),
+                              row.names = F)
+  GraphData <- rbind(GraphData, GraphDatai)
+  GraphData$coef <- as.numeric(GraphData$coef)
+  GraphData$se <- as.numeric(GraphData$se)
+  GraphData$pval <- as.numeric(GraphData$pval)
 }
 
-model_vandalismObjects <- lm()
+tol_levels_df <- Data %>% 
+  pivot_longer(cols = starts_with("radicalisation_tolerate"),
+               names_to = "item", values_to = "tolerance",
+               names_prefix = "radicalisation_tolerate_") %>% 
+  group_by(item) %>% 
+  summarise(mean_item = mean(tolerance))
+tol_levels <- tol_levels_df$mean_item
+names(tol_levels) <- tol_levels_df$item
 
-library(stargazer)
-stargazer(model_radicalisation_tolerate_vandalismObjects,
-          model_radicalisation_tolerate_throwingObjectsInfrastructure,
-          model_radicalisation_tolerate_sabotagingInfrastructure,
-          model_radicalisation_tolerate_violatingPowerful,
-          model_radicalisation_tolerate_fightPolice,
-          model_radicalisation_tolerate_blockBridgeRoad,
-          dep.var.labels = c("vandalism", "throwingObjects",
-                               "sabotagingInfra", "violatingPowerful",
-                               "fightPolice", "blockBridgeRoad"))
+GraphData$mean_tol <- tol_levels[GraphData$item]
 
-stargazer(model_radicalisation_tolerate_attachTreeVehicule,
-          model_radicalisation_tolerate_blockPipelineConstruction,
-          model_radicalisation_tolerate_occupyPublicSpace,
-          model_radicalisation_tolerate_manifestation,
-          model_radicalisation_tolerate_divest,
-          model_radicalisation_tolerate_boycott,
-          model_radicalisation_tolerate_signPetition,
-          dep.var.labels = c("attachTree", "blockPipeline",
-                             "occupyPublicSpace", "manifestation",
-                             "divest", "boycott",
-                             "signPetition"))
+sysfonts::font_add_google("Roboto")
+showtext::showtext_auto()
 
-#Data %>% 
-#  filter(politics_idProvincial!="noId") %>% 
-#  group_by(politics_idProvincial, radicalisation_tolerate_vandalismObjects) %>% 
-#  summarise(n = n()) %>%
-#  mutate(prop = n/sum(n)*100,
-#         is_tolerant = ifelse(radicalisation_tolerate_vandalismObjects==0, 0, 1),
-#         tol_level = ifelse(radicalisation_tolerate_vandalismObjects==0, 1, radicalisation_tolerate_vandalismObjects),
-#         tol_level = factor((tol_level*3), levels = c(3,2,1)),
-#         rad = as.character(radicalisation_tolerate_vandalismObjects),
-#         party = factor(politics_idProvincial,
-#                        levels = c("CAQ", "PQ", "PCQ", "PLQ", "QS"))) %>% 
-#  ggplot(aes(x = interaction(is_tolerant, party), y = prop)) +
-#  geom_bar(stat = "identity",
-#           aes(alpha = tol_level))
-#
-#
-#
-## +
-#  facet_wrap(~politics_idProvincial) +
-#  scale_x_discrete(labels = c("Aucune tolérance", "Tolérance faible", "Tolérance"))
+GraphData %>% 
+  filter(vi %in% c("scale_gravity", "ses_age", "responsability",
+                   "scale_gravity:ses_age")) %>% 
+  mutate(sign = as.character(ifelse(pval <= 0.05, "Significatif", "Non-significatif"))) %>% 
+  ggplot(aes(x = coef, y = reorder(item, -mean_tol),
+             alpha = sign)) +
+  scale_x_continuous(limits = c(-1, 1)) +
+  ylab("") +
+  xlab("\nCoefficient de régression") +
+  facet_wrap(~vi, nrow = 1) +
+  geom_point(color = "#6CAAF5", size = 1.5) +
+  geom_segment(color = "#6CAAF5", size = 1, aes(x = coef - se, xend = coef, yend = reorder(item, -mean_tol))) +
+  geom_segment(color = "#6CAAF5", size = 1, aes(xend = coef + se, x = coef, yend = reorder(item, -mean_tol))) +
+  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.4) +
+  scale_alpha_discrete(range = c(0.2, 1)) + 
+  clessnverse::theme_clean_light(base_size = 30) +
+  theme(strip.background = element_rect(fill = "#F2F2F2", color = NA),
+        axis.title.x = element_text(hjust = 0.5,
+                                    lineheight = 0.2))
 
+ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/fig3_coefficients-tolLevel.png",
+       width = 10, height = 7)
+
+
+## Sans interaction
+GraphData <- data.frame(
+  item = as.character(),
+  vi = as.character(),
+  coef = as.numeric(),
+  se = as.numeric(),
+  pval = as.numeric()
+)
+for (i in 1:length(vds)){
+  #i <- 1
+  vd <- vds[i]
+  modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity + ses_age + ses_gender_male +
+                             responsability + educ_level +
+                 ses_incomeHigh + ses_incomeLow,
+               data = Data2)")))
+  item <- rep(vd, 9)
+  vi <- names(modeli$coefficients)
+  coef <- modeli$coefficients
+  se <- summary(modeli)$coefficients[,2]
+  pval <- round(summary(modeli)$coefficients[,4], 3)
+  GraphDatai <- as.data.frame(cbind(item, vi, coef, se, pval),
+                              row.names = F)
+  GraphData <- rbind(GraphData, GraphDatai)
+  GraphData$coef <- as.numeric(GraphData$coef)
+  GraphData$se <- as.numeric(GraphData$se)
+  GraphData$pval <- as.numeric(GraphData$pval)
+}
+
+tol_levels_df <- Data %>% 
+  pivot_longer(cols = starts_with("radicalisation_tolerate"),
+               names_to = "item", values_to = "tolerance",
+               names_prefix = "radicalisation_tolerate_") %>% 
+  group_by(item) %>% 
+  summarise(mean_item = mean(tolerance))
+tol_levels <- tol_levels_df$mean_item
+names(tol_levels) <- tol_levels_df$item
+
+GraphData$mean_tol <- tol_levels[GraphData$item]
+
+sysfonts::font_add_google("Roboto")
+showtext::showtext_auto()
+
+GraphData %>% 
+  filter(vi %in% c("scale_gravity", "ses_age", "responsability")) %>% 
+  mutate(sign = as.character(ifelse(pval <= 0.05, "Significatif", "Non-significatif"))) %>% 
+  ggplot(aes(x = coef, y = reorder(item, -mean_tol),
+             alpha = sign)) +
+  scale_x_continuous(limits = c(-1, 1)) +
+  ylab("") +
+  xlab("\nCoefficient de régression") +
+  facet_wrap(~vi, nrow = 1) +
+  geom_point(color = "#6CAAF5", size = 1.5) +
+  geom_segment(color = "#6CAAF5", size = 1, aes(x = coef - se, xend = coef, yend = reorder(item, -mean_tol))) +
+  geom_segment(color = "#6CAAF5", size = 1, aes(xend = coef + se, x = coef, yend = reorder(item, -mean_tol))) +
+  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.4) +
+  scale_alpha_discrete(range = c(0.2, 1)) + 
+  clessnverse::theme_clean_light(base_size = 30) +
+  theme(strip.background = element_rect(fill = "#F2F2F2", color = NA),
+        axis.title.x = element_text(hjust = 0.5,
+                                    lineheight = 0.2))
+
+ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/fig3_coefficients-tolLevel2.png",
+       width = 10, height = 7)
+
+
+
+## Avec interaction, sans responsability
+GraphData <- data.frame(
+  item = as.character(),
+  vi = as.character(),
+  coef = as.numeric(),
+  se = as.numeric(),
+  pval = as.numeric()
+)
+for (i in 1:length(vds)){
+  #i <- 1
+  vd <- vds[i]
+  modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity*ses_age + ses_gender_male +
+                             educ_level +
+                 ses_incomeHigh + ses_incomeLow,
+               data = Data2)")))
+  item <- rep(vd, 9)
+  vi <- names(modeli$coefficients)
+  coef <- modeli$coefficients
+  se <- summary(modeli)$coefficients[,2]
+  pval <- round(summary(modeli)$coefficients[,4], 3)
+  GraphDatai <- as.data.frame(cbind(item, vi, coef, se, pval),
+                              row.names = F)
+  GraphData <- rbind(GraphData, GraphDatai)
+  GraphData$coef <- as.numeric(GraphData$coef)
+  GraphData$se <- as.numeric(GraphData$se)
+  GraphData$pval <- as.numeric(GraphData$pval)
+}
+
+tol_levels_df <- Data %>% 
+  pivot_longer(cols = starts_with("radicalisation_tolerate"),
+               names_to = "item", values_to = "tolerance",
+               names_prefix = "radicalisation_tolerate_") %>% 
+  group_by(item) %>% 
+  summarise(mean_item = mean(tolerance))
+tol_levels <- tol_levels_df$mean_item
+names(tol_levels) <- tol_levels_df$item
+
+GraphData$mean_tol <- tol_levels[GraphData$item]
+
+sysfonts::font_add_google("Roboto")
+showtext::showtext_auto()
+
+GraphData %>% 
+  filter(vi %in% c("scale_gravity", "ses_age", "scale_gravity:ses_age")) %>% 
+  mutate(sign = as.character(ifelse(pval <= 0.05, "Significatif", "Non-significatif"))) %>% 
+  ggplot(aes(x = coef, y = reorder(item, -mean_tol),
+             alpha = sign)) +
+  scale_x_continuous(limits = c(-1, 1)) +
+  ylab("") +
+  xlab("\nCoefficient de régression") +
+  facet_wrap(~vi, nrow = 1) +
+  geom_point(color = "#6CAAF5", size = 1.5) +
+  geom_segment(color = "#6CAAF5", size = 1, aes(x = coef - se, xend = coef, yend = reorder(item, -mean_tol))) +
+  geom_segment(color = "#6CAAF5", size = 1, aes(xend = coef + se, x = coef, yend = reorder(item, -mean_tol))) +
+  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.4) +
+  scale_alpha_discrete(range = c(0.2, 1)) + 
+  clessnverse::theme_clean_light(base_size = 30) +
+  theme(strip.background = element_rect(fill = "#F2F2F2", color = NA),
+        axis.title.x = element_text(hjust = 0.5,
+                                    lineheight = 0.2))
+
+ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/fig3_coefficients-tolLevel3.png",
+       width = 10, height = 7)
+
+
+## Sans interaction, sans responsability
+GraphData <- data.frame(
+  item = as.character(),
+  vi = as.character(),
+  coef = as.numeric(),
+  se = as.numeric(),
+  pval = as.numeric()
+)
+for (i in 1:length(vds)){
+  #i <- 1
+  vd <- vds[i]
+  modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity + ses_age + ses_gender_male +
+                             educ_level +
+                 ses_incomeHigh + ses_incomeLow,
+               data = Data2)")))
+  item <- rep(vd, 9)
+  vi <- names(modeli$coefficients)
+  coef <- modeli$coefficients
+  se <- summary(modeli)$coefficients[,2]
+  pval <- round(summary(modeli)$coefficients[,4], 3)
+  GraphDatai <- as.data.frame(cbind(item, vi, coef, se, pval),
+                              row.names = F)
+  GraphData <- rbind(GraphData, GraphDatai)
+  GraphData$coef <- as.numeric(GraphData$coef)
+  GraphData$se <- as.numeric(GraphData$se)
+  GraphData$pval <- as.numeric(GraphData$pval)
+}
+
+tol_levels_df <- Data %>% 
+  pivot_longer(cols = starts_with("radicalisation_tolerate"),
+               names_to = "item", values_to = "tolerance",
+               names_prefix = "radicalisation_tolerate_") %>% 
+  group_by(item) %>% 
+  summarise(mean_item = mean(tolerance))
+tol_levels <- tol_levels_df$mean_item
+names(tol_levels) <- tol_levels_df$item
+
+GraphData$mean_tol <- tol_levels[GraphData$item]
+
+sysfonts::font_add_google("Roboto")
+showtext::showtext_auto()
+
+GraphData %>% 
+  filter(vi %in% c("scale_gravity", "ses_age")) %>% 
+  mutate(sign = as.character(ifelse(pval <= 0.05, "Significatif", "Non-significatif"))) %>% 
+  ggplot(aes(x = coef, y = reorder(item, -mean_tol),
+             alpha = sign)) +
+  scale_x_continuous(limits = c(-1, 1)) +
+  ylab("") +
+  xlab("\nCoefficient de régression") +
+  facet_wrap(~vi, nrow = 1) +
+  geom_point(color = "#6CAAF5", size = 1.5) +
+  geom_segment(color = "#6CAAF5", size = 1, aes(x = coef - se, xend = coef, yend = reorder(item, -mean_tol))) +
+  geom_segment(color = "#6CAAF5", size = 1, aes(xend = coef + se, x = coef, yend = reorder(item, -mean_tol))) +
+  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.4) +
+  scale_alpha_discrete(range = c(0.2, 1)) + 
+  clessnverse::theme_clean_light(base_size = 30) +
+  theme(strip.background = element_rect(fill = "#F2F2F2", color = NA),
+        axis.title.x = element_text(hjust = 0.5,
+                                    lineheight = 0.2))
+
+ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/fig3_coefficients-tolLevel4.png",
+       width = 10, height = 7)

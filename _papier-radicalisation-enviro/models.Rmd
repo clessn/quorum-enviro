@@ -24,13 +24,15 @@ responsability -> Les citoyens ordinaires, et pas seulement les autorités et le
 library(stargazer)
 library(tidyverse)
 setwd("..")
+source("functions.R", encoding = "UTF-8")
 Data <- readRDS("_SharedFolder_quorum-enviro/data/cleanData/data.rds") %>%
   mutate(educ_level = ifelse(ses_educBHS == 1, 0, NA),
          educ_level = ifelse(ses_educCollege == 1, 0.5,
                              educ_level),
          educ_level = ifelse(ses_educUniv == 1, 1,
                              educ_level),
-         responsability = responsability_citizensVsGvnt)
+         responsability = responsability_citizensVsGvnt,
+         ses_age = minmaxNormalization(ses_age))
 vds <- names(Data %>% 
                select(starts_with("radicalisation_tolerate")))
 names(Data) <- gsub("radicalisation_tolerate_",
