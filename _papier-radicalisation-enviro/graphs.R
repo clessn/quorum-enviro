@@ -359,7 +359,7 @@ Data2 <- Data %>%
          educ_level = ifelse(ses_educCollege == 1, 0.5, educ_level),
          educ_level = ifelse(ses_educUniv == 1, 1, educ_level),
          responsability = responsability_citizensVsGvnt,
-         under35yo = ifelse(ses_age >= 35, 1, 0),
+         over35yo = ifelse(ses_age >= 35, 1, 0),
          age_cat = get_age_category(ses_age),
          age_cat_norm = minmaxNormalization(age_cat),
          ses_age = minmaxNormalization(ses_age)) %>% 
@@ -716,7 +716,7 @@ GraphData <- data.frame(
 for (i in 1:length(vds)){
   #i <- 1
   vd <- vds[i]
-  modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity + under35yo +
+  modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity + over35yo +
                               ses_gender_male +
                              responsability + educ_level +
                  ses_incomeHigh + ses_incomeLow,
@@ -746,7 +746,7 @@ names(tol_levels) <- tol_levels_df$item
 GraphData$mean_tol <- tol_levels[GraphData$item]
 
 GraphData %>% 
-  filter(vi %in% c("scale_gravity", "under35yo", "responsability")) %>% 
+  filter(vi %in% c("scale_gravity", "over35yo", "responsability")) %>% 
   mutate(sign = as.character(ifelse(pval <= 0.05, "Significatif", "Non-significatif"))) %>% 
   ggplot(aes(x = coef, y = reorder(item, -mean_tol),
              alpha = sign)) +
@@ -832,8 +832,12 @@ GraphData %>%
   scale_alpha_discrete(range = c(0.2, 1)) + 
   geom_segment(aes(color = sign,
                    yend = reorder(item, -mean_tol)),
-               x = -1, xend = 1) +
-  scale_color_discrete() +
+               x = -1.5, xend = 1,
+               size = 0.2,
+               alpha = 0.7) +
+  scale_color_manual(values = c("Significatif" = "#5F95D3",
+                                  "Non-significatif" = "#E2E2E2"),
+                     guide = "none") +
   clessnverse::theme_clean_light(base_size = 30) +
   theme(strip.background = element_rect(fill = "#F2F2F2", color = NA),
         axis.title.x = element_text(hjust = 0.5,
@@ -844,7 +848,9 @@ GraphData %>%
                                           color = "#E2E2E2"),
         axis.ticks.y = element_line(size = 0.25,
                                     color = "#E2E2E2"),
-        axis.ticks.length.y = unit(0.75, "cm"))
+        axis.ticks.length.y = unit(0, "cm"),
+        axis.line.x = element_blank(),
+        axis.ticks.x = element_blank())
 
 ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/fig3_coefficients-tolLevel7.png",
        width = 10, height = 7)
