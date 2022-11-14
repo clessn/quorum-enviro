@@ -778,12 +778,16 @@ GraphData <- data.frame(
 )
 
 for (i in 1:length(vds)){
-  #i <- 1
+  i <- 5
   vd <- vds[i]
   modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity + age_cat_18 +
                                age_cat_23 + age_cat_28 + age_cat_33 + age_cat_38 +
                                age_cat_43 + age_cat_48 + age_cat_53 + age_cat_58 +
                                age_cat_63 + age_cat_68 + age_cat_73 + age_cat_78 +
+                               ses_gender_male + responsability + educ_level +
+                               ses_incomeHigh + ses_incomeLow,
+               data = Data2)")))
+  modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity + age_cat_18 +
                                ses_gender_male + responsability + educ_level +
                                ses_incomeHigh + ses_incomeLow,
                data = Data2)")))

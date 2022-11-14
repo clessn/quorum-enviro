@@ -18,21 +18,36 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-responsability -> Les citoyens ordinaires, et pas seulement les autorités et les décideurs, ont une grande part de responsabilité à l'égard de l'environnement
 
 ```{r echo=F, message=F}
 library(stargazer)
 library(tidyverse)
 setwd("..")
 source("functions.R", encoding = "UTF-8")
-Data <- readRDS("_SharedFolder_quorum-enviro/data/cleanData/data.rds") %>%
+Data <- readRDS("_SharedFolder_quorum-enviro/data/cleanData/data.rds")
+get_age_category <- function(ages){
+  groups <- seq(from = 13,
+                to = max(Data$ses_age, na.rm = T),
+                by = 5)
+  age_cats <- c()
+  for (i in 1:length(ages)){
+    if (!is.na(ages[i])){
+      age_cats[i] <- max(groups[groups<=ages[i]],
+                         na.rm = T)
+    } else (age_cats[i] <- NA)
+  }
+  return(age_cats)
+}
+Data <- Data %>%
   mutate(educ_level = ifelse(ses_educBHS == 1, 0, NA),
          educ_level = ifelse(ses_educCollege == 1, 0.5,
                              educ_level),
          educ_level = ifelse(ses_educUniv == 1, 1,
                              educ_level),
-         responsability = responsability_citizensVsGvnt,
-         ses_age = minmaxNormalization(ses_age))
+         age_cat = get_age_category(ses_age),
+         age_cat_norm = minmaxNormalization(age_cat)) %>% 
+  fastDummies::dummy_columns(.,
+                             select_columns = c("age_cat"))
 vds <- names(Data %>% 
                select(starts_with("radicalisation_tolerate")))
 names(Data) <- gsub("radicalisation_tolerate_",
@@ -48,10 +63,8 @@ attach(Data)
 ```{r echo=F, message=F}
 for (i in 1:length(vds)){
   vd <- vds[i]
-  modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity + ses_gender_male +
-                            ses_age + educ_level +
-                 ses_incomeHigh + ses_incomeLow + responsability,
-               data = Data)")))
+  modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity*age_cat_18 + scale_gravity*age_cat_23 + scale_gravity*age_cat_28 + ses_gender_male + educ_level +
+                 ses_incomeHigh + ses_incomeLow, data = Data)")))
   assign(vd, modeli)
 }
 ```
@@ -75,95 +88,3 @@ stargazer(attachTreeVehicule, blockPipelineConstruction, occupyPublicSpace, mani
           title="Sans interaction 2")
 ```
 
-
-```{r echo=F, message=F}
-for (i in 1:length(vds)){
-  vd <- vds[i]
-  modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity*ses_age + ses_gender_male +
-                             responsability + educ_level +
-                 ses_incomeHigh + ses_incomeLow,
-               data = Data)")))
-  assign(vd, modeli)
-}
-```
-
-```{r results='asis', echo=F, resize.width=1, align = "left"}
-stargazer(vandalismObjects, throwingObjectsInfrastructure, sabotagingInfrastructure, violatingPowerful, fightPolice, blockBridgeRoad, header = F,
-          single.row = F, column.sep.width = "1pt",
-          no.space = TRUE, type = "latex",
-          digits = 2, keep.stat = c("n", "rsq"),
-          float.env = "sidewaystable",
-          title="Interaction âge-préoccupations 1")
-```
-
-```{r results='asis', echo=F, resize.width=1, align = "left"}
-stargazer(attachTreeVehicule, blockPipelineConstruction, occupyPublicSpace, manifestation, divest, boycott, signPetition,
-          header = F,
-          single.row = F, column.sep.width = "1pt",
-          no.space = TRUE, type = "latex",
-          digits = 2, keep.stat = c("n", "rsq"),
-          float.env = "sidewaystable",
-          title="Interaction âge-préoccupations 2")
-```
-
-
-```{r echo=F, message=F}
-for (i in 1:length(vds)){
-  vd <- vds[i]
-  modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity*ses_incomeLow + ses_gender_male +
-                            ses_age + educ_level +
-                 ses_incomeHigh + responsability,
-               data = Data)")))
-  assign(vd, modeli)
-}
-```
-
-```{r results='asis', echo=F, resize.width=1, align = "left"}
-stargazer(vandalismObjects, throwingObjectsInfrastructure, sabotagingInfrastructure, violatingPowerful, fightPolice, blockBridgeRoad, header = F,
-          single.row = F, column.sep.width = "1pt",
-          no.space = TRUE, type = "latex",
-          digits = 2, keep.stat = c("n", "rsq"),
-          float.env = "sidewaystable",
-          title="Interaction pauvreté-préoccupations 1")
-```
-
-```{r results='asis', echo=F, resize.width=1, align = "left"}
-stargazer(attachTreeVehicule, blockPipelineConstruction, occupyPublicSpace, manifestation, divest, boycott, signPetition,
-          header = F,
-          single.row = F, column.sep.width = "1pt",
-          no.space = TRUE, type = "latex",
-          digits = 2, keep.stat = c("n", "rsq"),
-          float.env = "sidewaystable",
-          title="Interaction pauvreté-préoccupations 2")
-```
-
-
-```{r echo=F, message=F}
-for (i in 1:length(vds)){
-  vd <- vds[i]
-  modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity*responsability + ses_gender_male +
-                            ses_age + educ_level +
-                 ses_incomeHigh + ses_incomeLow,
-               data = Data)")))
-  assign(vd, modeli)
-}
-```
-
-```{r results='asis', echo=F, resize.width=1, align = "left"}
-stargazer(vandalismObjects, throwingObjectsInfrastructure, sabotagingInfrastructure, violatingPowerful, fightPolice, blockBridgeRoad, header = F,
-          single.row = F, column.sep.width = "1pt",
-          no.space = TRUE, type = "latex",
-          digits = 2, keep.stat = c("n", "rsq"),
-          float.env = "sidewaystable",
-          title="Interaction responsabilité des citoyens-préoccupations 1")
-```
-
-```{r results='asis', echo=F, resize.width=1, align = "left"}
-stargazer(attachTreeVehicule, blockPipelineConstruction, occupyPublicSpace, manifestation, divest, boycott, signPetition,
-          header = F,
-          single.row = F, column.sep.width = "1pt",
-          no.space = TRUE, type = "latex",
-          digits = 2, keep.stat = c("n", "rsq"),
-          float.env = "sidewaystable",
-          title="Interaction responsabilité des citoyens-préoccupations 2")
-```
