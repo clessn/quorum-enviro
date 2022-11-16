@@ -77,17 +77,22 @@ density <- Data %>%
                             .x = mean_item,
                             .desc = T))
 
+#c("Nonviolent,\nnon-disruptive",
+#  "Nonviolent,\ndisruptive",
+#  "Violent",
+#  "Property\ndestruction")
+
 
 ggplot(density, aes(x = tolerance,
                     y = reorder(item, -mean_item))) +
   geom_rect(data = subset(density, group == 'Property\ndestruction'),
-            fill = "#C9C9C9", xmin = -1.5,xmax = 1.5,
+            fill = "#D4D4D4", xmin = -1.5,xmax = 1.5,
             ymin = -Inf,ymax = Inf) +
   geom_rect(data = subset(density, group == 'Violent'),
-            fill = "#DBDBDB", xmin = -1.5,xmax = 1.5,
+            fill = "#E4E4E4", xmin = -1.5,xmax = 1.5,
             ymin = -Inf,ymax = Inf) +
   geom_rect(data = subset(density, group == 'Nonviolent,\ndisruptive'),
-            fill = "#EDEDED", xmin = -1.5,xmax = 1.5,
+            fill = "#F3F3F3", xmin = -1.5,xmax = 1.5,
             ymin = -Inf,ymax = Inf) +
   geom_density_ridges(scale = 0.9, bandwidth = 0.15,
                       color = NA, fill = "black",
@@ -115,6 +120,7 @@ ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/dans_ar
 
 
 # Figure 2: gravity selon age ####
+
 
 # Figure 3: complete models ####
 
@@ -220,10 +226,10 @@ Graph <- GraphData %>%
                    "scale_gravity:age_cat_28")) %>% 
   mutate(group = groups[item],
          group = factor(group,
-                        levels = c("Property\ndestruction",
-                                   "Violent",
+                        levels = c("Nonviolent,\nnon-disruptive",
                                    "Nonviolent,\ndisruptive",
-                                   "Nonviolent,\nnon-disruptive")),
+                                   "Violent",
+                                   "Property\ndestruction")),
          item = clean_names[item],
          item = factor(item),
          item = fct_reorder(.f = item,
@@ -231,6 +237,12 @@ Graph <- GraphData %>%
                             .desc = T),
          sign = as.character(ifelse(pval <= 0.05, "Significative", "Non-significative")),
          vi = clean_vis[vi])
+
+#c("Property\ndestruction",
+#  "Violent",
+#  "Nonviolent,\ndisruptive",
+#  "Nonviolent,\nnon-disruptive")
+
 
 ggplot(data = Graph,
        aes(x = coef,
@@ -276,6 +288,6 @@ ggplot(data = Graph,
 #ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/dans_article/fig4_coefficientsInteractions.png",
 #       width = 10, height = 7)
 
-ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/dans_article/fig4_coefficientsInteractions2.png",
+ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/dans_article/fig4_coefficientsInteractions.png",
        width = 6.5, height = 7)
 
