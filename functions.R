@@ -129,3 +129,171 @@ bivariate_plot <- function(data,
   ggsave(path)
 }
 
+coord_radar <- function (theta = "x", start = 0, direction = 1) {
+  theta <- match.arg(theta, c("x", "y"))
+  r <- if (theta == "x"){
+    "y"
+  } else {
+    "x"
+  }
+  ggproto("CordRadar", CoordPolar, theta = theta, clip = "off", r = r, start = start, direction = sign(direction), is_linear = function(coord) TRUE)
+}
+
+spider_graph <- function(data){
+  plot <- data %>% 
+    mutate(group = "a") %>% 
+    ggplot(aes(x = attitude, y = value)) +
+    geom_point(color = "#525252", size = 40,
+               shape = 21, fill = NA,
+               aes(y = 0), stroke = 2.5) +
+    geom_polygon(aes(group = group),
+                 fill = "white", color = "white",
+                 size = 1, alpha = 0.2) +
+    geom_polygon(aes(group = group),
+                 fill = "#ED96FF", color = "#ED96FF",
+                 size = 1, alpha = 0.2) +
+    geom_line(aes(group = group),
+              size = 1, color = "#ED96FF") +
+    geom_text(aes(x = attitude,
+                  label = attitude),
+              y = 1.15,
+              angle = 15,
+              color = "#F2F2F2",
+              lineheight = 0.25,
+              show.legend = F) +
+    facet_wrap(~nk) +
+    xlab("") + 
+    ylab("") +
+    #ylim(0,1) +
+    scale_y_continuous(limits=c(0,1)) + 
+    coord_radar() +
+    theme(axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          axis.text.x = element_blank(),
+          #axis.text.x = element_text(size = 75,
+          #                           lineheight = 0.25,
+          #                           vjust="inward",hjust="inward"),
+          axis.line.x = element_blank(),
+          panel.grid.major.x = element_line(color = "#525252", size = 1.5),
+          panel.grid.major.y = element_blank(),
+          #panel.grid.major.y = element_line(color = "#525252", size = 5),
+          text = element_text(family = "VT323", lineheight = 0.25),
+          plot.background = element_rect(fill = "#494949"),
+          panel.background = element_rect(fill = "#494949"),
+          plot.title = element_text(family = "VT323", face = "bold", hjust = 0.5,
+                                    size = 250, lineheight = 0.35),
+          plot.title.position = "panel",
+          plot.margin = margin(t=30,r=60,b=30,l=30))
+  return(plot)
+}
+
+spider_graph2 <- function(data,
+                          label_names,
+                          color){
+  plot <- data %>% 
+    mutate(group = "a") %>% 
+    ggplot(aes(x = attitude, y = value)) +
+    #geom_point(color = "#525252", size = 20,
+    #           shape = 21, fill = NA,
+    #           stroke = 0.15, aes(y = 0)) +
+    geom_polygon(aes(group = group),
+                 fill = "grey", color = "grey",
+                 size = 1, alpha = 0.2) +
+    geom_polygon(aes(group = group),
+                 size = 1, alpha = 0.2,
+                 fill = color, color = color) +
+    geom_line(aes(group = group),
+              size = 1, color = color) +
+    geom_text(aes(x = attitude,
+                  label = label_names[attitude],
+                  size = value),
+              y = 1,
+              #angle = 15,
+              color = "black",
+              show.legend = F) +
+    xlab("") + 
+    ylab("") +
+    #ylim(0,1) +
+    scale_size_continuous(range = c(3.5,4)) +
+    scale_y_continuous(limits=c(0,0.9)) + 
+    coord_radar() +
+    theme(axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          axis.text.x = element_blank(),
+          #axis.text.x = element_text(size = 75,
+          #                           lineheight = 0.25,
+          #                           vjust="inward",hjust="inward"),
+          panel.grid.major.x = element_line(color = "grey",
+                                     size = 0.2),
+          axis.line.x = element_blank(),
+          #panel.grid.major.y = element_line(),
+          panel.grid.major.y = element_line(color = "grey", size = 0.2),
+          plot.background = element_rect(fill = "white"),
+          panel.background = element_rect(fill = "white"),
+          plot.title.position = "panel",
+          plot.margin = margin(t=10,r=10,b=10,l=10))
+  return(plot)
+}
+
+get_age_category <- function(ages){
+  groups <- seq(from = 13,
+                to = max(Data$ses_age, na.rm = T),
+                by = 5)
+  age_cats <- c()
+  for (i in 1:length(ages)){
+    if (!is.na(ages[i])){
+      age_cats[i] <- max(groups[groups<=ages[i]],
+                         na.rm = T)
+    } else (age_cats[i] <- NA)
+  }
+  return(age_cats)
+}
+
+predProbs_propDest <- function(data, attitude, ses_skeleton){
+  model <- Data %>% 
+    select(tol_propertyDest, attitude, ses_gender_male,
+           educ_level, income, age_cat_model) %>% 
+    glm(tol_propertyDest ~ .,
+        family = binomial(),
+        data = .)
+  ses_skeleton$att <- attitude
+  ses_skeleton[[attitude]] <- ses_skeleton$att_level
+  ses_skeleton$vd <- "tol_propertyDest"
+  ses_skeleton$pred_vd <- predict(model, ses_skeleton, type = "response")
+  ses_skeleton <- ses_skeleton %>% 
+    select(-attitude)
+  return(ses_skeleton)
+}
+
+predProbs_violentActions <- function(data, attitude, ses_skeleton){
+  model <- Data %>% 
+    select(tol_violentActions, attitude, ses_gender_male,
+           educ_level, income, age_cat_model) %>% 
+    glm(tol_violentActions ~ .,
+        family = binomial(),
+        data = .)
+  ses_skeleton$att <- attitude
+  ses_skeleton[[attitude]] <- ses_skeleton$att_level
+  ses_skeleton$vd <- "tol_violentActions"
+  ses_skeleton$pred_vd <- predict(model, ses_skeleton, type = "response")
+  ses_skeleton <- ses_skeleton %>% 
+    select(-attitude)
+  return(ses_skeleton)
+}
+
+#predProbs_graph <- function(graphdata, item_group, attitudes){
+#  Graph %>% 
+#    filter(vd == item_group,
+#           att %in% attitudes) %>%
+#    mutate(att = gsub("scale_", "", att)) %>% 
+#    ggplot(aes(x = att_level, y = pred_vd,
+#               group = att, color = att)) +
+#    geom_jitter(width = 0.12,
+#                height = 0.12,
+#                alpha = 0.05) +
+#    geom_smooth(method = "gam",
+#                se = F, alpha = 0.9) +
+#    facet_wrap(~,
+#               nrow = 1) +
+#    clessnverse::theme_clean_light()
+#}

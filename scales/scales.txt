@@ -1,13 +1,12 @@
 #scepticisme
 #gravité
-Rôle de l'AI
-actions gouv "négatives"
-actions gouv "neutres"
-actions gouv "positives"
-perception localisation dommages
-leadership Canada (responsabilité pays)
-radicalisation
-religiosité (humans dominate Nature)
-responsabilité personnelle
+#Rôle de l'AI
+#behaviour
+#radicalisation
+#actions gouv "négatives"
+#actions gouv "neutres"
+#actions gouv "positives"
+#Leadership Canada/pays riches
+#religiosité (humans dominate Nature)
 
 

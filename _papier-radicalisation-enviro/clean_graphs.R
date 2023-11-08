@@ -151,7 +151,8 @@ Data2 <- Data %>%
          over35yo = ifelse(ses_age >= 35, 1, 0),
          age_cat = get_age_category(ses_age),
          age_cat_norm = minmaxNormalization(age_cat),
-         ses_age = minmaxNormalization(ses_age)) %>% 
+         ses_age = minmaxNormalization(ses_age),
+         responsability_climateChangeGovt = (responsability_climateChangeFedGovt + responsability_climateChangeProvGovt)/2) %>% 
   fastDummies::dummy_columns(.,
                              select_columns = c("age_cat"))
 
@@ -184,7 +185,8 @@ for (i in 1:length(vds)){
   vd <- vds[i]
   modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity*age_cat_18 + scale_gravity*age_cat_23 +
                  scale_gravity*age_cat_28 + ses_gender_male + educ_level +
-                 ses_incomeHigh + ses_incomeLow,
+                 ses_incomeHigh + ses_incomeLow + responsability_climateChangeCitizens +
+                 responsability_climateChangeGovt + responsability_climateChangeEnterprise,
                data = Data2)")))
   item <- rep(vd, 9)
   vi <- names(modeli$coefficients)
@@ -291,3 +293,245 @@ ggplot(data = Graph,
 ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/dans_article/fig4_coefficientsInteractions.png",
        width = 6.5, height = 7)
 
+#### Responsability of actors ####
+
+clean_vis <- c("Citizens", "Governments", "Enterprises")
+names(clean_vis) <- c("responsability_climateChangeCitizens",
+                      "responsability_climateChangeGovt",
+                      "responsability_climateChangeEnterprise")
+
+Graph2 <- GraphData %>% 
+  filter(vi %in% names(clean_vis)) %>% 
+  mutate(group = groups[item],
+         group = factor(group,
+                        levels = c("Nonviolent,\nnon-disruptive",
+                                   "Nonviolent,\ndisruptive",
+                                   "Violent",
+                                   "Property\ndestruction")),
+         item = clean_names[item],
+         item = factor(item),
+         item = fct_reorder(.f = item,
+                            .x = mean_tol,
+                            .desc = T),
+         sign = as.character(ifelse(pval <= 0.05, "Significative", "Non-significative")),
+         vi = clean_vis[vi])
+
+#c("Property\ndestruction",
+#  "Violent",
+#  "Nonviolent,\ndisruptive",
+#  "Nonviolent,\nnon-disruptive")
+
+
+ggplot(data = Graph2,
+       aes(x = coef,
+           y = reorder(item, -mean_tol),
+           alpha = sign)) +
+  geom_rect(data = subset(Graph2, group == 'Property\ndestruction'),
+            fill = "#C9C9C9", xmin = -1.5,xmax = 1.5,
+            ymin = -Inf,ymax = Inf, alpha = 0.4) +
+  geom_rect(data = subset(Graph2, group == 'Violent'),
+            fill = "#C9C9C9", xmin = -1.5,xmax = 1.5,
+            ymin = -Inf,ymax = Inf, alpha = 0.3) +
+  geom_rect(data = subset(Graph2, group == 'Nonviolent,\ndisruptive'),
+            fill = "#C9C9C9", xmin = -1.5,xmax = 1.5,
+            ymin = -Inf,ymax = Inf, alpha = 0.05) +
+  facet_grid(rows = vars(group),
+             cols = vars(vi),
+             scales = "free_y",
+             switch = "y") +
+  scale_x_continuous(limits = c(-0.75, 0.75),
+                     breaks = c(-0.5, 0, 0.5)) +
+  ylab("") +
+  xlab("\nRegression coefficient") +
+  #  facet_wrap(~vi, nrow = 1) +
+  geom_point(  color = "#595959", size = 1.5) +
+  geom_segment(color = "#595959", size = 1, aes(x = coef - se, xend = coef, yend = reorder(item, -mean_tol))) +
+  geom_segment(color = "#595959", size = 1, aes(xend = coef + se, x = coef, yend = reorder(item, -mean_tol))) +
+  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.4) +
+  scale_alpha_discrete(range = c(0.2, 1)) + 
+  clessnverse::theme_clean_light(base_size = 30) +
+  #clessnverse::theme_clean_light() +
+  theme(strip.background.x = element_rect(fill = "#F2F2F2", color = NA),
+        strip.background.y = element_blank(),
+        axis.title.x = element_text(hjust = 0.5,
+                                    lineheight = 0.2),
+        axis.text.y = element_text(lineheight = 0.3),
+        #strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(lineheight = 0.3),
+        panel.grid.major.y = element_blank(),
+        axis.line.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+#ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/dans_article/fig4_coefficientsInteractions.png",
+#       width = 10, height = 7)
+
+ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/dans_article/fig5_responsabilityActors.png",
+       width = 6.5, height = 7)
+
+
+
+#### Citizens only ####
+
+#### Faire une dummy par catégorie de respo et des groupes d'attitudes
+
+vds <- c("stateInterv_makeGasMoreExpensive",
+         "responsability_effortsClimateChangeFamily",
+         "stateInterv_electricCarTaxRefund",
+         "responsability_individualToProtect",
+         "stateInterv_moreRegulationsEnviro",
+         "science_AIToolAgainstClimateChange",
+         "science_techClimateChangeSolution",
+         "veg",
+         "electricVehicule")
+
+## Clean attitude names
+att_names <- c("Agree to making gas\nmore expensive",
+               "Efforts of family\nand friends",
+               "Agree to providing tax rebates to\npeople who purchase electric vehicles",
+               "Feels personal responsability",
+               "Agree to imposing\nmore regulations",
+               "AI is a good tool\nto fight climate change",
+               "Technological progress\ncan be a solution",
+               "Vegetarian or vegan",
+               "Member of household possesses\nelectric vehicule")
+names(att_names) <- vds
+
+## Attitudes conceptual groups 
+groups <- c("Political actions",
+            "Individual efforts and actions",
+            "Political actions",
+            "Individual efforts and actions",
+            "Political actions",
+            "Technology",
+            "Technology",
+            "Individual efforts and actions",
+            "Individual efforts and actions")
+names(groups) <- vds
+
+
+Data2 <- Data %>% 
+  mutate(citizens = case_when(
+    responsability_climateChangeCitizens == 0 ~ "not_at_all",
+    responsability_climateChangeCitizens == 0.33 ~ "little_bit",
+    responsability_climateChangeCitizens == 0.67 ~ "partially",
+    responsability_climateChangeCitizens == 1 ~ "completely"
+  ),
+  age_cat = get_age_category(ses_age),
+  veg = responsability_vege + responsability_vegan,
+  educ_level = ifelse(ses_educBHS == 1, 0, NA),
+  educ_level = ifelse(ses_educCollege == 1, 0.5, educ_level),
+  educ_level = ifelse(ses_educUniv == 1, 1, educ_level)) %>% 
+  fastDummies::dummy_columns(., "citizens") %>% 
+  fastDummies::dummy_columns(., "age_cat")
+
+GraphData <- data.frame(
+  item = as.character(),
+  vi = as.character(),
+  coef = as.numeric(),
+  se = as.numeric(),
+  pval = as.numeric()
+)
+
+for (i in 1:length(vds)){
+  #i <- 1
+  vd <- vds[i]
+  modeli <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity*age_cat_18 + scale_gravity*age_cat_23 +
+                 scale_gravity*age_cat_28 + ses_gender_male + educ_level +
+                 ses_incomeHigh + ses_incomeLow + citizens_partially + citizens_completely,
+               data = Data2)")))
+  item <- rep(vd, 14)
+  vi <- names(modeli$coefficients)
+  coef <- modeli$coefficients
+  se <- summary(modeli)$coefficients[,2]
+  pval <- round(summary(modeli)$coefficients[,4], 3)
+  GraphDatai <- as.data.frame(cbind(item, vi, coef, se, pval),
+                              row.names = F)
+  GraphData <- rbind(GraphData, GraphDatai)
+  GraphData$coef <- as.numeric(GraphData$coef)
+  GraphData$se <- as.numeric(GraphData$se)
+  GraphData$pval <- as.numeric(GraphData$pval)
+}
+
+clean_vis <- c("Citizens partially responsible",
+               "Citizens completely responsible")
+names(clean_vis) <- c("citizens_partially",
+                      "citizens_completely")
+
+Graph <- GraphData %>% 
+  filter(vi %in% names(clean_vis)) %>% 
+  mutate(group = groups[item],
+         group = factor(group,
+                        levels = c("Political actions",
+                                   "Individual efforts and actions",
+                                   "Technology")),
+         item = att_names[item],
+         item = factor(item),
+         sign = as.character(ifelse(pval <= 0.05, "Significative", "Non-significative")),
+         vi = clean_vis[vi],
+         vi = factor(vi, levels = c("Citizens partially responsible",
+                                    "Citizens completely responsible")))
+
+ggplot(data = Graph,
+       aes(x = coef,
+           y = item,
+           alpha = sign)) +
+  geom_rect(data = subset(Graph, group == 'Political actions'),
+            fill = "#C9C9C9", xmin = -1.5,xmax = 1.5,
+            ymin = -Inf,ymax = Inf, alpha = 0.4) +
+  geom_rect(data = subset(Graph, group == 'Individual efforts and actions'),
+            fill = "#C9C9C9", xmin = -1.5,xmax = 1.5,
+            ymin = -Inf,ymax = Inf, alpha = 0.1) +
+  geom_rect(data = subset(Graph, group == 'Technology'),
+            fill = "#C9C9C9", xmin = -1.5,xmax = 1.5,
+            ymin = -Inf,ymax = Inf, alpha = 0.05) +
+  facet_grid(rows = vars(group),
+             cols = vars(vi),
+             scales = "free_y",
+             switch = "y") +
+  scale_x_continuous(limits = c(-0.3, 0.3),
+                     breaks = c(-0.15, 0, 0.15)) +
+  ylab("") +
+  xlab("\nRegression coefficient") +
+  #  facet_wrap(~vi, nrow = 1) +
+  geom_point(  color = "#595959", size = 1.5) +
+  geom_segment(color = "#595959", size = 1, aes(x = coef - se, xend = coef, yend = item)) +
+  geom_segment(color = "#595959", size = 1, aes(xend = coef + se, x = coef, yend = item)) +
+  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.4) +
+  scale_alpha_discrete(range = c(0.2, 1)) + 
+  clessnverse::theme_clean_light(base_size = 30) +
+  #clessnverse::theme_clean_light() +
+  theme(strip.background.x = element_rect(fill = "#F2F2F2", color = NA),
+        strip.background.y = element_blank(),
+        axis.title.x = element_text(hjust = 0.5,
+                                    lineheight = 0.2),
+        axis.text.y = element_text(lineheight = 0.3),
+        #strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(lineheight = 0.3),
+        panel.grid.major.y = element_blank(),
+        axis.line.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+#ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/dans_article/fig4_coefficientsInteractions.png",
+#       width = 10, height = 7)
+
+ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/dans_article/fig6_responsabilityOfCitizens.png",
+       width = 6.5, height = 7)
+
+########## testing logistic regressions on vege and electric vehicule
+
+vege <- glm(veg ~ scale_gravity*age_cat_18 + scale_gravity*age_cat_23 +
+              scale_gravity*age_cat_28 + ses_gender_male + educ_level +
+              ses_incomeHigh + ses_incomeLow + citizens_partially + citizens_completely,
+            family = binomial, 
+            data = Data2)
+summary(vege)
+
+elec <- glm(electricVehicule ~ ses_gender_male + educ_level +
+              ses_incomeHigh + ses_incomeLow + citizens_partially + citizens_completely,
+            family = binomial, 
+            data = Data2)
+summary(elec)
+
+##### Nothing

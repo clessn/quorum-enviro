@@ -87,6 +87,32 @@ CleanData$ses_prov <- CleanData %>%
   filter(value==1) %>% 
   pull(., ses_prov)
 
+## Region ####
+
+# quebec
+CleanData$ses_region_qc <- 0
+CleanData$ses_region_qc[Data$PROV==11] <- 1
+CleanData$ses_region_qc[Data$PROV!=11] <- 0
+table(CleanData$ses_region_qc)
+
+# ontario
+CleanData$ses_region_ont <- 0
+CleanData$ses_region_ont[Data$PROV==9] <- 1
+CleanData$ses_region_ont[Data$PROV!=9] <- 0
+table(CleanData$ses_region_ont)
+
+# west
+CleanData$ses_region_west <- 0
+CleanData$ses_region_west[Data$PROV%in%c(1,2,3,12)] <- 1
+CleanData$ses_region_west[!(Data$PROV%in%c(1,2,3,12))] <- 0
+table(CleanData$ses_region_west)
+
+# maritimes
+CleanData$ses_region_mari <- 0
+CleanData$ses_region_mari[Data$PROV%in%c(4,5,6,10)] <- 1
+CleanData$ses_region_mari[!(Data$PROV%in%c(4,5,6,10))] <- 0
+table(CleanData$ses_region_mari)
+
 ## Gender ####
 table(Data$SEXE)
 CleanData$ses_gender_male <- NA
@@ -100,38 +126,36 @@ CleanData$ses_gender_female[Data$SEXE==2] <- 1
 CleanData$ses_gender_female[Data$SEXE!=2] <- 0
 table(CleanData$ses_gender_female)
 
-
-# Gender ####
 table(Data$SEXE)
 CleanData$ses_gender_other <- NA
 CleanData$ses_gender_other[Data$SEXE==3] <- 1
 CleanData$ses_gender_other[Data$SEXE!=3] <- 0
 table(CleanData$ses_gender_other)
 
-## Region (only in quebec) ####
+## Qc Region (only in quebec) ####
 table(Data$REGION)
-CleanData$ses_region_mtlIsl <- NA
-CleanData$ses_region_mtlIsl[Data$REGION==1] <- 1
-CleanData$ses_region_mtlIsl[Data$REGION%in%c(2,3,4)] <- 0
-table(CleanData$ses_region_mtlIsl)
+CleanData$ses_qcRegion_mtlIsl <- NA
+CleanData$ses_qcRegion_mtlIsl[Data$REGION==1] <- 1
+CleanData$ses_qcRegion_mtlIsl[Data$REGION%in%c(2,3,4)] <- 0
+table(CleanData$ses_qcRegion_mtlIsl)
 
 table(Data$REGION)
-CleanData$ses_region_mtlRMR <- NA
-CleanData$ses_region_mtlRMR[Data$REGION==2] <- 1
-CleanData$ses_region_mtlRMR[Data$REGION%in%c(1,3,4)] <- 0
-table(CleanData$ses_region_mtlRMR)
+CleanData$ses_qcRegion_mtlRMR <- NA
+CleanData$ses_qcRegion_mtlRMR[Data$REGION==2] <- 1
+CleanData$ses_qcRegion_mtlRMR[Data$REGION%in%c(1,3,4)] <- 0
+table(CleanData$ses_qcRegion_mtlRMR)
 
 table(Data$REGION)
-CleanData$ses_region_qc <- NA
-CleanData$ses_region_qc[Data$REGION==3] <- 1
-CleanData$ses_region_qc[Data$REGION%in%c(1,2,4)] <- 0
-table(CleanData$ses_region_qc)
+CleanData$ses_qcRegion_qc <- NA
+CleanData$ses_qcRegion_qc[Data$REGION==3] <- 1
+CleanData$ses_qcRegion_qc[Data$REGION%in%c(1,2,4)] <- 0
+table(CleanData$ses_qcRegion_qc)
 
 table(Data$REGION)
-CleanData$ses_region_outsideQcMtl <- NA
-CleanData$ses_region_outsideQcMtl[Data$REGION==4] <- 1
-CleanData$ses_region_outsideQcMtl[Data$REGION%in%c(1,2,3)] <- 0
-table(CleanData$ses_region_outsideQcMtl)
+CleanData$ses_qcRegion_outsideQcMtl <- NA
+CleanData$ses_qcRegion_outsideQcMtl[Data$REGION==4] <- 1
+CleanData$ses_qcRegion_outsideQcMtl[Data$REGION%in%c(1,2,3)] <- 0
+table(CleanData$ses_qcRegion_outsideQcMtl)
 
 ## Age group ####
 table(Data$AGE)
@@ -471,12 +495,13 @@ table(CleanData$ses_lifeReligion)
 ## Religious events ####
 
 table(Data$Q18)
+attributes(Data$Q18)
 CleanData$ses_attendsReligiousEvents <- NA
-CleanData$ses_attendsReligiousEvents[Data$Q18 == 1] <- 0
-CleanData$ses_attendsReligiousEvents[Data$Q18 == 2] <- 0.25
+CleanData$ses_attendsReligiousEvents[Data$Q18 == 1] <- 1
+CleanData$ses_attendsReligiousEvents[Data$Q18 == 2] <- 0.75
 CleanData$ses_attendsReligiousEvents[Data$Q18 == 3] <- 0.50
-CleanData$ses_attendsReligiousEvents[Data$Q18 == 4] <- 0.75
-CleanData$ses_attendsReligiousEvents[Data$Q18 == 5] <- 1
+CleanData$ses_attendsReligiousEvents[Data$Q18 == 4] <- 0.25
+CleanData$ses_attendsReligiousEvents[Data$Q18 == 5] <- 0
 table(CleanData$ses_attendsReligiousEvents)
 
 ## God existence ####
@@ -700,7 +725,7 @@ table(CleanData$science_techGoodForHumanity) # 0 = Fortement en désaccord... 1 
 # Êtes-vous en accord ou en désaccord avec les énoncés suivants 
 # :-Les avancées technologiques vont rendre inutiles nos efforts environnementaux individuels
 
-table(Data$Q63_A3)
+table(Data$Q64_A3)
 CleanData$science_climateChangeTechnoEffortsNull <- NA
 CleanData$science_climateChangeTechnoEffortsNull[Data$Q63_A3 == 1] <- 0
 CleanData$science_climateChangeTechnoEffortsNull[Data$Q63_A3 == 2] <- 0.25
@@ -723,6 +748,7 @@ table(CleanData$stateInterv_EconomyCANoFossil) # 0 = Fortement en désaccord... 
 # Q22_A3 - Nous devrions développer les pistes cyclables et les transports publics, 
 # même si cela implique de réduire l'espace pour les voitures
 table(Data$Q22_A3)
+attributes(Data$Q22_A3)
 CleanData$stateInterv_moreBikePathPubTransport <- NA
 CleanData$stateInterv_moreBikePathPubTransport <- minmaxNormalization(Data$Q22_A3)
 table(CleanData$stateInterv_moreBikePathPubTransport) # 0 = Fortement en désaccord... 1 = Fortement en accord
@@ -1132,12 +1158,13 @@ table(CleanData$economy_worryTooMuchAboutEnvironment)
 ## Les actions du gouvernement pour réduire les émissions de gaz à effet de serre nuisent à l'économie ###
 
 table(Data$Q22_A2)
+attributes(Data$Q22_A2)
 CleanData$economy_governmentClimatePolicyHurtsEconomy <- NA
-CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 1] <- 0
-CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 2] <- 0.25
-CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 3] <- 0.5
-CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 4] <- 0.75
-CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 5] <- 1
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A2 == 1] <- 0
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A2 == 2] <- 0.25
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A2 == 3] <- 0.5
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A2 == 4] <- 0.75
+CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A2 == 5] <- 1
 table(CleanData$economy_governmentClimatePolicyHurtsEconomy)
 
 
@@ -1313,15 +1340,6 @@ CleanData <- CleanData %>%
                         rowSums())/length(names(CleanData %>% select(starts_with("scaleScep_")))))
 
 
-table(Data$Q22_A2)
-CleanData$economy_governmentClimatePolicyHurtsEconomy <- NA
-CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 1] <- 0
-CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 2] <- 0.25
-CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 3] <- 0.50
-CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 4] <- 0.75
-CleanData$economy_governmentClimatePolicyHurtsEconomy[Data$Q22_A1 == 5] <- 1
-table(CleanData$economy_governmentClimatePolicyHurtsEconomy)
-
 
 ###******************************************###
 ## Gravity ####
@@ -1375,13 +1393,325 @@ CleanData <- CleanData %>%
                             select(starts_with("radicalisation_")) %>%
                             rowSums())/length(names(CleanData %>% select(starts_with("radicalisation_")))))
 
+###******************************************###
+## IA role to fight climate change ####
+###******************************************###
+
+## 0 = non-technophile, 1 = technophile
+### Reverse the variables that need to be reversed with finverser
+### Add them as a new variable with the scaleIA prefix
+
+table(CleanData$science_AIToolAgainstClimateChange)
+CleanData$scaleIA_AIToolAgainstClimateChange <- CleanData$science_AIToolAgainstClimateChange
+table(CleanData$scaleIA_AIToolAgainstClimateChange)
+
+table(CleanData$science_techClimateChangeSolution)
+CleanData$scaleIA_techClimateChangeSolution <- CleanData$science_techClimateChangeSolution
+table(CleanData$scaleIA_techClimateChangeSolution)
+
+table(CleanData$science_techGoodForHumanity)
+CleanData$scaleIA_techGoodForHumanity <- CleanData$science_techGoodForHumanity
+table(CleanData$scaleIA_techGoodForHumanity)
+
+
+CleanData <- CleanData %>% 
+  mutate(scale_IAtech = (CleanData %>%
+                                   select(starts_with("scaleIA_")) %>%
+                                   rowSums())/length(names(CleanData %>% select(starts_with("scaleIA_")))))
+
+###******************************************###
+## Behaviour ####
+###******************************************###
+
+## 0 = aucune action, 1 = actions
+### Reverse the variables that need to be reversed with finverser
+### Add them as a new variable with the scaleBehaviour prefix
+
+
+# responsability_effortsClimateChangeFamily
+table(CleanData$responsability_effortsClimateChangeFamily)
+CleanData$scaleBehaviour_effortsClimateChangeFamily <- CleanData$responsability_effortsClimateChangeFamily
+table(CleanData$scaleBehaviour_effortsClimateChangeFamily)
+
+# responsability_climateChangeDiscuss
+table(CleanData$responsability_climateChangeDiscuss)
+CleanData$scaleBehaviour_climateChangeDiscuss <- CleanData$responsability_climateChangeDiscuss
+table(CleanData$scaleBehaviour_climateChangeDiscuss)
+
+# responsability_individualToProtect
+table(CleanData$responsability_individualToProtect)
+CleanData$scaleBehaviour_individualToProtect <- CleanData$responsability_individualToProtect
+table(CleanData$scaleBehaviour_individualToProtect)
+
+CleanData <- CleanData %>% 
+  mutate(scale_behaviour = (CleanData %>%
+                           select(starts_with("scaleBehaviour_")) %>%
+                           rowSums())/length(names(CleanData %>% select(starts_with("scaleBehaviour_")))))
+
+
+###******************************************###
+## International leadership ####
+###******************************************###
+
+## 0 = all countries equal, 1 = canada and rich countries have a leadership role 
+### Reverse the variables that need to be reversed with finverser
+### Add them as a new variable with the scaleLeadership_ prefix
+
+# international_richCountriesMustLead
+table(CleanData$international_richCountriesMustLead)
+CleanData$scaleLeadership_richCountriesMustLead <- CleanData$international_richCountriesMustLead
+table(CleanData$scaleLeadership_richCountriesMustLead)
+
+# international_CanadaShouldAcceptRefugees
+table(CleanData$international_CanadaShouldAcceptRefugees)
+CleanData$scaleLeadership_CanadaShouldAcceptRefugees <- CleanData$international_CanadaShouldAcceptRefugees
+table(CleanData$scaleLeadership_CanadaShouldAcceptRefugees)
+
+# international_richCountriesHelpRefugees
+table(CleanData$international_richCountriesHelpRefugees)
+CleanData$scaleLeadership_richCountriesAcceptRefugees <- CleanData$international_richCountriesHelpRefugees
+table(CleanData$scaleLeadership_richCountriesAcceptRefugees)
+
+CleanData <- CleanData %>% 
+  mutate(scale_intlLeadership = (CleanData %>%
+                              select(starts_with("scaleLeadership_")) %>%
+                              rowSums())/length(names(CleanData %>% select(starts_with("scaleLeadership_")))))
+
+###******************************************###
+## Religiosity ####
+###******************************************###
+## 0 = not religious at all, 1 = religious and active 
+### Reverse the variables that need to be reversed with finverser
+### Add them as a new variable with the scaleReligiosity_ prefix
+
+# member of a religious community
+table(CleanData$ses_relNone)
+CleanData$scaleReligiosity_memberCommunity <- 1
+CleanData$scaleReligiosity_memberCommunity[CleanData$ses_relNone == 1] <- 0
+table(CleanData$scaleReligiosity_memberCommunity)
+
+# 'strength' of religiosity
+table(CleanData$ses_lifeReligion)
+CleanData$scaleReligiosity_lifeReligion <- CleanData$ses_lifeReligion
+table(CleanData$scaleReligiosity_lifeReligion)
+
+# attends events
+table(CleanData$ses_attendsReligiousEvents)
+CleanData$scaleReligiosity_attendsReligiousEvents <- CleanData$ses_attendsReligiousEvents
+table(CleanData$scaleReligiosity_attendsReligiousEvents)
+
+CleanData <- CleanData %>% 
+  mutate(scale_religiosity = (CleanData %>%
+                              select(starts_with("scaleReligiosity_")) %>%
+                              rowSums())/length(names(CleanData %>% select(starts_with("scaleReligiosity_")))))
+
+###******************************************###
+## Support: carot ####
+###******************************************###
+## 0 = no support, 1 = support
+### Reverse the variables that need to be reversed with finverser
+### Add them as a new variable with the scaleCarot_ prefix
+
+# stateInterv_moreBikePathPubTransport
+table(CleanData$stateInterv_moreBikePathPubTransport)
+CleanData$scaleCarot_moreBikePathPubTransport <- CleanData$stateInterv_moreBikePathPubTransport
+table(CleanData$scaleCarot_moreBikePathPubTransport)
+
+# stateInterv_electricCarTaxRefund
+table(CleanData$stateInterv_electricCarTaxRefund)
+CleanData$scaleCarot_electricCarTaxRefund <- CleanData$stateInterv_electricCarTaxRefund
+table(CleanData$scaleCarot_electricCarTaxRefund)
+
+# stateInterv_continueIncreaseGESPrice_FossilJobs
+table(CleanData$stateInterv_continueIncreaseGESPrice_FossilJobs)
+CleanData$scaleCarot_continueIncreaseGESPrice_FossilJobs <- CleanData$stateInterv_continueIncreaseGESPrice_FossilJobs
+table(CleanData$scaleCarot_continueIncreaseGESPrice_FossilJobs)
+
+# stateInterv_continueIncreaseGESPrice_GreenJobs
+table(CleanData$stateInterv_continueIncreaseGESPrice_GreenJobs)
+CleanData$scaleCarot_continueIncreaseGESPrice_GreenJobs <- CleanData$stateInterv_continueIncreaseGESPrice_GreenJobs
+table(CleanData$scaleCarot_continueIncreaseGESPrice_GreenJobs)
+
+# stateInterv_continueIncreaseGESPrice_RedistributedPop
+table(CleanData$stateInterv_continueIncreaseGESPrice_RedistributedPop)
+CleanData$scaleCarot_continueIncreaseGESPrice_RedistributedPop <- CleanData$stateInterv_continueIncreaseGESPrice_RedistributedPop
+table(CleanData$scaleCarot_continueIncreaseGESPrice_RedistributedPop)
+
+# stateInterv_decreaseFossilProd_GreenJobs
+table(CleanData$stateInterv_decreaseFossilProd_GreenJobs)
+CleanData$scaleCarot_decreaseFossilProd_GreenJobs <- CleanData$stateInterv_decreaseFossilProd_GreenJobs
+table(CleanData$scaleCarot_decreaseFossilProd_GreenJobs)
+
+# stateInterv_decreaseFossilProd_FossilJobs
+table(CleanData$stateInterv_decreaseFossilProd_FossilJobs)
+CleanData$scaleCarot_decreaseFossilProd_FossilJobs <- CleanData$stateInterv_decreaseFossilProd_FossilJobs
+table(CleanData$scaleCarot_decreaseFossilProd_FossilJobs)
+
+CleanData <- CleanData %>% 
+  mutate(scale_supportCarot = (CleanData %>%
+                                select(starts_with("scaleCarot_")) %>%
+                                rowSums())/length(names(CleanData %>% select(starts_with("scaleCarot_")))))
+
+
+###******************************************###
+## Support: stick ####
+###******************************************###
+
+## 0 = no support, 1 = support
+### Reverse the variables that need to be reversed with finverser
+### Add them as a new variable with the scaleStick_ prefix
+
+# stateInterv_makeGasMoreExpensive
+table(CleanData$stateInterv_makeGasMoreExpensive)
+CleanData$scaleStick_makeGasMoreExpensive <- CleanData$stateInterv_makeGasMoreExpensive
+table(CleanData$scaleStick_makeGasMoreExpensive)
+
+# stateInterv_moreRegulationsEnviro
+table(CleanData$stateInterv_moreRegulationsEnviro)
+CleanData$scaleStick_moreRegulationsEnviro <- CleanData$stateInterv_moreRegulationsEnviro
+table(CleanData$scaleStick_moreRegulationsEnviro)
+
+# stateInterv_continueIncreaseGESPrice
+table(CleanData$stateInterv_continueIncreaseGESPrice)
+CleanData$scaleStick_continueIncreaseGESPrice <- CleanData$stateInterv_continueIncreaseGESPrice
+table(CleanData$scaleStick_continueIncreaseGESPrice)
+
+# stateInterv_decreaseFossilProd
+table(CleanData$stateInterv_decreaseFossilProd)
+CleanData$scaleStick_decreaseFossilProd <- CleanData$stateInterv_decreaseFossilProd
+table(CleanData$scaleStick_decreaseFossilProd)
+
+CleanData <- CleanData %>% 
+  mutate(scale_supportStick = (CleanData %>%
+                                 select(starts_with("scaleStick_")) %>%
+                                 rowSums())/length(names(CleanData %>% select(starts_with("scaleStick_")))))
+
+###******************************************###
+## Support: gouvernement actions ####
+###******************************************###
+## 0 = no support, 1 = support
+### Reverse the variables that need to be reversed with finverser
+### Add them as a new variable with the scaleGouvActions_ prefix
+
+# stateInterv_moreBikePathPubTransport
+table(CleanData$stateInterv_moreBikePathPubTransport)
+CleanData$scaleGouvActions_moreBikePathPubTransport <- CleanData$stateInterv_moreBikePathPubTransport
+table(CleanData$scaleGouvActions_moreBikePathPubTransport)
+
+# stateInterv_electricCarTaxRefund
+table(CleanData$stateInterv_electricCarTaxRefund)
+CleanData$scaleGouvActions_electricCarTaxRefund <- CleanData$stateInterv_electricCarTaxRefund
+table(CleanData$scaleGouvActions_electricCarTaxRefund)
+
+# stateInterv_continueIncreaseGESPrice_FossilJobs
+table(CleanData$stateInterv_continueIncreaseGESPrice_FossilJobs)
+CleanData$scaleGouvActions_continueIncreaseGESPrice_FossilJobs <- CleanData$stateInterv_continueIncreaseGESPrice_FossilJobs
+table(CleanData$scaleGouvActions_continueIncreaseGESPrice_FossilJobs)
+
+# stateInterv_continueIncreaseGESPrice_GreenJobs
+table(CleanData$stateInterv_continueIncreaseGESPrice_GreenJobs)
+CleanData$scaleGouvActions_continueIncreaseGESPrice_GreenJobs <- CleanData$stateInterv_continueIncreaseGESPrice_GreenJobs
+table(CleanData$scaleGouvActions_continueIncreaseGESPrice_GreenJobs)
+
+# stateInterv_continueIncreaseGESPrice_RedistributedPop
+table(CleanData$stateInterv_continueIncreaseGESPrice_RedistributedPop)
+CleanData$scaleGouvActions_continueIncreaseGESPrice_RedistributedPop <- CleanData$stateInterv_continueIncreaseGESPrice_RedistributedPop
+table(CleanData$scaleGouvActions_continueIncreaseGESPrice_RedistributedPop)
+
+# stateInterv_decreaseFossilProd_GreenJobs
+table(CleanData$stateInterv_decreaseFossilProd_GreenJobs)
+CleanData$scaleGouvActions_decreaseFossilProd_GreenJobs <- CleanData$stateInterv_decreaseFossilProd_GreenJobs
+table(CleanData$scaleGouvActions_decreaseFossilProd_GreenJobs)
+
+# stateInterv_decreaseFossilProd_FossilJobs
+table(CleanData$stateInterv_decreaseFossilProd_FossilJobs)
+CleanData$scaleGouvActions_decreaseFossilProd_FossilJobs <- CleanData$stateInterv_decreaseFossilProd_FossilJobs
+table(CleanData$scaleGouvActions_decreaseFossilProd_FossilJobs)
+
+# stateInterv_makeGasMoreExpensive
+table(CleanData$stateInterv_makeGasMoreExpensive)
+CleanData$scaleGouvActions_makeGasMoreExpensive <- CleanData$stateInterv_makeGasMoreExpensive
+table(CleanData$scaleGouvActions_makeGasMoreExpensive)
+
+# stateInterv_moreRegulationsEnviro
+table(CleanData$stateInterv_moreRegulationsEnviro)
+CleanData$scaleGouvActions_moreRegulationsEnviro <- CleanData$stateInterv_moreRegulationsEnviro
+table(CleanData$scaleGouvActions_moreRegulationsEnviro)
+
+# stateInterv_continueIncreaseGESPrice
+table(CleanData$stateInterv_continueIncreaseGESPrice)
+CleanData$scaleGouvActions_continueIncreaseGESPrice <- CleanData$stateInterv_continueIncreaseGESPrice
+table(CleanData$scaleGouvActions_continueIncreaseGESPrice)
+
+# stateInterv_decreaseFossilProd
+table(CleanData$stateInterv_decreaseFossilProd)
+CleanData$scaleGouvActions_decreaseFossilProd <- CleanData$stateInterv_decreaseFossilProd
+table(CleanData$scaleGouvActions_decreaseFossilProd)
+
+# economy_governmentClimatePolicyHurtsEconomy
+table(CleanData$economy_governmentClimatePolicyHurtsEconomy)
+CleanData$scaleGouvActions_governmentClimatePolicyHurtsEconomy <- finverser(CleanData$economy_governmentClimatePolicyHurtsEconomy)
+table(CleanData$scaleGouvActions_governmentClimatePolicyHurtsEconomy)
+
+# responsability_GvntVsCitizens
+table(CleanData$responsability_GvntVsCitizens)
+CleanData$scaleGouvActions_responsabilityGvnt <- CleanData$responsability_GvntVsCitizens
+table(CleanData$scaleGouvActions_responsabilityGvnt)
+
+CleanData <- CleanData %>% 
+  mutate(scale_supportGouvActions = (CleanData %>%
+                                 select(starts_with("scaleGouvActions_")) %>%
+                                 rowSums())/length(names(CleanData %>% select(starts_with("scaleGouvActions_")))))
+
+
+# Locus of responsability -------------------------------------------------
+table(CleanData$responsability_climateChangeCitizens)
+table(CleanData$responsability_climateChangeProvGovt)
+
+### Merge prov et fed govt
+CleanData$scaleLocus_govt <- (CleanData$responsability_climateChangeFedGovt+CleanData$responsability_climateChangeProvGovt)/2
+table(CleanData$scaleLocus_govt)
+
+CleanData$scaleLocus_citizens <- CleanData$responsability_climateChangeCitizens
+CleanData$scaleLocus_enterprises <- CleanData$responsability_climateChangeEnterprise
+CleanData$scaleLocus_obnl <- CleanData$responsability_climateChangeOBNL
+
+## make locus
+Locus <- CleanData %>%
+  pivot_longer(cols = starts_with("scaleLocus"),
+               names_to = "actor",
+               names_prefix = "scaleLocus_",
+               values_to = "responsability") %>% 
+  group_by(id) %>% 
+  mutate(max_res = max(responsability, na.rm = T))
+  
+Second <- Locus %>% 
+  filter(responsability != max_res) %>% 
+  group_by(id) %>% 
+  summarise(second_res = max(responsability))
+
+CleanData <- left_join(Locus, Second, by = "id") %>% 
+  ungroup() %>% 
+  mutate(second_res = ifelse(is.na(second_res), max_res, second_res),
+         locus = ifelse(responsability - max_res == 0, responsability-second_res,
+                        responsability-max_res)) %>% 
+  pivot_wider(id_cols = "id",
+              names_from = "actor",
+              values_from = "locus",
+              names_prefix = "scale_locus_") %>% 
+  left_join(CleanData, ., by = "id")
 
 ###******************************************###
 # Remove duplicated columns that made the scales ####
 ###******************************************###
 
 CleanData <- CleanData %>% 
-  select(-starts_with(c("scaleScep_", "scaleGravity_")))
+  select(-starts_with(c("scaleScep_", "scaleGravity_",
+                        "scaleIA_", "scaleBehaviour_",
+                        "scaleLeadership_", "scaleReligiosity_",
+                        "scaleCarot", "scaleStick", "scaleGouvActions",
+                        "scaleLocus")))
+names(CleanData)
 
 
 ###******************************************###

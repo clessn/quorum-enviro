@@ -12,35 +12,35 @@ source("functions.R", encoding = "UTF-8")
 ###**************###
 # Load Data ####
 ###**************###
-Data <- readRDS("_SharedFolder_quorum-enviro/data/cleanData/data.rds")
-names(Data)
+CleanData <- readRDS("_SharedFolder_quorum-enviro/data/cleanData/data.rds")
+names(CleanData)
 
 ###**************###
 # Last cleaning ####
 ###**************###
-## 0 = pas inquiet, situation pas grave, 1 = inquiet, situation grave 
+## 0 = fait moins d'actions pour l'environnement, 1 = fait des actions pour l'environnement 
 ### Reverse the variables that need to be reversed with finverser
-### Add them as a new variable with the scaleScep_ prefix
+### Add them as a new variable with the scaleBehaviour_ prefix
 
-# climateChangePersonalMenace
-table(Data$gravity_climateChangePersonalMenace)
-Data$scaleGravity_climateChangePersonalMenace <- Data$gravity_climateChangePersonalMenace
-table(Data$scaleGravity_climateChangePersonalMenace)
+# responsability_effortsClimateChangeFamily
+table(CleanData$responsability_effortsClimateChangeFamily)
+CleanData$scaleBehaviour_effortsClimateChangeFamily <- CleanData$responsability_effortsClimateChangeFamily
+table(CleanData$scaleBehaviour_effortsClimateChangeFamily)
 
-# worriedClimateChange
-table(Data$gravity_worriedClimateChange)
-Data$scaleGravity_worriedClimateChange <- Data$gravity_worriedClimateChange
-table(Data$scaleGravity_worriedClimateChange)
+# responsability_climateChangeDiscuss
+table(CleanData$responsability_climateChangeDiscuss)
+CleanData$scaleBehaviour_climateChangeDiscuss <- CleanData$responsability_climateChangeDiscuss
+table(CleanData$scaleBehaviour_climateChangeDiscuss)
 
-# majorCatastrophe
-table(Data$gravity_majorCatastrophe)
-Data$scaleGravity_majorCatastrophe <- Data$gravity_majorCatastrophe
-table(Data$scaleGravity_majorCatastrophe)
+# electricVehicule
+table(CleanData$electricVehicule)
+CleanData$scaleBehaviour_electricVehicule <- CleanData$electricVehicule
+table(CleanData$scaleBehaviour_electricVehicule)
 
-# climateChangeEndHumanity
-table(Data$gravity_climateChangeEndHumanity)
-Data$scaleGravity_climateChangeEndHumanity <- Data$gravity_climateChangeEndHumanity
-table(Data$scaleGravity_climateChangeEndHumanity)
+# responsability_individualToProtect
+table(CleanData$responsability_individualToProtect)
+CleanData$scaleBehaviour_individualToProtect <- CleanData$responsability_individualToProtect
+table(CleanData$scaleBehaviour_individualToProtect)
 
 ###**************###
 # 1. first try ####
@@ -49,11 +49,17 @@ table(Data$scaleGravity_climateChangeEndHumanity)
 ###**************###
 ## 1.1 Factor analysis ####
 ###**************###
-FaData <- Data %>% 
-  select(starts_with("scaleGravity")) %>% 
+FaData <- CleanData %>% 
+  select(starts_with("scaleBehaviour")) %>% 
   drop_na()
 
 topdown_fa(FaData)
+
+FaData2 <- FaData %>% 
+  select(-scaleBehaviour_electricVehicule)
+
+topdown_fa(FaData2)
+
 
 ###**************###
 ## 1.2 Check distribution of scale and variables ####

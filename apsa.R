@@ -41,7 +41,7 @@ Graph <- Data %>%
 
 ggplot(Graph, aes(x = value2, y = name)) +
   geom_histogram() +
-  facet_wrap(~name)
+  facet_wrap(~name) +
   ggridges::stat_binline(scale = 0.9, ) +
   scale_x_discrete(breaks = c(2,3,4))
 
@@ -114,7 +114,7 @@ univar_plot <- function(question, title){
     scale_x_continuous(labels = c("Strongly\nin disfavor", "Somewhat\nin disfavor", "Neutral",
                                   "Somewhat\nin favor", "Strongly\nin favor"),
                        breaks = 1:5) +
-    labs(caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.")) +
+    labs(caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.\nRespondents who indicated they were either 'strongly in favor' or 'somewhat in favor' have been combined into a single group referred to as 'in favor'.")) +
     xlab("") +
     ylab("\nProportion of\nthe survey sample (%)\n") +
     theme(plot.background = element_rect(fill = "white"))
@@ -158,9 +158,10 @@ BaseGraph <- Data %>%
   select(id, PROV, Q55_A1, Q57_A1, Q57_A2, Q57_A3) %>% 
   pivot_longer(., cols = c(Q55_A1, starts_with("Q57"))) %>% 
   mutate(prov_join = case_when(
-          PROV %in% c(9,11) ~ "Ontario and Quebec",
+          PROV == 9 ~ "Ontario",
+          PROV == 11 ~ "Quebec",
           PROV %in% c(1,12) ~ "Alberta and Saskatchewan",
-          PROV == 2 ~ "British-Columbia"),
+          PROV == 2 ~ "British Columbia"),
          PROV = provinces[as.character(PROV)],
          position = case_when(
            value %in% 1:2 ~ "In disfavor",
@@ -197,15 +198,18 @@ Graph1 %>%
            color = "#2E8B57", fill = "#2E8B57") +
   theme_minimal() +
   xlab("") +
-  ylab("\nProportion of the\nsample in favor (%)\n") +
-  labs(title = "\nProportion of the sample in favor with the following question\ndepending on how the funds are used",
-       subtitle = "\nAre you in favor of continuing to increase the price of carbon dioxide emissions?\n",
-       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.")) +
+  ylab("<br>Proportion of the<br>sample in favor (%)<br>") +
+  labs(title = "<br>Proportion of the sample in favor with the following question<br>depending on how the funds are used",
+       subtitle = "<br>Are you in favor of continuing to increase the price of carbon dioxide emissions?<br>",
+       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.\nRespondents who indicated they were either 'strongly in favor' or 'somewhat in favor' have been combined into a single group referred to as 'in favor'.")) +
   scale_y_continuous(limits = c(0,100)) +
   scale_alpha_manual("", values = c("Somewhat" = 0.3, "Strongly" = 0.7)) +
   theme(plot.background = element_rect(fill = "white"),
         legend.position = "top") +
-  geom_text(aes(y = prop_position+4, label = round(prop_position)), color = "#4B4544")
+  geom_text(aes(y = prop_position+4, label = round(prop_position)), color = "#4B4544") +
+  theme(axis.title.y = ggtext::element_markdown(),
+        plot.title = ggtext::element_markdown(),
+        plot.subtitle = ggtext::element_markdown())
   
 ggsave("_SharedFolder_quorum-enviro/apsa_sept10/carb_favor.png",
        width = 9, height = 6)
@@ -214,35 +218,38 @@ ggsave("_SharedFolder_quorum-enviro/apsa_sept10/carb_favor.png",
 # carb_favor province
 carb_favor_province <- BaseGraph %>% 
   filter(!(is.na(prov_join))) %>% 
-  group_by(name, PROV, position, salience) %>% 
+  group_by(name, prov_join, position, salience) %>% 
   summarise(n_group = n()) %>% 
-  group_by(name, PROV, position) %>% 
+  group_by(name, prov_join, position) %>% 
   mutate(n_position = sum(n_group)) %>% 
-  group_by(name, PROV) %>% 
+  group_by(name, prov_join) %>% 
   mutate(n_question = sum(n_group),
          prop_group = n_group/n_question*100,
          prop_position = n_position/n_question*100)
 
 carb_favor_province %>% 
   filter(position == "In favor") %>%
-  mutate(PROV = factor(PROV, levels = c("British Columbia", "Ontario", "Quebec", "Alberta", "Saskatchewan")),
-         facet_label = paste0(PROV, "\nn = ", n_question)) %>% 
+  mutate(prov_join = factor(prov_join, levels = c("British Columbia", "Ontario", "Quebec", "Alberta and Saskatchewan")),
+         facet_label = paste0(prov_join, "\nn = ", n_question)) %>% 
   ggplot(aes(x = reorder(name, prop_position), y = prop_group)) +
   geom_bar(stat = "identity", aes(alpha = salience),
            color = "#2E8B57", fill = "#2E8B57") +
   theme_minimal() +
   xlab("") +
   facet_wrap(~facet_label)+
-  ylab("\nProportion of the\nsample in favor (%)\n") +
-  labs(title = "\nProportion of the sample in favor with the following question\ndepending on how the funds are used",
-       subtitle = "\nAre you in favor of continuing to increase the price of carbon dioxide emissions?\n",
-       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.")) +
+  ylab("<br>Proportion of the<br>sample in favor (%)<br>") +
+  labs(title = "<br>Proportion of the sample in favor with the following question<br>depending on how the funds are used",
+       subtitle = "<br>Are you in favor of continuing to increase the price of carbon dioxide emissions?<br>",
+       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.\nRespondents who indicated they were either 'strongly in favor' or 'somewhat in favor' have been combined into a single group referred to as 'in favor'.")) +
   scale_y_continuous(limits = c(0,100)) +
   scale_alpha_manual("", values = c("Somewhat" = 0.3, "Strongly" = 0.7)) +
   theme(plot.background = element_rect(fill = "white"),
         legend.position = "top",
         axis.text.x = element_text(size = 5.5, angle = 45, vjust = 0.65)) +
-  geom_text(aes(y = prop_position+8, label = round(prop_position)), color = "#4B4544")
+  geom_text(aes(y = prop_position+8, label = round(prop_position)), color = "#4B4544") +
+  theme(axis.title.y = ggtext::element_markdown(),
+        plot.title = ggtext::element_markdown(),
+        plot.subtitle = ggtext::element_markdown())
 
 ggsave("_SharedFolder_quorum-enviro/apsa_sept10/carb_favor_provinces.png",
        width = 9, height = 6)
@@ -294,15 +301,18 @@ Graph1 %>%
   theme_minimal() +
   theme_minimal() +
   xlab("") +
-  ylab("\nProportion of the\nsample in disfavor (%)\n") +
-  labs(title = "\nProportion of the sample in disfavor with the following question\ndepending on how the funds are used",
-       subtitle = "\nAre you in favor of continuing to increase the price of carbon dioxide emissions?\n",
-       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.")) +
+  ylab("<br>Proportion of the<br>sample in disfavor (%)<br>") +
+  labs(title = "<br>Proportion of the sample in disfavor with the following question<br>depending on how the funds are used",
+       subtitle = "<br>Are you in favor of continuing to increase the price of carbon dioxide emissions?<br>",
+       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.\nRespondents who indicated they were either 'strongly in disfavor' or 'somewhat in disfavor' have been combined into a single group referred to as 'in disfavor'.")) +
   scale_y_continuous(limits = c(0,100)) +
   scale_alpha_manual("", values = c("Somewhat" = 0.3, "Strongly" = 0.7)) +
   theme(plot.background = element_rect(fill = "white"),
         legend.position = "top") +
-  geom_text(aes(y = prop_position+4, label = round(prop_position)), color = "#4B4544")
+  geom_text(aes(y = prop_position+4, label = round(prop_position)), color = "#4B4544") +
+  theme(axis.title.y = ggtext::element_markdown(),
+        plot.title = ggtext::element_markdown(),
+        plot.subtitle = ggtext::element_markdown())
 
 ggsave("_SharedFolder_quorum-enviro/apsa_sept10/carb_disfavor.png",
        width = 9, height = 6)
@@ -343,16 +353,19 @@ carb_favor_province_join %>%
   theme_minimal() +
   xlab("") +
   facet_wrap(~facet_label)+
-  ylab("\nProportion of the\nsample in disfavor (%)\n") +
-  labs(title = "\nProportion of the sample in disfavor with the following question\ndepending on how the funds are used",
-       subtitle = "\nAre you in favor of continuing to increase the price of carbon dioxide emissions?\n",
-       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.")) +
+  ylab("<br>Proportion of the<br>sample in disfavor (%)<br>") +
+  labs(title = "<br>Proportion of the sample in disfavor with the following question<br>depending on how the funds are used",
+       subtitle = "<br>Are you in favor of continuing to increase the price of carbon dioxide emissions?<br>",
+       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.\nRespondents who indicated they were either 'strongly in disfavor' or 'somewhat in disfavor' have been combined into a single group referred to as 'in disfavor'.")) +
   scale_y_continuous(limits = c(0,100)) +
   scale_alpha_manual("", values = c("Somewhat" = 0.3, "Strongly" = 0.7)) +
   theme(plot.background = element_rect(fill = "white"),
         legend.position = "top",
         axis.text.x = element_text(size = 5.5, angle = 45, vjust = 0.65)) +
-  geom_text(aes(y = prop_position+8, label = round(prop_position)), color = "#4B4544")
+  geom_text(aes(y = prop_position+8, label = round(prop_position)), color = "#4B4544") +
+  theme(axis.title.y = ggtext::element_markdown(),
+        plot.title = ggtext::element_markdown(),
+        plot.subtitle = ggtext::element_markdown())
 
 
 ggsave("_SharedFolder_quorum-enviro/apsa_sept10/carb_disfavor_prov_join.png",
@@ -365,9 +378,10 @@ BaseGraph2 <- Data %>%
   select(id, PROV, Q55_A2, Q60, Q61) %>% 
   pivot_longer(., cols = c(Q55_A2, Q60, Q61)) %>% 
   mutate(prov_join = case_when(
-    PROV %in% c(9,11) ~ "Ontario and Quebec",
+    PROV == 9 ~ "Ontario",
+    PROV == 11 ~ "Quebec",
     PROV %in% c(1,12) ~ "Alberta and Saskatchewan",
-    PROV == 2 ~ "British-Columbia"),
+    PROV == 2 ~ "British Columbia"),
     PROV = provinces[as.character(PROV)],
     position = case_when(
       value %in% 1:2 ~ "In disfavor",
@@ -403,15 +417,18 @@ Graph2 %>%
            color = "#2E8B57", fill = "#2E8B57") +
   theme_minimal() +
   xlab("") +
-  ylab("\nProportion of the\nsample in favor (%)\n") +
-  labs(title = "\nProportion of the sample in favor with the following question\ndepending on the consequence on the economy",
-       subtitle = "\nAre you in favor of progressively decreasing fossil fuels production in Canada?\n",
-       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.")) +
+  ylab("<br>Proportion of the<br>sample in favor (%)<br>") +
+  labs(title = "<br>Proportion of the sample in favor with the following question<br>depending on the consequence on the economy",
+       subtitle = "<br>Are you in favor of progressively decreasing fossil fuels production in Canada?<br>",
+       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.\nRespondents who indicated they were either 'strongly in favor' or 'somewhat in favor' have been combined into a single group referred to as 'in favor'.")) +
   scale_y_continuous(limits = c(0,100)) +
   scale_alpha_manual("", values = c("Somewhat" = 0.3, "Strongly" = 0.7)) +
   theme(plot.background = element_rect(fill = "white"),
         legend.position = "top") +
-  geom_text(aes(y = prop_position+4, label = round(prop_position)), color = "#4B4544")
+  geom_text(aes(y = prop_position+4, label = round(prop_position)), color = "#4B4544") +
+  theme(axis.title.y = ggtext::element_markdown(),
+        plot.title = ggtext::element_markdown(),
+        plot.subtitle = ggtext::element_markdown())
 
 ggsave("_SharedFolder_quorum-enviro/apsa_sept10/fossil_favor.png",
        width = 9, height = 6)
@@ -424,15 +441,18 @@ Graph2 %>%
   theme_minimal() +
   theme_minimal() +
   xlab("") +
-  ylab("\nProportion of the\nsample in disfavor (%)\n") +
-  labs(title = "\nProportion of the sample in disfavor with the following question\ndepending on the consequence on the economy",
-       subtitle = "\nAre you in favor of progressively decreasing fossil fuels production in Canada?\n",
-       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.")) +
+  ylab("<br>Proportion of the<br>sample in disfavor (%)<br>") +
+  labs(title = "<br>Proportion of the sample in disfavor with the following question<br>depending on the consequence on the economy",
+       subtitle = "<br>Are you in favor of progressively decreasing fossil fuels production in Canada?<br>",
+       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.\nRespondents who indicated they were either 'strongly in disfavor' or 'somewhat in disfavor' have been combined into a single group referred to as 'in disfavor'.")) +
   scale_y_continuous(limits = c(0,100)) +
   scale_alpha_manual("", values = c("Somewhat" = 0.3, "Strongly" = 0.7)) +
   theme(plot.background = element_rect(fill = "white"),
         legend.position = "top") +
-  geom_text(aes(y = prop_position+4, label = round(prop_position)), color = "#4B4544")
+  geom_text(aes(y = prop_position+4, label = round(prop_position)), color = "#4B4544") +
+  theme(axis.title.y = ggtext::element_markdown(),
+        plot.title = ggtext::element_markdown(),
+        plot.subtitle = ggtext::element_markdown())
 
 ggsave("_SharedFolder_quorum-enviro/apsa_sept10/fossil_disfavor.png",
        width = 9, height = 6)
@@ -441,35 +461,38 @@ ggsave("_SharedFolder_quorum-enviro/apsa_sept10/fossil_disfavor.png",
 # fossil favor provinces
 fossil_favor_province <- BaseGraph2 %>% 
   filter(!(is.na(prov_join))) %>% 
-  group_by(name, PROV, position, salience) %>% 
+  group_by(name, prov_join, position, salience) %>% 
   summarise(n_group = n()) %>% 
-  group_by(name, PROV, position) %>% 
+  group_by(name, prov_join, position) %>% 
   mutate(n_position = sum(n_group)) %>% 
-  group_by(name, PROV) %>% 
+  group_by(name, prov_join) %>% 
   mutate(n_question = sum(n_group),
          prop_group = n_group/n_question*100,
          prop_position = n_position/n_question*100)
 
 fossil_favor_province %>% 
   filter(position == "In favor") %>%
-  mutate(PROV = factor(PROV, levels = c("British Columbia", "Ontario", "Quebec", "Alberta", "Saskatchewan")),
-         facet_label = paste0(PROV, "\nn = ", n_question)) %>% 
+  mutate(prov_join = factor(prov_join, levels = c("British Columbia", "Ontario", "Quebec", "Alberta and Saskatchewan")),
+         facet_label = paste0(prov_join, "\nn = ", n_question)) %>% 
   ggplot(aes(x = reorder(name, prop_position), y = prop_group)) +
   geom_bar(stat = "identity", aes(alpha = salience),
            color = "#2E8B57", fill = "#2E8B57") +
   theme_minimal() +
   xlab("") +
   facet_wrap(~facet_label)+
-  ylab("\nProportion of the\nsample in favor (%)\n") +
-  labs(title = "\nProportion of the sample in favor with the following question\ndepending on the consequence on the economy",
-       subtitle = "\nAre you in favor of progressively decreasing fossil fuels production in Canada?\n",
-       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.")) +
+  ylab("<br>Proportion of the<br>sample in favor (%)<br>") +
+  labs(title = "<br>Proportion of the sample in favor with the following question<br>depending on the consequence on the economy",
+       subtitle = "<br>Are you in favor of progressively decreasing fossil fuels production in Canada?<br>",
+       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.\nRespondents who indicated they were either 'strongly in favor' or 'somewhat in favor' have been combined into a single group referred to as 'in favor'.")) +
   scale_y_continuous(limits = c(0,100)) +
   scale_alpha_manual("", values = c("Somewhat" = 0.3, "Strongly" = 0.7)) +
   theme(plot.background = element_rect(fill = "white"),
         legend.position = "top",
         axis.text.x = element_text(size = 5.5, angle = 45, vjust = 0.65)) +
-  geom_text(aes(y = prop_position+9, label = round(prop_position)), color = "#4B4544")
+  geom_text(aes(y = prop_position+9, label = round(prop_position)), color = "#4B4544") +
+  theme(axis.title.y = ggtext::element_markdown(),
+        plot.title = ggtext::element_markdown(),
+        plot.subtitle = ggtext::element_markdown())
 
 ggsave("_SharedFolder_quorum-enviro/apsa_sept10/fossil_favor_provinces.png",
        width = 9, height = 6)
@@ -515,35 +538,38 @@ ggsave("_SharedFolder_quorum-enviro/apsa_sept10/fossil_favor_prov_join.png",
 # fossil disfavor provinces
 fossil_disfavor_province <- BaseGraph2 %>% 
   filter(!(is.na(prov_join))) %>% 
-  group_by(name, PROV, position, salience) %>% 
+  group_by(name, prov_join, position, salience) %>% 
   summarise(n_group = n()) %>% 
-  group_by(name, PROV, position) %>% 
+  group_by(name, prov_join, position) %>% 
   mutate(n_position = sum(n_group)) %>% 
-  group_by(name, PROV) %>% 
+  group_by(name, prov_join) %>% 
   mutate(n_question = sum(n_group),
          prop_group = n_group/n_question*100,
          prop_position = n_position/n_question*100)
 
 fossil_disfavor_province %>% 
   filter(position == "In disfavor") %>%
-  mutate(PROV = factor(PROV, levels = c("British Columbia", "Ontario", "Quebec", "Alberta", "Saskatchewan")),
-         facet_label = paste0(PROV, "\nn = ", n_question)) %>% 
+  mutate(prov_join = factor(prov_join, levels = c("British Columbia", "Ontario", "Quebec", "Alberta and Saskatchewan")),
+         facet_label = paste0(prov_join, "\nn = ", n_question)) %>% 
   ggplot(aes(x = reorder(name, -prop_position), y = prop_group)) +
   geom_bar(stat = "identity", aes(alpha = salience),
            color = "#D4342E", fill = "#D4342E") +
   theme_minimal() +
   xlab("") +
   facet_wrap(~facet_label)+
-  ylab("\nProportion of the\nsample in disfavor (%)\n") +
-  labs(title = "\nProportion of the sample in disfavor with the following question\ndepending on the consequence on the economy",
-       subtitle = "\nAre you in favor of progressively decreasing fossil fuels production in Canada?\n",
-       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.")) +
+  ylab("<br>Proportion of the<br>sample in disfavor (%)<br>") +
+  labs(title = "<br>Proportion of the sample in disfavor with the following question<br>depending on the consequence on the economy",
+       subtitle = "<br>Are you in favor of progressively decreasing fossil fuels production in Canada?<br>",
+       caption = paste0("n = ", nrow(Data), ". Data collected from a survey conducted on August 2022 across Canada for all ages by the firm Synopsis.\nRespondents who indicated they were either 'strongly in disfavor' or 'somewhat in disfavor' have been combined into a single group referred to as 'in disfavor'.")) +
   scale_y_continuous(limits = c(0,100)) +
   scale_alpha_manual("", values = c("Somewhat" = 0.3, "Strongly" = 0.7)) +
   theme(plot.background = element_rect(fill = "white"),
         legend.position = "top",
         axis.text.x = element_text(size = 5.5, angle = 45, vjust = 0.65)) +
-  geom_text(aes(y = prop_position+9, label = round(prop_position)), color = "#4B4544")
+  geom_text(aes(y = prop_position+9, label = round(prop_position)), color = "#4B4544") +
+  theme(axis.title.y = ggtext::element_markdown(),
+        plot.title = ggtext::element_markdown(),
+        plot.subtitle = ggtext::element_markdown())
 
 ggsave("_SharedFolder_quorum-enviro/apsa_sept10/fossil_disfavor_provinces.png",
        width = 9, height = 6)
