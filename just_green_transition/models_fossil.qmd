@@ -1,0 +1,47 @@
+---
+title: "Modèles fossil"
+format: html
+---
+
+```{r data, include=FALSE}
+print(here::here())
+library(tidyverse)
+library(modelsummary)
+
+data <- readRDS(here::here("_SharedFolder_quorum-enviro/data/cleanData/data_with_clusters.rds")) %>% 
+  mutate(region = case_when(
+    ses_prov %in% c("alberta", "sk") ~ "Alberta and Saskatchewan",
+    ses_prov %in% c("cb") ~ "British Columbia",
+    ses_prov %in% c("on") ~ "Ontario",
+    ses_prov %in% c("qc") ~ "Quebec",
+  ),
+  region = ifelse(is.na(region), "other", region),
+  region = factor(region)
+  )
+
+
+models <- list(
+  "Like existing system" = lm(stateInterv_decreaseFossilProd ~
+        scale_gravity + region + ses_gender_male +
+        ses_age_24m + ses_age_2534 + ses_age_5564 +
+        ses_age_6574 + ses_age_75p + ses_bornCanada +
+        ses_educUniv + ses_incomeLow + ses_incomeMid,
+      data = data),
+  "Fossil jobs" = lm(stateInterv_decreaseFossilProd_FossilJobs ~
+         scale_gravity + region + ses_gender_male +
+         ses_age_24m + ses_age_2534 + ses_age_5564 +
+         ses_age_6574 + ses_age_75p + ses_bornCanada +
+         ses_educUniv + ses_incomeLow + ses_incomeMid,
+       data = data),
+  "Green jobs" = lm(stateInterv_decreaseFossilProd_GreenJobs ~
+         scale_gravity + region + ses_gender_male +
+         ses_age_24m + ses_age_2534 + ses_age_5564 +
+         ses_age_6574 + ses_age_75p + ses_bornCanada +
+         ses_educUniv + ses_incomeLow + ses_incomeMid,
+       data = data)
+)
+```
+
+```{r print, include=TRUE, echo=FALSE}
+modelsummary(models, stars = TRUE)
+```
