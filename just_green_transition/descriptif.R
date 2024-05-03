@@ -263,7 +263,7 @@ carbonregion %>%
   scale_fill_manual(values = c("Strongly" = "#666666", "Neutral" = "#666666", "Somewhat" = "#a3a3a3")) +
   ylab("Proportion of the sample (%)") +
   xlab("") +
-  labs(title = "Proportion of the sample in favor or in disfavor of the following question\ndepending on how the funds are used",
+  labs(#title = "Proportion of the sample in favor or in disfavor of the following question\ndepending on how the funds are used",
        subtitle = "Are you in favor of continuing to increase the price of carbon dioxide emissions?",
        caption = "n = 1500. Data collected from a survey conducted in August 2022 across Canada for all ages by the firm Synopsis.") +
   clessnverse::theme_clean_light() +
@@ -530,7 +530,7 @@ fossilregion %>%
   scale_fill_manual(values = c("Strongly" = "#666666", "Neutral" = "#666666", "Somewhat" = "#a3a3a3")) +
   ylab("Proportion of the sample (%)") +
   xlab("") +
-  labs(title = "Proportion of the sample in favor or in disfavor of the following question\ndepending on how the funds are used",
+  labs(#title = "Proportion of the sample in favor or in disfavor of the following question\ndepending on how the funds are used",
        subtitle = "Are you in favor of progressively decreasing fossil fuels production in Canada?",
        caption = "n = 1500. Data collected from a survey conducted in August 2022 across Canada for all ages by the firm Synopsis.") +
   guides(fill = guide_legend(override.aes = list(alpha = c(1, 0.5, 0.5, 0.5, 1)))) +
@@ -567,6 +567,12 @@ graph <- Data %>%
                                             "British Columbia",
                                             "Alberta and\nSaskatchewan",
                                             "Other region")),
+         region2 = case_when(
+           region == "Quebec" ~ "Quebec",
+           region == "Alberta and\nSaskatchewan" ~ "Alberta and\nSaskatchewan",
+           !(region %in% c("Quebec", "Alberta and\nSaskatchewan")) ~ "ROC" 
+         ),
+         region2 = factor(region2, levels = c("ROC", "Quebec", "Alberta and\nSaskatchewan")),
          qc = ifelse(ses_prov_qc == 1, "Quebec", "ROC"),
          qc = factor(qc, levels = c("ROC", "Quebec")),
          mesure = case_when(
@@ -593,7 +599,7 @@ ggplot(graph, aes(x = scale_gravity, y = accord)) +
               linewidth = 0.75) +
   ylab("") +
   xlab("\nConcern About Climate Change Scale\n") +
-  labs(title = "Relation between concern for climate change\nand support for different policies") +
+  #labs(title = "Relation between concern for climate change\nand support for different policies") +
   scale_x_continuous(breaks = c(0.25, 0.75),
                      labels = c("Not concerned", "Concerned")) +
   scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75, 1),
@@ -608,8 +614,42 @@ ggplot(graph, aes(x = scale_gravity, y = accord)) +
         axis.title.y = element_text(hjust = 0.5),
         axis.text.y = element_text(angle = 90, size = 7,
                                    hjust = 0.5, vjust = 0),
-        strip.text.y = element_text(size = 13))
+        strip.text.y = element_text(size = 13),
+        panel.border = element_rect(color = "lightgrey", fill = NA))
 
 ggsave("_SharedFolder_quorum-enviro/apsa_sept10/papier/gravityXaccord.png",
        width = 10, height = 8)
 
+
+## with alb-sk
+ggplot(graph, aes(x = scale_gravity, y = accord)) +
+  facet_grid(cols = vars(mesure),
+             rows = vars(politique),
+             switch = "y") +
+  geom_jitter(alpha = 0.025, size = 1) +
+  geom_smooth(aes(group = region2, linetype = region2),
+              method = "lm",
+              color = "black",
+              linewidth = 0.75) +
+  ylab("") +
+  xlab("\nConcern About Climate Change Scale\n") +
+  labs(title = "Relation between concern for climate change\nand support for different policies") +
+  scale_x_continuous(breaks = c(0.25, 0.75),
+                     labels = c("Not concerned", "Concerned")) +
+  scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75, 1),
+                     labels = c("Strongly in\ndisfavor",
+                                "Somewhat in\ndisfavor",
+                                "Neutral",
+                                "Somewhat in\nfavor",
+                                "Strongly in\nfavor")) +
+  scale_linetype_manual(values = c("solid", "dotted", "dashed")) +
+  clessnverse::theme_clean_light() +
+  theme(strip.placement = "outside",
+        axis.title.x = element_text(hjust = 0.5),
+        axis.title.y = element_text(hjust = 0.5),
+        axis.text.y = element_text(angle = 90, size = 7,
+                                   hjust = 0.5, vjust = 0),
+        strip.text.y = element_text(size = 13))
+
+ggsave("_SharedFolder_quorum-enviro/apsa_sept10/papier/gravityXaccord2.png",
+       width = 10, height = 8)
