@@ -4,15 +4,15 @@ format: pdf
 editor: visual
 ---
 
-- Présentation descriptive des différents soutien aux actions violentes, destructrices, etc.
-  - Figure 1 dans clean_graphs.R
-- Préoccupation écologique => support pour actions extrêmes? (il y a-t-il un threshold de base?)
-  - Figure 4 dans clean_graphs.R
-- Zoom in sur subsets d’individus plus/moins propices de soutenir actions disruptive, destructive, violente.
-- Attribution of responsibility:
-  - when attribution of responsibility to citizens = less support for radical actions
-  - when attribution of responsibility to enterprises = more support for specific radical actions (destruction pipeline, boycott)
-  - when attribution of responsibility to government = support for manif, occupation public space
-  - selon le “locus of responsibility” (concept à développer) ça donne des visions différentes de l’activisme et quelles actions sont acceptables ou non. Ce concept empiriquement vérifié de “locus of responsibility for climate change” serait un de nos gros résultats importants parce qu’il détermine en partie le type d’action (de moins à plus radicales) qui sont tolérés et acceptés et “justifiés” publiquement.
-  
-  
+-   Présentation descriptive des différents soutien aux actions violentes, destructrices, etc.
+    -   Figure 1 dans clean_graphs.R
+    -   Tableau descriptif, moyenne par type d'action selon différents SES
+-   Préoccupation écologique =\> support pour actions extrêmes? (il y a-t-il un threshold de base?)
+    -   Figure 4 dans clean_graphs.R
+-   Zoom in sur subsets d’individus plus/moins propices de soutenir actions disruptive, destructive, violente.
+    -   Probabilités prédites age region
+-   Attribution of responsibility:
+    -   when attribution of responsibility to citizens = less support for radical actions
+    -   when attribution of responsibility to enterprises = more support for specific radical actions (destruction pipeline, boycott)
+    -   when attribution of responsibility to government = support for manif, occupation public space
+    -   selon le “locus of responsibility” (concept à développer) ça donne des visions différentes de l’activisme et quelles actions sont acceptables ou non. Ce concept empiriquement vérifié de “locus of responsibility for climate change” serait un de nos gros résultats importants parce qu’il détermine en partie le type d’action (de moins à plus radicales) qui sont tolérés et acceptés et “justifiés” publiquement.
