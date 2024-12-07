@@ -1,0 +1,73 @@
+
+\documentclass{standalone}
+\usepackage{tabularray}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{float}
+\usepackage[normalem]{ulem}
+\UseTblrLibrary{booktabs}
+\UseTblrLibrary{siunitx}
+\newcommand{\tinytableTabularrayUnderline}[1]{\underline{#1}}
+\newcommand{\tinytableTabularrayStrikeout}[1]{\sout{#1}}
+\NewTableCommand{\tinytableDefineColor}[3]{\definecolor{#1}{#2}{#3}}
+\begin{document}
+\minipage{\textwidth}
+\begin{table}
+\centering
+\begin{tblr}[         %% tabularray outer open
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]Q[]Q[]Q[]Q[]Q[]},
+cell{1}{2}={c=4,}{halign=c,},
+cell{1}{6}={c=3,}{halign=c,},
+cell{3}{1}={c=8}{},cell{7}{1}={c=8}{},cell{11}{1}={c=8}{},cell{19}{1}={c=8}{},cell{22}{1}={c=8}{},
+cell{4}{1}={preto={\hspace{3em}}},
+cell{5}{1}={preto={\hspace{3em}}},
+cell{6}{1}={preto={\hspace{3em}}},
+cell{8}{1}={preto={\hspace{3em}}},
+cell{9}{1}={preto={\hspace{3em}}},
+cell{10}{1}={preto={\hspace{3em}}},
+cell{12}{1}={preto={\hspace{3em}}},
+cell{13}{1}={preto={\hspace{3em}}},
+cell{14}{1}={preto={\hspace{3em}}},
+cell{15}{1}={preto={\hspace{3em}}},
+cell{16}{1}={preto={\hspace{3em}}},
+cell{17}{1}={preto={\hspace{3em}}},
+cell{18}{1}={preto={\hspace{3em}}},
+cell{20}{1}={preto={\hspace{3em}}},
+cell{21}{1}={preto={\hspace{3em}}},
+cell{23}{1}={preto={\hspace{3em}}},
+cell{24}{1}={preto={\hspace{3em}}},
+cell{25}{1}={preto={\hspace{3em}}},
+cell{26}{1}={preto={\hspace{3em}}},
+hlines, vlines,
+}                     %% tabularray inner close
+& GES &  &  &  & Fossil &  &  \\ \cmidrule[lr]{2-5}\cmidrule[lr]{6-8}
+Gender &&&&&&& \\
+female (n = 756)             & 0.56 & 0.6  & 0.68 & 0.59 & 0.66 & 0.7  & 0.71 \\
+male (n = 733)               & 0.52 & 0.56 & 0.64 & 0.56 & 0.62 & 0.65 & 0.67 \\
+other (n = 11)               & 0.61 & 0.61 & 0.7  & 0.73 & 0.66 & 0.77 & 0.77 \\
+Income &&&&&&& \\
+0_30k (n = 227)              & 0.55 & 0.61 & 0.65 & 0.61 & 0.65 & 0.68 & 0.69 \\
+110kp (n = 383)              & 0.55 & 0.58 & 0.67 & 0.54 & 0.66 & 0.68 & 0.72 \\
+30k_110k (n = 890)           & 0.53 & 0.58 & 0.66 & 0.57 & 0.63 & 0.67 & 0.68 \\
+Age Category &&&&&&& \\
+24m (n = 140)                & 0.6  & 0.62 & 0.67 & 0.6  & 0.71 & 0.7  & 0.74 \\
+25_34 (n = 278)              & 0.56 & 0.57 & 0.66 & 0.58 & 0.64 & 0.69 & 0.7  \\
+35_44 (n = 181)              & 0.51 & 0.55 & 0.62 & 0.58 & 0.6  & 0.62 & 0.63 \\
+45_54 (n = 261)              & 0.52 & 0.58 & 0.65 & 0.58 & 0.6  & 0.65 & 0.67 \\
+55_64 (n = 311)              & 0.52 & 0.59 & 0.65 & 0.57 & 0.62 & 0.67 & 0.69 \\
+65_74 (n = 242)              & 0.55 & 0.58 & 0.69 & 0.55 & 0.69 & 0.7  & 0.73 \\
+75p (n = 87)                 & 0.56 & 0.62 & 0.69 & 0.55 & 0.68 & 0.67 & 0.73 \\
+Population Centre &&&&&&& \\
+population_centre (n = 1000) & 0.56 & 0.6  & 0.68 & 0.57 & 0.65 & 0.68 & 0.7  \\
+rural (n = 500)              & 0.5  & 0.56 & 0.63 & 0.57 & 0.62 & 0.66 & 0.68 \\
+Ethnicity &&&&&&& \\
+asian (n = 139)              & 0.56 & 0.57 & 0.63 & 0.59 & 0.63 & 0.66 & 0.69 \\
+other (n = 115)              & 0.56 & 0.58 & 0.64 & 0.58 & 0.62 & 0.65 & 0.66 \\
+white (n = 1225)             & 0.54 & 0.59 & 0.67 & 0.57 & 0.65 & 0.68 & 0.7  \\
+\end{tblr}
+\end{table}
+\endminipage
+\end{document}
+

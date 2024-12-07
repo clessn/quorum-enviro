@@ -23,8 +23,9 @@ data <- readRDS("_SharedFolder_quorum-enviro/data/cleanData/data.rds") %>%
     responsibility_climateChange_Govt = (responsability_climateChangeFedGovt + responsability_climateChangeProvGovt) / 2) %>% 
   select(age_cat, ses_region, ses_gender_male,
          educ_level, ses_incomeHigh, ses_incomeLow, ses_bornCanada,
-         responsibility_climateChange_Govt, responsability_climateChangeEnterprise,
-         responsability_climateChangeCitizens,
+         responsibility_climateChange_Govt,
+         responsibility_climateChange_Enterprise = responsability_climateChangeEnterprise,
+         responsibility_climateChange_Citizens = responsability_climateChangeCitizens,
          starts_with("radicalisation_tolerate"))
 
 
@@ -39,8 +40,8 @@ for (i in 1:length(vds)){
   model <- eval(parse(text = paste0("lm(", vd, " ~ age_cat +
                  ses_gender_male + educ_level +
                  ses_incomeHigh + ses_incomeLow + ses_region + ses_bornCanada +
-                 responsibility_climateChange_Govt + responsability_climateChangeEnterprise +
-                 responsability_climateChangeCitizens,
+                 responsibility_climateChange_Govt + responsibility_climateChange_Enterprise +
+                 responsibility_climateChange_Citizens,
                  data = data)")))
   model_coefficients <- data.frame(summary(model)$coefficients[,1:2]) %>% 
     mutate(vi = rownames(.),
@@ -49,8 +50,8 @@ for (i in 1:length(vds)){
            conf_low = Estimate - me,
            conf_high = Estimate + me) %>% 
     filter(vi %in% c("responsibility_climateChange_Govt",
-                     "responsability_climateChangeEnterprise",
-                     "responsability_climateChangeCitizens")) %>% 
+                     "responsibility_climateChange_Enterprise",
+                     "responsibility_climateChange_Citizens")) %>% 
     select(item, vi, estimate = Estimate, conf_low, conf_high)
   rownames(model_coefficients) <- NULL
   if (i == 1){
@@ -78,16 +79,15 @@ items_mean <- data %>%
 graph_data <- model_coefs %>%
   mutate(group = groups[item],
          group = factor(group,
-                        levels = rev(c("Violent",
-                                       "Property\ndestruction",
+                        levels = rev(c("Violent,\ndisruptive",
                                        "Nonviolent,\ndisruptive",
                                        "Nonviolent,\nnon-disruptive"))),
          item = clean_names[item],
          vi = clean_vis[vi],
          vi = factor(vi,
                      levels = c("Citizens",
-                                "Enterprises",
-                                "Governments")),
+                                "Governments",
+                                "Enterprises")),
          significative = ifelse(sign(estimate) == sign(conf_low) &
                                   sign(estimate) == sign(conf_high),
                                 "Significant",
@@ -96,15 +96,12 @@ graph_data <- model_coefs %>%
 
 ggplot(data = graph_data,
        aes(x = estimate,
-           y = reorder(item, -mean_item))) +
+           y = reorder(item, mean_item))) +
   facet_grid(rows = vars(group),
              cols = vars(vi),
              scales = "free_y",
              switch = "y") +
-  geom_rect(data = subset(graph_data, group == 'Violent'),
-            fill = "grey85", xmin = -1.5,xmax = 1.5,
-            ymin = -Inf,ymax = Inf) +
-  geom_rect(data = subset(graph_data, group == 'Property\ndestruction'),
+  geom_rect(data = subset(graph_data, group == 'Violent,\ndisruptive'),
             fill = "grey90", xmin = -1.5,xmax = 1.5,
             ymin = -Inf,ymax = Inf) +
   geom_rect(data = subset(graph_data, group == 'Nonviolent,\ndisruptive'),

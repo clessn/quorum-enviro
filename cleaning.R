@@ -331,6 +331,7 @@ CleanData$ses_student[Data$Q9 == 2] <- 0
 table(CleanData$ses_student)
 
 ## Income ####
+attributes(Data$Q10)
 table(Data$Q10)
 CleanData$ses_incomeLow <- NA
 CleanData$ses_incomeLow[Data$Q10 <= 2] <- 1

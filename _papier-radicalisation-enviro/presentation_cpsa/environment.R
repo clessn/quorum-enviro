@@ -1,10 +1,10 @@
 groups <- c("Nonviolent,\nnon-disruptive", "Nonviolent,\nnon-disruptive", "Nonviolent,\nnon-disruptive", "Nonviolent,\nnon-disruptive",
             "Nonviolent,\ndisruptive", "Nonviolent,\ndisruptive", "Nonviolent,\ndisruptive", "Nonviolent,\ndisruptive",
-            "Violence and\nmaterial destruction",
-            "Violence and\nmaterial destruction",
-            "Violence and\nmaterial destruction",
-            "Violence and\nmaterial destruction",
-            "Violence and\nmaterial destruction")
+            "Violent,\ndisruptive",
+            "Violent,\ndisruptive",
+            "Violent,\ndisruptive",
+            "Violent,\ndisruptive",
+            "Violent,\ndisruptive")
 
 names(groups) <- c("signPetition", "boycott", "divest", "manifestation", "occupyPublicSpace",
                    "attachTreeVehicule", "blockBridgeRoad", "blockPipelineConstruction", "vandalismObjects",
@@ -39,9 +39,9 @@ names(clean_names) <- c("signPetition",
                         "fightPolice", "violatingPowerful")
 
 clean_vis <- c("Citizens", "Governments", "Enterprises")
-names(clean_vis) <- c("responsability_climateChangeCitizens",
+names(clean_vis) <- c("responsibility_climateChange_Citizens",
                       "responsibility_climateChange_Govt",
-                      "responsability_climateChangeEnterprise")
+                      "responsibility_climateChange_Enterprise")
 
 
 get_age_category <- function(ages){

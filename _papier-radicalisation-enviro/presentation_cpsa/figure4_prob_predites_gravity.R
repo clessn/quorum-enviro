@@ -62,8 +62,7 @@ graph_data <- preds %>%
          action = item,
          group = groups[item],
          group = factor(group,
-                        levels = rev(c("Violent",
-                                       "Property\ndestruction",
+                        levels = rev(c("Violent,\ndisruptive",
                                        "Nonviolent,\ndisruptive",
                                        "Nonviolent,\nnon-disruptive"))),
          item = clean_names[item],
@@ -85,15 +84,12 @@ graph_data <- preds %>%
          conf.high = ifelse(conf.high > 1, 1, conf.high))
 
 
-ggplot(graph_data, aes(x = estimate, y = item,
+ggplot(graph_data, aes(x = estimate, y = reorder(item, mean_item),
                        group = scale_gravity)) +
   facet_wrap(~group, ncol = 1, scales = "free_y",
              strip.position = "left") +
-  geom_rect(data = subset(graph_data, group == 'Violent'),
-            fill = "grey85", xmin = -1.5,xmax = 1.5,
-            ymin = -15,ymax = 15) +
-  geom_rect(data = subset(graph_data, group == 'Property\ndestruction'),
-            fill = "grey90", xmin = -2,xmax = 2,
+  geom_rect(data = subset(graph_data, group == 'Violent,\ndisruptive'),
+            fill = "grey90", xmin = -1.5,xmax = 1.5,
             ymin = -15,ymax = 15) +
   geom_rect(data = subset(graph_data, group == 'Nonviolent,\ndisruptive'),
             fill = "grey95", xmin = -1.5,xmax = 1.5,
@@ -118,11 +114,13 @@ ggplot(graph_data, aes(x = estimate, y = item,
                      expand = c(0.01, 0.01)) +
   ylab("") +
   labs(caption = "Predicted tolerance by linear regression models when keeping other independent variables constant") +
-  clessnize::theme_clean_light() + 
+  clessnize::theme_clean_light(base_size = 15) + 
   theme(legend.title = element_text(),
         legend.box="vertical",
         strip.placement = "outside",
-        axis.title.x = element_text(hjust = 0.5))
+        plot.caption.position = "plot",
+        axis.title.x = element_text(hjust = 0.5),
+        axis.text.y = element_text(size = 11))
 
 ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/dans_article/figure4_prob_predites_gravity.png",
        width = 10, height = 8)

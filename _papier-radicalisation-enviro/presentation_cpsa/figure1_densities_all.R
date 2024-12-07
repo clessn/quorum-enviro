@@ -13,7 +13,7 @@ data <- readRDS("_SharedFolder_quorum-enviro/data/cleanData/data.rds") %>%
   mutate(mean_item = mean(tolerance),
          group = groups[item],
          group = factor(group,
-                        levels = rev(c("Violence and\nmaterial destruction",
+                        levels = rev(c("Violent,\ndisruptive",
                                        "Nonviolent,\ndisruptive",
                                        "Nonviolent,\nnon-disruptive"))),
          item = clean_names[item],
@@ -29,11 +29,11 @@ ggplot(data, aes(x = tolerance,
   facet_wrap(~group, ncol = 1,
              scales = "free_y",
              strip.position = "left") +
-  geom_rect(data = subset(data, group == "Violence and\nmaterial destruction"),
-            fill = "grey80", xmin = -1.5,xmax = 1.5,
+  geom_rect(data = subset(data, group == "Violent,\ndisruptive"),
+            fill = "grey90", xmin = -1.5,xmax = 1.5,
             ymin = -15,ymax = 15) +
   geom_rect(data = subset(data, group == 'Nonviolent,\ndisruptive'),
-            fill = "grey90", xmin = -1.5,xmax = 1.5,
+            fill = "grey95", xmin = -1.5,xmax = 1.5,
             ymin = -15,ymax = 15) +
   geom_rect(data = subset(data, group == 'Nonviolent,\nnon-disruptive'),
             fill = "white", xmin = -1.5,xmax = 1.5,

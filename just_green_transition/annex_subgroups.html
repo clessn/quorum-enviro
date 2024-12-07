@@ -1,0 +1,311 @@
+<!-- preamble start -->
+<!DOCTYPE html> 
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tinytable_8call86rantlfwbj5k7x</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+<!-- preamble end -->
+
+    <script>
+      function styleCell_8call86rantlfwbj5k7x(i, j, css_id) {
+        var table = document.getElementById("tinytable_8call86rantlfwbj5k7x");
+        table.rows[i].cells[j].classList.add(css_id);
+      }
+      function insertSpanRow_xt4j2u16lpi2y8t0qwjb(i, colspan, content) {
+        var table = document.getElementById('tinytable_8call86rantlfwbj5k7x');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_8call86rantlfwbj5k7x(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_8call86rantlfwbj5k7x");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+window.addEventListener('load', function () { insertSpanRow_xt4j2u16lpi2y8t0qwjb(17, 8, 'Ethnicity') });
+window.addEventListener('load', function () { insertSpanRow_xt4j2u16lpi2y8t0qwjb(15, 8, 'Population Centre') });
+window.addEventListener('load', function () { insertSpanRow_xt4j2u16lpi2y8t0qwjb(8, 8, 'Age Category') });
+window.addEventListener('load', function () { insertSpanRow_xt4j2u16lpi2y8t0qwjb(5, 8, 'Income') });
+window.addEventListener('load', function () { insertSpanRow_xt4j2u16lpi2y8t0qwjb(2, 8, 'Gender') });
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(0, 0, 'tinytable_css_id0lntayu5l3qtq4qa9zqv') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(0, 1, 'tinytable_css_idv4vdov6wkjf2x2tjbl9l') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(0, 2, 'tinytable_css_idv4vdov6wkjf2x2tjbl9l') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(0, 3, 'tinytable_css_id0lntayu5l3qtq4qa9zqv') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(0, 4, 'tinytable_css_id0lntayu5l3qtq4qa9zqv') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(0, 5, 'tinytable_css_id0lntayu5l3qtq4qa9zqv') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(0, 6, 'tinytable_css_id0lntayu5l3qtq4qa9zqv') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(0, 7, 'tinytable_css_id0lntayu5l3qtq4qa9zqv') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(1, 0, 'tinytable_css_id3lnydrdfyxzvdbwc3x8k') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(1, 1, 'tinytable_css_id3lnydrdfyxzvdbwc3x8k') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(1, 2, 'tinytable_css_id3lnydrdfyxzvdbwc3x8k') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(1, 3, 'tinytable_css_id3lnydrdfyxzvdbwc3x8k') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(1, 4, 'tinytable_css_id3lnydrdfyxzvdbwc3x8k') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(1, 5, 'tinytable_css_id3lnydrdfyxzvdbwc3x8k') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(1, 6, 'tinytable_css_id3lnydrdfyxzvdbwc3x8k') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(1, 7, 'tinytable_css_id3lnydrdfyxzvdbwc3x8k') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(3, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(4, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(5, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(7, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(8, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(9, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(11, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(12, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(13, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(14, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(15, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(16, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(17, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(19, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(20, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(22, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(23, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+window.addEventListener('load', function () { styleCell_8call86rantlfwbj5k7x(24, 0, 'tinytable_css_id7rt56kfhpbop3acqyaik') })
+    </script>
+
+    <style>
+    .table td.tinytable_css_id0lntayu5l3qtq4qa9zqv, .table th.tinytable_css_id0lntayu5l3qtq4qa9zqv {  text-align: center; }
+    .table td.tinytable_css_idv4vdov6wkjf2x2tjbl9l, .table th.tinytable_css_idv4vdov6wkjf2x2tjbl9l {  text-align: center;  border-bottom: solid 0.05em #d3d8dc; }
+    .table td.tinytable_css_id3lnydrdfyxzvdbwc3x8k, .table th.tinytable_css_id3lnydrdfyxzvdbwc3x8k {  border-bottom: solid 0.1em #d3d8dc; }
+    .table td.tinytable_css_id7rt56kfhpbop3acqyaik, .table th.tinytable_css_id7rt56kfhpbop3acqyaik { padding-left: 3em; }
+    </style>
+    <div class="container">
+      <table class="table table-bordered" id="tinytable_8call86rantlfwbj5k7x" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing='true'>
+        <thead>
+<tr>
+<th scope="col" align="center" colspan=1> </th>
+<th scope="col" align="center" colspan=4>GES</th>
+<th scope="col" align="center" colspan=3>Fossil</th>
+</tr>
+        
+              <tr>
+                <th scope="col">category_label</th>
+                <th scope="col">continueIncreaseGESPrice</th>
+                <th scope="col">continueIncreaseGESPrice_FossilJobs</th>
+                <th scope="col">continueIncreaseGESPrice_GreenJobs</th>
+                <th scope="col">continueIncreaseGESPrice_RedistributedPop</th>
+                <th scope="col">decreaseFossilProd</th>
+                <th scope="col">decreaseFossilProd_FossilJobs</th>
+                <th scope="col">decreaseFossilProd_GreenJobs</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>female (n = 756)            </td>
+                  <td>0.56</td>
+                  <td>0.6 </td>
+                  <td>0.68</td>
+                  <td>0.59</td>
+                  <td>0.66</td>
+                  <td>0.7 </td>
+                  <td>0.71</td>
+                </tr>
+                <tr>
+                  <td>male (n = 733)              </td>
+                  <td>0.52</td>
+                  <td>0.56</td>
+                  <td>0.64</td>
+                  <td>0.56</td>
+                  <td>0.62</td>
+                  <td>0.65</td>
+                  <td>0.67</td>
+                </tr>
+                <tr>
+                  <td>other (n = 11)              </td>
+                  <td>0.61</td>
+                  <td>0.61</td>
+                  <td>0.7 </td>
+                  <td>0.73</td>
+                  <td>0.66</td>
+                  <td>0.77</td>
+                  <td>0.77</td>
+                </tr>
+                <tr>
+                  <td>0_30k (n = 227)             </td>
+                  <td>0.55</td>
+                  <td>0.61</td>
+                  <td>0.65</td>
+                  <td>0.61</td>
+                  <td>0.65</td>
+                  <td>0.68</td>
+                  <td>0.69</td>
+                </tr>
+                <tr>
+                  <td>110kp (n = 383)             </td>
+                  <td>0.55</td>
+                  <td>0.58</td>
+                  <td>0.67</td>
+                  <td>0.54</td>
+                  <td>0.66</td>
+                  <td>0.68</td>
+                  <td>0.72</td>
+                </tr>
+                <tr>
+                  <td>30k_110k (n = 890)          </td>
+                  <td>0.53</td>
+                  <td>0.58</td>
+                  <td>0.66</td>
+                  <td>0.57</td>
+                  <td>0.63</td>
+                  <td>0.67</td>
+                  <td>0.68</td>
+                </tr>
+                <tr>
+                  <td>24m (n = 140)               </td>
+                  <td>0.6 </td>
+                  <td>0.62</td>
+                  <td>0.67</td>
+                  <td>0.6 </td>
+                  <td>0.71</td>
+                  <td>0.7 </td>
+                  <td>0.74</td>
+                </tr>
+                <tr>
+                  <td>25_34 (n = 278)             </td>
+                  <td>0.56</td>
+                  <td>0.57</td>
+                  <td>0.66</td>
+                  <td>0.58</td>
+                  <td>0.64</td>
+                  <td>0.69</td>
+                  <td>0.7 </td>
+                </tr>
+                <tr>
+                  <td>35_44 (n = 181)             </td>
+                  <td>0.51</td>
+                  <td>0.55</td>
+                  <td>0.62</td>
+                  <td>0.58</td>
+                  <td>0.6 </td>
+                  <td>0.62</td>
+                  <td>0.63</td>
+                </tr>
+                <tr>
+                  <td>45_54 (n = 261)             </td>
+                  <td>0.52</td>
+                  <td>0.58</td>
+                  <td>0.65</td>
+                  <td>0.58</td>
+                  <td>0.6 </td>
+                  <td>0.65</td>
+                  <td>0.67</td>
+                </tr>
+                <tr>
+                  <td>55_64 (n = 311)             </td>
+                  <td>0.52</td>
+                  <td>0.59</td>
+                  <td>0.65</td>
+                  <td>0.57</td>
+                  <td>0.62</td>
+                  <td>0.67</td>
+                  <td>0.69</td>
+                </tr>
+                <tr>
+                  <td>65_74 (n = 242)             </td>
+                  <td>0.55</td>
+                  <td>0.58</td>
+                  <td>0.69</td>
+                  <td>0.55</td>
+                  <td>0.69</td>
+                  <td>0.7 </td>
+                  <td>0.73</td>
+                </tr>
+                <tr>
+                  <td>75p (n = 87)                </td>
+                  <td>0.56</td>
+                  <td>0.62</td>
+                  <td>0.69</td>
+                  <td>0.55</td>
+                  <td>0.68</td>
+                  <td>0.67</td>
+                  <td>0.73</td>
+                </tr>
+                <tr>
+                  <td>population_centre (n = 1000)</td>
+                  <td>0.56</td>
+                  <td>0.6 </td>
+                  <td>0.68</td>
+                  <td>0.57</td>
+                  <td>0.65</td>
+                  <td>0.68</td>
+                  <td>0.7 </td>
+                </tr>
+                <tr>
+                  <td>rural (n = 500)             </td>
+                  <td>0.5 </td>
+                  <td>0.56</td>
+                  <td>0.63</td>
+                  <td>0.57</td>
+                  <td>0.62</td>
+                  <td>0.66</td>
+                  <td>0.68</td>
+                </tr>
+                <tr>
+                  <td>asian (n = 139)             </td>
+                  <td>0.56</td>
+                  <td>0.57</td>
+                  <td>0.63</td>
+                  <td>0.59</td>
+                  <td>0.63</td>
+                  <td>0.66</td>
+                  <td>0.69</td>
+                </tr>
+                <tr>
+                  <td>other (n = 115)             </td>
+                  <td>0.56</td>
+                  <td>0.58</td>
+                  <td>0.64</td>
+                  <td>0.58</td>
+                  <td>0.62</td>
+                  <td>0.65</td>
+                  <td>0.66</td>
+                </tr>
+                <tr>
+                  <td>white (n = 1225)            </td>
+                  <td>0.54</td>
+                  <td>0.59</td>
+                  <td>0.67</td>
+                  <td>0.57</td>
+                  <td>0.65</td>
+                  <td>0.68</td>
+                  <td>0.7 </td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- postamble start -->
+  </body>
+
+</html>
+<!-- postamble end -->
+<!-- hack to avoid NA insertion in last line -->
