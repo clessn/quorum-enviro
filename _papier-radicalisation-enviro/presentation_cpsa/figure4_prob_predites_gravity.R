@@ -1,10 +1,10 @@
 # Packages ----------------------------------------------------------------
 library(dplyr)
 library(ggplot2)
-source("_papier-radicalisation-enviro/article/environment.R")
+source("_papier-radicalisation-enviro/presentation_cpsa/environment.R")
 
 # Data --------------------------------------------------------------------
-data <- readRDS("_SharedFolder_quorum-enviro/data/cleanData/data.rds") %>%
+data <- readRDS("_SharedFolder_transition/data/cleanData/data.rds") %>%
   filter(ses_age >= 18) %>% 
   mutate(educ_level = ifelse(ses_educBHS == 1, 0, NA),
          educ_level = ifelse(ses_educCollege == 1, 0.5,
@@ -34,18 +34,24 @@ vds <- gsub("radicalisation_tolerate_",
             "",
             vds)
 
+models_list <- list()
+
 for (i in 1:length(vds)){
   vd <- vds[i]
   model <- eval(parse(text = paste0("lm(", vd, " ~ scale_gravity + age_cat +
                  ses_gender_male + educ_level +
                  ses_incomeHigh + ses_incomeLow + ses_region + ses_bornCanada,
                  data = data)")))
+
+  # Sauvegarder le modèle dans la liste
+  models_list[[vd]] <- model
+
   predsi <- marginaleffects::predictions(
     model = model,
     newdata = marginaleffects::datagrid(
       scale_gravity = c(0, 0.5, 1)
-    )) %>% 
-    mutate(item = vd) %>% 
+    )) %>%
+    mutate(item = vd) %>%
     select(item, scale_gravity, estimate, conf.low, conf.high)
   if (i == 1){
     preds <- predsi
@@ -122,8 +128,16 @@ ggplot(graph_data, aes(x = estimate, y = reorder(item, mean_item),
         axis.title.x = element_text(hjust = 0.5),
         axis.text.y = element_text(size = 11))
 
-ggsave("_SharedFolder_quorum-enviro/_papier-radicalisation-enviro/graphs/dans_article/figure4_prob_predites_gravity.png",
+ggsave("_SharedFolder_transition/_papier-radicalisation-enviro/graphs/dans_article/figure4_prob_predites_gravity.png",
        width = 10, height = 8)
+
+# Tableau de régression ---------------------------------------------------
+library(modelsummary)
+
+# Créer le tableau de régression
+modelsummary(models_list,
+             stars = TRUE,
+             output = "_SharedFolder_transition/_papier-radicalisation-enviro/graphs/dans_article/table_models_gravity.png")
 
 
 
